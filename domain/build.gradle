@@ -5,5 +5,18 @@ targetCompatibility = 1.8
 sourceCompatibility = 1.8
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    implementation rootProject.kotlin
+
+    implementation rootProject.rxJava
+    implementation rootProject.supportAnnotations
+
+    compileOnly rootProject.javaxInject
+
+    testImplementation rootProject.junit
+    testImplementation rootProject.hamcrest
+    testImplementation rootProject.mockito
+    testImplementation powerMock
+    testImplementation powerMockJUnit
 }
