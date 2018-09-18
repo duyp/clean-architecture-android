@@ -1,0 +1,72 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion rootProject.compileSdkVersion
+    defaultConfig {
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+    }
+
+    testOptions {
+        unitTests.all {
+            jvmArgs '-noverify'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    api fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation project(':domain')
+
+    implementation rootProject.kotlin
+
+    implementation rootProject.supportAnnotations
+    implementation rootProject.supportCoreUtils
+
+    api room
+    api roomRx
+    annotationProcessor roomCompiler
+
+    api rootProject.retrofit
+    api rootProject.retrofitGsonConverter
+    api rootProject.retrofitRxJava2Adapter
+    api rootProject.okhttpLogging
+
+    implementation rootProject.rxJava
+
+    compileOnly rootProject.javaxInject
+
+    testImplementation rootProject.junit
+    testImplementation rootProject.hamcrest
+    testImplementation rootProject.mockito
+    testImplementation powerMock
+    testImplementation powerMockJUnit
+    testImplementation roomTestHelper
+
+    androidTestImplementation rootProject.junit
+    androidTestImplementation rootProject.hamcrest
+    androidTestImplementation "com.android.support.test:runner:$testRunnerVersion"
+    androidTestImplementation "com.android.support.test:rules:$testRunnerVersion"
+    androidTestImplementation rootProject.coreTesting
+}
