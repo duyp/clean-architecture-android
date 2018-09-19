@@ -3,7 +3,6 @@ package com.duyp.architecture.clean.android.powergit.domain.repositories
 import com.duyp.architecture.clean.android.powergit.domain.entities.User
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Maybe
 import io.reactivex.Single
 
 interface UserRepository {
@@ -31,9 +30,28 @@ interface UserRepository {
     /**
      * Get last logged in username
      *
-     * @return Maybe which emits username if has last logged in user, otherwise complete
+     * @return last logged in username, null if no user logged in yet
      */
-    fun getLastLoggedInUsername() : Maybe<String>
+    fun getLastLoggedInUsername() : String?
+
+    /**
+     * Set last logged in username
+     *
+     */
+    fun setLastLoggedInUsername(username: String?)
+
+    /**
+     * Get current user name
+     *
+     * @return current username, null if no user
+     */
+    fun getCurrentUsername() : String?
+
+    /**
+     * Set last logged in username
+     *
+     */
+    fun setCurrentUsername(username: String?)
 
     /**
      * Check if an user is logged in

@@ -4,6 +4,4 @@ import com.duyp.architecture.clean.android.powergit.domain.repositories.UserRepo
 
 class LogoutUser(private val mUserRepository: UserRepository) {
 
-    fun logoutCurrentUser() = mUserRepository.getLastLoggedInUsername()
-            .flatMapCompletable { mUserRepository.logout(it) }
 }
