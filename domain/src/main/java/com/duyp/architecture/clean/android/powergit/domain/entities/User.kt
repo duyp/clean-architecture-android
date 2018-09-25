@@ -65,8 +65,6 @@ data class User (
 
     var updatedAt: Date? = null,
 
-    var date: Date? = null,
-
     var privateGists: Long = 0,
 
     var totalPrivateRepos: Long = 0,

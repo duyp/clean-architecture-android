@@ -36,7 +36,6 @@ class UserApiToLocalMapper() : Mapper<UserApiData, UserLocalData> (){
         localData.following = e.following
         localData.createdAt = e.createdAt
         localData.updatedAt = e.updatedAt
-        localData.date = e.date
         localData.privateGists = e.privateGists
         localData.totalPrivateRepos = e.totalPrivateRepos
         localData.ownedPrivateRepos = e.ownedPrivateRepos

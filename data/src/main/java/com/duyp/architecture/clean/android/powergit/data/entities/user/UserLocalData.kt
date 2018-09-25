@@ -72,9 +72,6 @@ data class UserLocalData (
         @TypeConverters(DateConverter::class)
         var updatedAt: Date? = null,
 
-        @TypeConverters(DateConverter::class)
-        var date: Date? = null,
-
         var privateGists: Long = 0,
 
         var totalPrivateRepos: Long = 0,

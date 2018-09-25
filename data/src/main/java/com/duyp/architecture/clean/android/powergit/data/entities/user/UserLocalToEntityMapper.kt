@@ -38,7 +38,6 @@ class UserLocalToEntityMapper() : Mapper<UserLocalData, User> (){
         userEntity.following = e.following
         userEntity.createdAt = e.createdAt
         userEntity.updatedAt = e.updatedAt
-        userEntity.date = e.date
         userEntity.privateGists = e.privateGists
         userEntity.totalPrivateRepos = e.totalPrivateRepos
         userEntity.ownedPrivateRepos = e.ownedPrivateRepos

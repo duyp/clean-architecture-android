@@ -94,9 +94,6 @@ data class UserApiData(
         @SerializedName("updated_at")
         var updatedAt: Date? = null,
 
-        // todo check this field
-        var date: Date? = null,
-
         @SerializedName("private_gists")
         var privateGists: Long = 0,
 
