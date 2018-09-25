@@ -1,7 +1,6 @@
 package com.duyp.architecture.clean.android.powergit.data.api.annotations;
 
-import android.support.annotation.IntDef;
-
+import androidx.annotation.IntDef;
 import kotlin.annotation.AnnotationRetention;
 import kotlin.annotation.Retention;
 

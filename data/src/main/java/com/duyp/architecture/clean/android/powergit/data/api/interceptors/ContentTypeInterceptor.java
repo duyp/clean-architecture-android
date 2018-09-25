@@ -1,9 +1,8 @@
 package com.duyp.architecture.clean.android.powergit.data.api.interceptors;
 
-import android.support.annotation.NonNull;
-
 import java.io.IOException;
 
+import androidx.annotation.NonNull;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;

@@ -1,13 +1,13 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlinVersion = '1.2.50'
+    ext.kotlinVersion = '1.2.61'
     repositories {
         google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.4'
+        classpath 'com.android.tools.build:gradle:3.2.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -29,11 +29,12 @@ task clean(type: Delete) {
 
 ext {
     minSdkVersion = 21
-    targetSdkVersion = 27
-    compileSdkVersion = 27
+    targetSdkVersion = 28
+    compileSdkVersion = 28
 
     //dependencies
-    supportLibraryVersion = '27.0.2'
+    appcompatVersion = '1.0.0'
+    constraintLayoutVersion = '1.1.3'
     playServicesVersion = '11.8.0'
     glideVersion = '3.8.0'
     crashlyticsVersion = '2.2.3@aar'
@@ -42,10 +43,11 @@ ext {
     rxAndroidVersion = '2.1.0'
     okhttp3Version = '3.9.0'
     retrofitVersion = '2.4.0'
-    roomVersion = '1.1.0-rc1'
-    archVersion = '1.1.1'
+    roomVersion = '2.0.0-rc01'
     daggerVersion = '2.12'
+    lifecycleVersion = '2.0.0'
 
+    // test dependencies
     testRunnerVersion = '1.0.1'
     espressoVersion = '3.0.1'
     uiautomatorVersion = '2.1.2'
@@ -55,13 +57,10 @@ ext {
     mockitoVersion = '2.8.9'
     powerMockVersion = '1.7.3'
     conditionWatcherVersion = '0.2'
+    coreTestingVersion = '2.0.0'
 
     kotlin = "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlinVersion"
     kotlinTestJUnit = "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
-
-    supportAppCompat = "com.android.support:appcompat-v7:$supportLibraryVersion"
-    supportAnnotations = "com.android.support:support-annotations:$supportLibraryVersion"
-    supportCoreUtils = "com.android.support:support-core-utils:$supportLibraryVersion"
 
     javaxInject = "javax.inject:javax.inject:1"
 
@@ -73,13 +72,10 @@ ext {
     rxJava = "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
     rxAndroid = "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
 
-    room = "android.arch.persistence.room:runtime:$roomVersion"
-    roomCompiler = "android.arch.persistence.room:compiler:$roomVersion"
-    roomRx = "android.arch.persistence.room:rxjava2:$roomVersion"
-    roomTestHelper = "android.arch.persistence.room:testing:$roomVersion"
-
-    lifecycleExtensions = "android.arch.lifecycle:extensions:$archVersion"
-    lifecycleCompiler = "android.arch.lifecycle:common-java8:$archVersion"
+    room = "androidx.room:room-runtime:$roomVersion"
+    roomRx = "androidx.room:room-rxjava2:$roomVersion"
+    roomCompiler = "androidx.room:room-compiler:$roomVersion"
+    roomTesting = "androidx.room:room-testing:$roomVersion"
 
     // dagger
     dagger                  = "com.google.dagger:dagger:$daggerVersion"
@@ -92,7 +88,5 @@ ext {
     hamcrest = "org.hamcrest:hamcrest-library:$hamcrestVersion"
     mockito = "org.mockito:mockito-core:$mockitoVersion"
     mockitoInline = "org.mockito:mockito-inline:$mockitoVersion"
-    powerMock = "org.powermock:powermock-api-mockito2:$powerMockVersion"
-    powerMockJUnit = "org.powermock:powermock-module-junit4:$powerMockVersion"
-    coreTesting = "android.arch.core:core-testing:$archVersion"
+    coreTesting = "androidx.arch.core:core-testing:$coreTestingVersion"
 }

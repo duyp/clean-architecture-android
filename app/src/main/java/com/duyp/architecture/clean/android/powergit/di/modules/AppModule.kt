@@ -1,6 +1,5 @@
 package com.duyp.architecture.clean.android.powergit.di.modules
 
-import android.content.Context
 import com.duyp.architecture.clean.android.powergit.data.api.ApiConstants
 import com.google.gson.*
 import dagger.Module
@@ -13,7 +12,7 @@ import java.util.*
 import javax.inject.Singleton
 
 @Module
-class AppModule(context: Context) {
+class AppModule {
 
     @Provides @Singleton fun provideGson(): Gson {
         return GsonBuilder()

@@ -1,6 +1,6 @@
 package com.duyp.architecture.clean.android.powergit.data.entities.user
 
-import android.support.annotation.NonNull
+import androidx.annotation.NonNull
 import com.duyp.architecture.clean.android.powergit.domain.entities.Mapper
 import com.duyp.architecture.clean.android.powergit.domain.entities.User
 

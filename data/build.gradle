@@ -8,7 +8,7 @@ android {
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -52,34 +52,31 @@ dependencies {
 
     implementation rootProject.kotlin
 
-    implementation rootProject.supportAnnotations
-    implementation rootProject.supportCoreUtils
-
     api room
     api roomRx
     annotationProcessor roomCompiler
 
-    implementation rootProject.dagger
-    annotationProcessor rootProject.daggerCompiler
+    implementation dagger
+    annotationProcessor daggerCompiler
 
-    api rootProject.retrofit
-    api rootProject.retrofitGsonConverter
-    api rootProject.retrofitRxJava2Adapter
-    api rootProject.okhttpLogging
+    api retrofit
+    api retrofitGsonConverter
+    api retrofitRxJava2Adapter
+    api okhttpLogging
 
-    implementation rootProject.rxJava
-
-    compileOnly rootProject.javaxInject
+    implementation rxJava
+    
+    compileOnly javaxInject
 
     testImplementation junit
     testImplementation hamcrest
     testImplementation mockito
     testImplementation mockitoInline
-    testImplementation roomTestHelper
+    testImplementation roomTesting
 
-    androidTestImplementation rootProject.junit
-    androidTestImplementation rootProject.hamcrest
-    androidTestImplementation "com.android.support.test:runner:$testRunnerVersion"
-    androidTestImplementation "com.android.support.test:rules:$testRunnerVersion"
-    androidTestImplementation rootProject.coreTesting
+    androidTestImplementation junit
+    androidTestImplementation hamcrest
+    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
+    androidTestImplementation 'androidx.test:rules:1.1.0-alpha4'
+    androidTestImplementation coreTesting
 }

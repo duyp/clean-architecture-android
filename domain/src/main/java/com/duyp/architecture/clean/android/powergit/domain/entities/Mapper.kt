@@ -1,8 +1,6 @@
 package com.duyp.architecture.clean.android.powergit.domain.entities
 
-import android.support.annotation.NonNull
 import io.reactivex.functions.Consumer
-import java.util.*
 
 /**
  * Created by duypham on 3/28/18.
@@ -10,7 +8,7 @@ import java.util.*
 
 abstract class Mapper<E, T> {
 
-    @NonNull abstract fun mapFrom(@NonNull e: E): T
+    abstract fun mapFrom(e: E): T
 
     fun mapFrom(e: E, tConsumer: Consumer<T>?): T {
         val value = mapFrom(e)

@@ -1,8 +1,8 @@
 package com.duyp.architecture.clean.android.powergit.data.entities.user
 
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
-import android.arch.persistence.room.TypeConverters
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
 import com.duyp.architecture.clean.android.powergit.data.entities.converters.DateConverter
 import java.util.*
 
