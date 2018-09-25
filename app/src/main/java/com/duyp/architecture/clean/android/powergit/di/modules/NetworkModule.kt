@@ -11,6 +11,7 @@ import com.duyp.architecture.clean.android.powergit.data.api.interceptors.Author
 import com.duyp.architecture.clean.android.powergit.data.api.interceptors.CacheInterceptor
 import com.duyp.architecture.clean.android.powergit.data.api.interceptors.ContentTypeInterceptor
 import com.duyp.architecture.clean.android.powergit.data.api.interceptors.PaginationInterceptor
+import com.duyp.architecture.clean.android.powergit.domain.usecases.GetAuthentication
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
@@ -33,8 +34,8 @@ class NetworkModule() {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(context: Context,
-                            requestAnnotations: RequestAnnotations): OkHttpClient {
+    fun provideOkHttpClient(context: Context, requestAnnotations: RequestAnnotations,
+                            getAuthentication: GetAuthentication): OkHttpClient {
         // okHttp client
         val clientBuilder = OkHttpClient.Builder()
                 .connectTimeout(TIME_OUT_API.toLong(), TimeUnit.SECONDS)
@@ -43,7 +44,9 @@ class NetworkModule() {
                 .addInterceptor(AuthorizationInterceptor(requestAnnotations) { ownerType ->
                     var token: String? = null
                     when (ownerType) {
-                        OwnerType.USER_NORMAL -> token = "" // todo get user token
+                        OwnerType.USER_NORMAL -> token = getAuthentication.getCurrentUserAuthentication()
+                                .subscribeOn(Schedulers.io())
+                                .blockingGet()
                     }
                     token
                 })
@@ -58,7 +61,7 @@ class NetworkModule() {
         try {
             val httpCacheDirectory = File(context.cacheDir, "httpCache")
             cache = Cache(httpCacheDirectory, (10 * 1024 * 1024).toLong()) // 10 MB
-        } catch (ignored: Exception) {
+        } catch (e: Exception) {
         }
 
         if (cache != null) {

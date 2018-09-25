@@ -3,19 +3,21 @@ package com.duyp.architecture.clean.android.powergit.data.repositories
 import android.content.SharedPreferences
 import com.duyp.architecture.clean.android.powergit.data.SharedPreferenceConstants.KEY_CURRENT_USERNAME
 import com.duyp.architecture.clean.android.powergit.data.SharedPreferenceConstants.KEY_LAST_LOGGED_IN_USER
+import com.duyp.architecture.clean.android.powergit.data.api.UserService
 import com.duyp.architecture.clean.android.powergit.data.database.UserDao
 import com.duyp.architecture.clean.android.powergit.data.entities.user.UserApiToLocalMapper
 import com.duyp.architecture.clean.android.powergit.data.entities.user.UserLocalToEntityMapper
+import com.duyp.architecture.clean.android.powergit.data.utils.ApiUtils
 import com.duyp.architecture.clean.android.powergit.domain.entities.User
 import com.duyp.architecture.clean.android.powergit.domain.repositories.AuthenticationRepository
 import com.duyp.architecture.clean.android.powergit.domain.repositories.UserRepository
-import com.duyp.architecture.clean.android.powergit.domain.utils.CommonUtil
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
+        private val mUserService: UserService,
         private val mUserDao: UserDao,
         private val mAuthenticationRepository: AuthenticationRepository,
         private val mSharedPreferences: SharedPreferences
@@ -26,11 +28,18 @@ class UserRepositoryImpl @Inject constructor(
     private val mUserLocalToEntityMapper = UserLocalToEntityMapper()
 
     override fun login(username: String, password: String): Single<User> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val token = ApiUtils.getBasicAuth(username, password)
+        return mUserService.login(token)
+                .map { mUserApiToLocalMapper.mapFrom(it) }
+                .doOnSuccess{
+                    mUserDao.insert(it)
+                    mAuthenticationRepository.addOrUpdateUser(username, password, token)
+                }
+                .map { mUserLocalToEntityMapper.mapFrom(it) }
     }
 
     override fun logout(username: String): Completable {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return Completable.create { mAuthenticationRepository.logout(username) }
     }
 
     override fun getUser(username: String): Flowable<User> {
@@ -60,12 +69,6 @@ class UserRepositoryImpl @Inject constructor(
         } else {
             mSharedPreferences.edit().remove(KEY_CURRENT_USERNAME).apply()
         }
-    }
-
-    override fun isLoggedIn(username: String): Single<Boolean> {
-        return mAuthenticationRepository.getAuthentication(username)
-                .toSingle("")
-                .map { !CommonUtil.isEmpty(it) }
     }
 
 }

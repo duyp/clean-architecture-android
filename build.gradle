@@ -91,6 +91,7 @@ ext {
     junit = "junit:junit:$junitVersion"
     hamcrest = "org.hamcrest:hamcrest-library:$hamcrestVersion"
     mockito = "org.mockito:mockito-core:$mockitoVersion"
+    mockitoInline = "org.mockito:mockito-inline:$mockitoVersion"
     powerMock = "org.powermock:powermock-api-mockito2:$powerMockVersion"
     powerMockJUnit = "org.powermock:powermock-module-junit4:$powerMockVersion"
     coreTesting = "android.arch.core:core-testing:$archVersion"

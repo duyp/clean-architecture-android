@@ -52,11 +52,4 @@ interface UserRepository {
      *
      */
     fun setCurrentUsername(username: String?)
-
-    /**
-     * Check if an user is logged in
-     *
-     * @return Single emitting true if given user is logged in, otherwise false
-     */
-    fun isLoggedIn(username: String) : Single<Boolean>
 }

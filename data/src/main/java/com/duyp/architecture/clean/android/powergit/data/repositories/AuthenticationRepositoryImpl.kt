@@ -12,4 +12,12 @@ class AuthenticationRepositoryImpl @Inject constructor(
     override fun getAuthentication(username: String): Maybe<String> {
         return Maybe.fromCallable { mAccountManagerHelper.getAuth(username) }
     }
+
+    override fun addOrUpdateUser(username: String, password: String, auth: String) {
+        mAccountManagerHelper.saveAccount(username, password, auth)
+    }
+
+    override fun logout(username: String) {
+        mAccountManagerHelper.logoutAccount(username)
+    }
 }

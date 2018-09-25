@@ -71,11 +71,10 @@ dependencies {
 
     compileOnly rootProject.javaxInject
 
-    testImplementation rootProject.junit
-    testImplementation rootProject.hamcrest
-    testImplementation rootProject.mockito
-    testImplementation powerMock
-    testImplementation powerMockJUnit
+    testImplementation junit
+    testImplementation hamcrest
+    testImplementation mockito
+    testImplementation mockitoInline
     testImplementation roomTestHelper
 
     androidTestImplementation rootProject.junit
