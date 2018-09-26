@@ -1,6 +1,12 @@
-package com.duyp.architecture.clean.android.powergit.di.modules
+package com.duyp.architecture.clean.android.powergit.di
 
-import com.duyp.architecture.clean.android.powergit.di.PowerGitApp
+import com.duyp.architecture.clean.android.powergit.PowerGitApp
+import com.duyp.architecture.clean.android.powergit.data.di.DatabaseModule
+import com.duyp.architecture.clean.android.powergit.data.di.NetworkModule
+import com.duyp.architecture.clean.android.powergit.data.di.RepositoryModule
+import com.duyp.architecture.clean.android.powergit.di.modules.ActivityBindingModules
+import com.duyp.architecture.clean.android.powergit.di.modules.AppModule
+import com.duyp.architecture.clean.android.powergit.di.modules.PowerGitViewModelFactoryModule
 import dagger.Component
 import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
@@ -21,7 +27,8 @@ import javax.inject.Singleton
         PowerGitViewModelFactoryModule::class,
         AppModule::class,
         NetworkModule::class,
-        DataModule::class
+        DatabaseModule::class,
+        RepositoryModule::class
     ]
 )
 interface AppComponent : AndroidInjector<PowerGitApp> {

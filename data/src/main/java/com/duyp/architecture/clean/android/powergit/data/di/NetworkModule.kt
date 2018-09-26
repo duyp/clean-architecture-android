@@ -1,4 +1,4 @@
-package com.duyp.architecture.clean.android.powergit.di.modules
+package com.duyp.architecture.clean.android.powergit.data.di
 
 import android.content.Context
 import com.duyp.architecture.clean.android.powergit.data.BuildConfig
