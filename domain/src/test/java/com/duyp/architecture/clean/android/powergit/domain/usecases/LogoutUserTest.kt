@@ -1,5 +1,6 @@
 package com.duyp.architecture.clean.android.powergit.domain.usecases
 
+import com.duyp.architecture.clean.android.powergit.domain.repositories.AuthenticationRepository
 import com.duyp.architecture.clean.android.powergit.domain.repositories.UserRepository
 import io.reactivex.Completable
 import org.junit.Test
@@ -11,23 +12,25 @@ class LogoutUserTest : UseCaseTest<LogoutUser>() {
 
     @Mock private lateinit var mUserRepository: UserRepository
 
+    @Mock private lateinit var mAuthenticationRepository: AuthenticationRepository
+
     override fun createUseCase(): LogoutUser {
-        return LogoutUser(mUserRepository)
+        return LogoutUser(mUserRepository, mAuthenticationRepository)
     }
 
     @Test fun logout_noCurrentUser_shouldComplete() {
-        `when`(mUserRepository.getCurrentUsername()).thenReturn(null)
+        `when`(mAuthenticationRepository.getCurrentUsername()).thenReturn(null)
 
         mUsecase.logoutCurrentUser()
                 .test()
                 .assertComplete()
 
         verify(mUserRepository, times(0)).logout(ArgumentMatchers.anyString())
-        verify(mUserRepository, times(0)).setCurrentUsername(ArgumentMatchers.anyString())
+        verify(mAuthenticationRepository, times(0)).setCurrentUsername(ArgumentMatchers.anyString())
     }
 
     @Test fun logout_hasCurrentUser_shouldDoLogout_success() {
-        `when`(mUserRepository.getCurrentUsername()).thenReturn("username")
+        `when`(mAuthenticationRepository.getCurrentUsername()).thenReturn("username")
         `when`(mUserRepository.logout(ArgumentMatchers.anyString())).thenReturn(Completable.complete())
 
         mUsecase.logoutCurrentUser()
@@ -35,11 +38,11 @@ class LogoutUserTest : UseCaseTest<LogoutUser>() {
                 .assertComplete()
 
         verify(mUserRepository).logout("username")
-        verify(mUserRepository).setCurrentUsername(null)
+        verify(mAuthenticationRepository).setCurrentUsername(null)
     }
 
     @Test fun logout_hasCurrentUser_shouldDoLogout_error_shouldCompleteWithoutThrow() {
-        `when`(mUserRepository.getCurrentUsername()).thenReturn("username")
+        `when`(mAuthenticationRepository.getCurrentUsername()).thenReturn("username")
         `when`(mUserRepository.logout(ArgumentMatchers.anyString())).thenReturn(Completable.error(Exception()))
 
         mUsecase.logoutCurrentUser()
@@ -47,6 +50,6 @@ class LogoutUserTest : UseCaseTest<LogoutUser>() {
                 .assertComplete()
 
         verify(mUserRepository).logout("username")
-        verify(mUserRepository).setCurrentUsername(null)
+        verify(mAuthenticationRepository).setCurrentUsername(null)
     }
 }

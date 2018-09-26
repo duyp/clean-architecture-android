@@ -1,6 +1,7 @@
 package com.duyp.architecture.clean.android.powergit.domain.usecases
 
 import com.duyp.architecture.clean.android.powergit.domain.entities.User
+import com.duyp.architecture.clean.android.powergit.domain.repositories.AuthenticationRepository
 import com.duyp.architecture.clean.android.powergit.domain.repositories.UserRepository
 import io.reactivex.Single
 import org.junit.Test
@@ -12,8 +13,10 @@ class LoginUserTest : UseCaseTest<LoginUser> () {
 
     @Mock private lateinit var mUserRepository: UserRepository
 
+    @Mock private lateinit var mAuthenticationRepository: AuthenticationRepository
+
     override fun createUseCase(): LoginUser {
-        return LoginUser(mUserRepository)
+        return LoginUser(mUserRepository, mAuthenticationRepository)
     }
 
     @Test fun login_success() {
@@ -25,7 +28,7 @@ class LoginUserTest : UseCaseTest<LoginUser> () {
                 .test()
                 .assertComplete()
 
-        verify(mUserRepository).setCurrentUsername("username")
+        verify(mAuthenticationRepository).setCurrentUsername("username")
         verify(mUserRepository).setLastLoggedInUsername("username")
     }
 
@@ -36,7 +39,7 @@ class LoginUserTest : UseCaseTest<LoginUser> () {
         mUsecase.login("duyp", "abcd")
                 .test()
                 .assertErrorMessage("error")
-        verify(mUserRepository, times(0)).setCurrentUsername(ArgumentMatchers.anyString())
+        verify(mAuthenticationRepository, times(0)).setCurrentUsername(ArgumentMatchers.anyString())
         verify(mUserRepository, times(0)).setLastLoggedInUsername(ArgumentMatchers.anyString())
     }
 }
