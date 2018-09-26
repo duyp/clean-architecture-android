@@ -8,7 +8,6 @@ import com.duyp.architecture.clean.android.powergit.data.api.annotations.OwnerTy
 import com.duyp.architecture.clean.android.powergit.data.api.annotations.RequestAnnotations
 import com.duyp.architecture.clean.android.powergit.data.api.converters.GithubResponseConverter
 import com.duyp.architecture.clean.android.powergit.data.api.interceptors.AuthorizationInterceptor
-import com.duyp.architecture.clean.android.powergit.data.api.interceptors.CacheInterceptor
 import com.duyp.architecture.clean.android.powergit.data.api.interceptors.ContentTypeInterceptor
 import com.duyp.architecture.clean.android.powergit.data.api.interceptors.PaginationInterceptor
 import com.duyp.architecture.clean.android.powergit.domain.usecases.GetAuthentication
@@ -26,7 +25,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
-class NetworkModule() {
+class NetworkModule {
 
     @Provides
     @Singleton
@@ -65,9 +64,7 @@ class NetworkModule() {
         }
 
         if (cache != null) {
-            clientBuilder
-                    .cache(cache)
-                    .addInterceptor(CacheInterceptor(requestAnnotations))
+            clientBuilder.cache(cache)
         }
 
         // add logging interceptor

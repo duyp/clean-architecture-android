@@ -1,9 +1,10 @@
 package com.duyp.architecture.clean.android.powergit.data.api.annotations;
 
+import android.support.annotation.NonNull;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
-import androidx.annotation.NonNull;
 import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.CallAdapter;

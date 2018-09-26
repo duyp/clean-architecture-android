@@ -1,12 +1,11 @@
 package com.duyp.architecture.clean.android.powergit.data.entities.user
 
-import androidx.annotation.NonNull
 import com.duyp.architecture.clean.android.powergit.domain.entities.Mapper
 import com.duyp.architecture.clean.android.powergit.domain.entities.User
 
 class UserLocalToEntityMapper() : Mapper<UserLocalData, User> (){
 
-    @NonNull override fun mapFrom(@NonNull e: UserLocalData): User {
+    override fun mapFrom(e: UserLocalData): User {
         val userEntity = User()
         userEntity.id = e.id
         userEntity.login = e.login

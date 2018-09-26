@@ -16,7 +16,7 @@
 
 package com.duyp.architecture.clean.android.powergit.di.modules
 
-import androidx.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProvider
 import com.duyp.architecture.clean.android.powergit.di.PowerGitViewModelFactory
 import dagger.Binds
 import dagger.Module

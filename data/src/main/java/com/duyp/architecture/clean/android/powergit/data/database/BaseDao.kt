@@ -1,9 +1,9 @@
 package com.duyp.architecture.clean.android.powergit.data.database
 
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Update
+import android.arch.persistence.room.Delete
+import android.arch.persistence.room.Insert
+import android.arch.persistence.room.OnConflictStrategy
+import android.arch.persistence.room.Update
 
 abstract class BaseDao<T> {
 

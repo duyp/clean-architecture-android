@@ -3,4 +3,37 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="transparent">#00000000</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="scout_orange">#FFFF7500</color>
+    <color name="scout_blue">#FF003468</color>
+    <color name="white_opacity">#B8FFFFFF</color>
+    <color name="blue">#FF00478C</color>
+    <color name="light_blue">#FF1175D9</color>
+    <color name="cyan">#FF259FE3</color>
+    <color name="red">#FFC80000</color>
+    <color name="anthracite">#DE000000</color>
+    <color name="lighter_anthracite">#FF323232</color>
+    <color name="dark_grey">#8A000000</color>
+    <color name="grey">#61000000</color>
+    <color name="light_grey">#FFDDDDDD</color>
+    <color name="silver">#FFF4F4F4</color>
+    <color name="green">#FF27AE60</color>
+    <color name="yellow">#FFF39C12</color>
+    <color name="light_yellow">#FFFEF7EC</color>
+    <color name="bright_red">#FFEA4B35</color>
+    <color name="turquoise">#FF2BB2BB</color>
+    <color name="dark_red">#FF9D3224</color>
+
+    <color name="transparent90">#E6000000</color>
+    <color name="transparent80">#CC000000</color>
+    <color name="transparent70">#B3000000</color>
+    <color name="transparent60">#99000000</color>
+    <color name="transparent50">#80000000</color>
+    <color name="transparent30">#48000000</color>
+    <color name="transparent20">#32000000</color>
+    <color name="transparent10">#16000000</color>
+    <color name="transparent25">#40000000</color>
 </resources>

@@ -1,6 +1,11 @@
 package com.duyp.architecture.clean.android.powergit.di.modules
 
+import android.accounts.AccountManager
+import android.content.Context
+import com.duyp.architecture.clean.android.powergit.PowerGitApp
+import com.duyp.architecture.clean.android.powergit.R
 import com.duyp.architecture.clean.android.powergit.data.api.ApiConstants
+import com.duyp.architecture.clean.android.powergit.data.di.AccountType
 import com.google.gson.*
 import dagger.Module
 import dagger.Provides
@@ -14,7 +19,13 @@ import javax.inject.Singleton
 @Module
 class AppModule {
 
-    @Provides @Singleton fun provideGson(): Gson {
+    @Provides
+    @Singleton
+    fun provideContext(powerGitApp: PowerGitApp) = powerGitApp.applicationContext
+
+    @Provides
+    @Singleton
+    fun provideGson(): Gson {
         return GsonBuilder()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
@@ -23,6 +34,19 @@ class AppModule {
                 .registerTypeAdapter(Date::class.java, DateDeserializer())
                 .create()
     }
+
+    @Provides
+    @Singleton
+    fun provideAccountManager(context: Context) = AccountManager.get(context)
+
+    @Provides
+    @Singleton
+    fun provideSharedPreference(context: Context) = context.getSharedPreferences("power-git-preference", 0)
+
+    @Provides
+    @Singleton
+    @AccountType
+    fun provideAccountType(context: Context) = context.getString(R.string.account_type)
 }
 
 private class DateDeserializer : JsonDeserializer<Date> {

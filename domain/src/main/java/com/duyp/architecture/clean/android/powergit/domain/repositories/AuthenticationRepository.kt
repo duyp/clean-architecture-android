@@ -18,4 +18,18 @@ interface AuthenticationRepository {
      * Logout specific user by given username
      */
     fun logout(username: String)
+
+
+    /**
+     * Get current user name
+     *
+     * @return current username, null if no user
+     */
+    fun getCurrentUsername() : String?
+
+    /**
+     * Set last logged in username
+     *
+     */
+    fun setCurrentUsername(username: String?)
 }

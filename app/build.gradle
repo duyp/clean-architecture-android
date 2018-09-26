@@ -26,6 +26,10 @@ android {
         }
     }
 
+    dataBinding {
+        enabled = true
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -51,22 +55,31 @@ dependencies {
 
     implementation rootProject.kotlin
 
-    // UI
-    implementation "androidx.appcompat:appcompat:$rootProject.appcompatVersion"
-    implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintLayoutVersion"
+    // android support library
+    implementation "com.android.support:appcompat-v7:$supportVersion"
+    implementation "com.android.support:design:$supportVersion"
+    implementation "com.android.support:recyclerview-v7:$supportVersion"
+    implementation "com.android.support:cardview-v7:$supportVersion"
+    implementation "com.android.support:transition:$supportVersion"
+    implementation "com.android.support:preference-v14:$supportVersion"
+    implementation "com.android.support:customtabs:$supportVersion"
 
-    implementation "androidx.lifecycle:lifecycle-extensions:$rootProject.lifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-livedata:$rootProject.lifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-viewmodel:$rootProject.lifecycleVersion"
+    implementation('com.mikepenz:aboutlibraries:5.9.7@aar') { transitive = true }
+//    implementation 'com.github.daniel-stoneuk:material-about-library:2.3.0'
+
+    implementation 'com.mikhaellopez:circularimageview:3.2.0'
+
+    implementation "android.arch.lifecycle:extensions:$rootProject.lifecycleVersion"
+    implementation "android.arch.lifecycle:livedata:$rootProject.lifecycleVersion"
+    implementation "android.arch.lifecycle:viewmodel:$rootProject.lifecycleVersion"
 
     // dagger
-    implementation rootProject.dagger
     implementation rootProject.daggerAndroid
     implementation rootProject.daggerSupport
     kapt rootProject.daggerCompiler
     kapt rootProject.daggerAndroidCompiler
 
+    api "com.jakewharton.timber:timber:$rootProject.timberVersion"
+
     testImplementation rootProject.junit
-    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
 }

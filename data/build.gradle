@@ -2,6 +2,8 @@ apply plugin: 'com.android.library'
 
 apply plugin: 'kotlin-android'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion rootProject.compileSdkVersion
     defaultConfig {
@@ -54,10 +56,10 @@ dependencies {
 
     api room
     api roomRx
-    annotationProcessor roomCompiler
+    kapt roomCompiler
 
     implementation dagger
-    annotationProcessor daggerCompiler
+    kapt daggerCompiler
 
     api retrofit
     api retrofitGsonConverter
@@ -76,7 +78,4 @@ dependencies {
 
     androidTestImplementation junit
     androidTestImplementation hamcrest
-    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
-    androidTestImplementation 'androidx.test:rules:1.1.0-alpha4'
-    androidTestImplementation coreTesting
 }

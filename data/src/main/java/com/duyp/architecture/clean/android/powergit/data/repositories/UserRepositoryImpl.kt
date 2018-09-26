@@ -1,7 +1,6 @@
 package com.duyp.architecture.clean.android.powergit.data.repositories
 
 import android.content.SharedPreferences
-import com.duyp.architecture.clean.android.powergit.data.SharedPreferenceConstants.KEY_CURRENT_USERNAME
 import com.duyp.architecture.clean.android.powergit.data.SharedPreferenceConstants.KEY_LAST_LOGGED_IN_USER
 import com.duyp.architecture.clean.android.powergit.data.api.UserService
 import com.duyp.architecture.clean.android.powergit.data.database.UserDao
@@ -56,18 +55,6 @@ class UserRepositoryImpl @Inject constructor(
             mSharedPreferences.edit().putString(KEY_LAST_LOGGED_IN_USER, username).apply()
         } else {
             mSharedPreferences.edit().remove(KEY_LAST_LOGGED_IN_USER).apply()
-        }
-    }
-
-    override fun getCurrentUsername(): String? {
-        return mSharedPreferences.getString(KEY_CURRENT_USERNAME, null)
-    }
-
-    override fun setCurrentUsername(username: String?) {
-        if (username != null) {
-            mSharedPreferences.edit().putString(KEY_CURRENT_USERNAME, username).apply()
-        } else {
-            mSharedPreferences.edit().remove(KEY_CURRENT_USERNAME).apply()
         }
     }
 

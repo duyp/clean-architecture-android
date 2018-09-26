@@ -1,6 +1,10 @@
 package com.duyp.architecture.clean.android.powergit.di.modules
 
+import com.duyp.architecture.clean.android.powergit.di.scopes.ActivityScoped
+import com.duyp.architecture.clean.android.powergit.ui.features.login.LoginActivity
+import com.duyp.architecture.clean.android.powergit.ui.features.login.LoginModule
 import dagger.Module
+import dagger.android.ContributesAndroidInjector
 
 /**
  * We want Dagger.Android to create a Subcomponent which has a parent Component of whichever module
@@ -12,6 +16,10 @@ import dagger.Module
  * When Dagger.Android annotation processor runs it will create 2 subcomponents for us.
  */
 @Module
-class ActivityBindingModules {
+abstract class ActivityBindingModules {
+
+    @ActivityScoped
+    @ContributesAndroidInjector(modules = [LoginModule::class])
+    internal abstract fun loginActivity() : LoginActivity
 
 }

@@ -2,6 +2,7 @@ package com.duyp.architecture.clean.android.powergit.data.utils
 
 import android.accounts.Account
 import android.accounts.AccountManager
+import com.duyp.architecture.clean.android.powergit.data.di.AccountType
 
 import javax.inject.Inject
 
@@ -9,9 +10,8 @@ import javax.inject.Inject
  * Helper class for [AccountManager]
  */
 class AccountManagerHelper @Inject internal constructor(
-        private val mAccountManager: AccountManager) {
-
-    private val mAccountType = "com.duyp.architecture.clean.android.powergit";
+        private val mAccountManager: AccountManager,
+        @AccountType private val mAccountType: String) {
 
     /**
      * Get password for existing account in android account manager with given account name

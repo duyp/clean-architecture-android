@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="one">1dp</dimen>
+    <dimen name="xxx_tiny">2dp</dimen>
+    <dimen name="xx_tiny">4dp</dimen>
+    <dimen name="x_tiny">6dp</dimen>
+    <dimen name="tiny">8dp</dimen>
+    <dimen name="small">12dp</dimen>
+    <dimen name="regular">16dp</dimen>
+    <dimen name="x_regular">20dp</dimen>
+    <dimen name="medium">24dp</dimen>
+    <dimen name="large">32dp</dimen>
+    <dimen name="x_large">48dp</dimen>
+    <dimen name="xx_large">64dp</dimen>
+    <dimen name="xxx_large">72dp</dimen>
+
+    <dimen name="line_thin">0.5dp</dimen>
+    <dimen name="line_normal">1dp</dimen>
+
+    <dimen name="text_small">12sp</dimen>
+    <dimen name="text_regular">14sp</dimen>
+    <dimen name="text_medium">16sp</dimen>
+    <dimen name="text_large">20sp</dimen>
+    <dimen name="text_line_spacing">6sp</dimen>
+
+    <dimen name="avatar_size_small">@dimen/large</dimen>
+    <dimen name="avatar_size_normal">@dimen/x_large</dimen>
+    <dimen name="avatar_size_large">@dimen/xxx_large</dimen>
+    <dimen name="avatar_size_large_extra">90dp</dimen>
+
+</resources>

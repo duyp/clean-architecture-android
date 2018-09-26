@@ -1,9 +1,7 @@
 package com.duyp.architecture.clean.android.powergit.data.entities.user
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
-import com.duyp.architecture.clean.android.powergit.data.entities.converters.DateConverter
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 import java.util.*
 
 @Entity(tableName = "User")
@@ -66,10 +64,8 @@ data class UserLocalData (
 
         var following: Long = 0,
 
-        @TypeConverters(DateConverter::class)
         var createdAt: Date? = null,
 
-        @TypeConverters(DateConverter::class)
         var updatedAt: Date? = null,
 
         var privateGists: Long = 0,

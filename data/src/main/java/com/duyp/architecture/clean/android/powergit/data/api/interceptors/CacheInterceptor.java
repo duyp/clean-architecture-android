@@ -1,12 +1,13 @@
 package com.duyp.architecture.clean.android.powergit.data.api.interceptors;
 
+import android.support.annotation.NonNull;
+
 import com.duyp.architecture.clean.android.powergit.data.api.ApiConstants;
 import com.duyp.architecture.clean.android.powergit.data.api.annotations.RequestAnnotations;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import androidx.annotation.NonNull;
 import okhttp3.CacheControl;
 import okhttp3.Interceptor;
 import okhttp3.Request;
