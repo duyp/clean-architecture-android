@@ -24,7 +24,7 @@ class TestObserver<T> : Observer<T> {
      * returns true
      * @param valuePredicate should return true for expected value
      */
-    fun assertValue(valuePredicate: (T) -> Boolean) {
+    fun assertValue(valuePredicate: T.() -> Boolean) {
         if (value == null) {
             throw fail("No value present")
         }

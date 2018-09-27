@@ -10,6 +10,7 @@ import com.duyp.architecture.clean.android.powergit.data.api.converters.GithubRe
 import com.duyp.architecture.clean.android.powergit.data.api.interceptors.AuthorizationInterceptor
 import com.duyp.architecture.clean.android.powergit.data.api.interceptors.ContentTypeInterceptor
 import com.duyp.architecture.clean.android.powergit.data.api.interceptors.PaginationInterceptor
+import com.duyp.architecture.clean.android.powergit.data.utils.ApiHelper
 import com.duyp.architecture.clean.android.powergit.domain.usecases.GetAuthentication
 import com.google.gson.Gson
 import dagger.Module
@@ -26,6 +27,8 @@ import javax.inject.Singleton
 
 @Module
 class NetworkModule {
+
+    @Provides @Singleton fun provideApiHelper() = ApiHelper()
 
     @Provides
     @Singleton

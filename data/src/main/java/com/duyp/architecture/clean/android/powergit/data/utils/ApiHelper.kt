@@ -2,7 +2,7 @@ package com.duyp.architecture.clean.android.powergit.data.utils
 
 import android.util.Base64
 
-object ApiUtils {
+class ApiHelper {
 
     fun getBasicAuth(username: String, password: String): String {
         val credentials = "$username:$password"

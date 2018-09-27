@@ -5,49 +5,49 @@ import java.util.*
 
 data class UserApiData(
         @SerializedName("id")
-        var id: Long,
+        var id: Long = 0,
 
         @SerializedName("login")
-        var login: String,
+        var login: String? = null,
 
         @SerializedName("avatar_url")
-        var avatarUrl: String,
+        var avatarUrl: String? = null,
 
         @SerializedName("gravatar_id")
-        var gravatarId: String,
+        var gravatarId: String? = null,
 
         @SerializedName("url")
-        var url: String,
+        var url: String? = null,
 
         @SerializedName("html_url")
-        var htmlUrl: String,
+        var htmlUrl: String? = null,
 
         @SerializedName("followers_url")
-        var followersUrl: String,
+        var followersUrl: String? = null,
 
         @SerializedName("following_url")
-        var followingUrl: String,
+        var followingUrl: String? = null,
 
         @SerializedName("gists_url")
-        var gistsUrl: String,
+        var gistsUrl: String? = null,
 
         @SerializedName("starred_url")
-        var starredUrl: String,
+        var starredUrl: String? = null,
 
         @SerializedName("subscriptions_url")
-        var subscriptionsUrl: String,
+        var subscriptionsUrl: String? = null,
 
         @SerializedName("organizations_url")
-        var organizationsUrl: String,
+        var organizationsUrl: String? = null,
 
         @SerializedName("repos_url")
-        var reposUrl: String,
+        var reposUrl: String? = null,
 
         @SerializedName("events_url")
-        var eventsUrl: String,
+        var eventsUrl: String? = null,
 
         @SerializedName("received_events_url")
-        var receivedEventsUrl: String,
+        var receivedEventsUrl: String? = null,
 
         @SerializedName("type")
         var type: String? = null,
@@ -56,25 +56,25 @@ data class UserApiData(
         var siteAdmin: Boolean? = null,
 
         @SerializedName("name")
-        var name: String,
+        var name: String? = null,
 
         @SerializedName("company")
-        var company: String,
+        var company: String? = null,
 
         @SerializedName("blog")
-        var blog: String,
+        var blog: String? = null,
 
         @SerializedName("location")
-        var location: String,
+        var location: String? = null,
 
         @SerializedName("email")
-        var email: String,
+        var email: String? = null,
 
         @SerializedName("hireable")
         var hireable: Boolean? = null,
 
         @SerializedName("bio")
-        var bio: String,
+        var bio: String? = null,
 
         @SerializedName("public_repos")
         var publicRepos: Long = 0,

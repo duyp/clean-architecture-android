@@ -6,7 +6,7 @@ import com.duyp.architecture.clean.android.powergit.data.api.UserService
 import com.duyp.architecture.clean.android.powergit.data.database.UserDao
 import com.duyp.architecture.clean.android.powergit.data.entities.user.UserApiToLocalMapper
 import com.duyp.architecture.clean.android.powergit.data.entities.user.UserLocalToEntityMapper
-import com.duyp.architecture.clean.android.powergit.data.utils.ApiUtils
+import com.duyp.architecture.clean.android.powergit.data.utils.ApiHelper
 import com.duyp.architecture.clean.android.powergit.domain.entities.User
 import com.duyp.architecture.clean.android.powergit.domain.repositories.AuthenticationRepository
 import com.duyp.architecture.clean.android.powergit.domain.repositories.UserRepository
@@ -19,7 +19,8 @@ class UserRepositoryImpl @Inject constructor(
         private val mUserService: UserService,
         private val mUserDao: UserDao,
         private val mAuthenticationRepository: AuthenticationRepository,
-        private val mSharedPreferences: SharedPreferences
+        private val mSharedPreferences: SharedPreferences,
+        private val mApiHelper: ApiHelper
 ) : UserRepository {
 
     private val mUserApiToLocalMapper = UserApiToLocalMapper()
@@ -27,7 +28,7 @@ class UserRepositoryImpl @Inject constructor(
     private val mUserLocalToEntityMapper = UserLocalToEntityMapper()
 
     override fun login(username: String, password: String): Single<User> {
-        val token = ApiUtils.getBasicAuth(username, password)
+        val token = mApiHelper.getBasicAuth(username, password)
         return mUserService.login(token)
                 .map { mUserApiToLocalMapper.mapFrom(it) }
                 .doOnSuccess{

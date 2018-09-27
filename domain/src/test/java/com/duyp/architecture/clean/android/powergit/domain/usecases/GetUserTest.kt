@@ -1,10 +1,10 @@
 package com.duyp.architecture.clean.android.powergit.domain.usecases
 
 import com.duyp.architecture.clean.android.powergit.domain.repositories.AuthenticationRepository
+import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
 import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
 
 class GetUserTest: UseCaseTest<GetUser>() {
 
@@ -17,8 +17,8 @@ class GetUserTest: UseCaseTest<GetUser>() {
     }
 
     @Test fun getCurrentLoggedInUsername() {
-        `when`(mAuthenticationRepository.getCurrentUsername()).thenReturn("user 1")
-        `when`(mCheckUser.isLoggedIn("user 1")).thenReturn(Single.just(true))
+        whenever(mAuthenticationRepository.getCurrentUsername()).thenReturn("user 1")
+        whenever(mCheckUser.isLoggedIn("user 1")).thenReturn(Single.just(true))
 
         mUsecase.getCurrentLoggedInUsername()
                 .test()

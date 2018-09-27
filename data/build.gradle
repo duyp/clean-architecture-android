@@ -72,8 +72,7 @@ dependencies {
 
     testImplementation junit
     testImplementation hamcrest
-    testImplementation mockito
-    testImplementation mockitoInline
+    testImplementation mockitoKotlin
     testImplementation roomTesting
 
     androidTestImplementation junit

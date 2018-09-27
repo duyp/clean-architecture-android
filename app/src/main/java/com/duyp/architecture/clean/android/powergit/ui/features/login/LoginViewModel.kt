@@ -18,22 +18,22 @@ class LoginViewModel @Inject constructor(
         addDisposable(intentSubject.subscribeOn(Schedulers.io())
                 .doOnNext {
                     if (CommonUtil.isEmpty(it.username, it.password))
-                        setState { oldState ->
-                            oldState.copy(errorMessage = Event("Please input username and password"))
+                        setState {
+                            copy(errorMessage = Event("Please input username and password"))
                         }
                 }
                 .filter { !CommonUtil.isEmpty(it.username, it.password) }
                 .switchMapCompletable { intent ->
                     mLoginUser.login(intent.username!!, intent.password!!)
                             .doOnSubscribe {
-                                setState { oldState -> oldState.copy(isLoading = true) }
+                                setState { copy(isLoading = true) }
                             }
                             .doOnError { throwable ->
                                 setState {
-                                    it.copy(isLoading = false, errorMessage = Event(throwable.message ?: ""))
+                                    copy(isLoading = false, errorMessage = Event(throwable.message ?: ""))
                                 }
                             }
-                            .doOnComplete { setState { it.copy(loginSuccess = Event(Unit)) } }
+                            .doOnComplete { setState { copy(loginSuccess = Event(Unit)) } }
                             .onErrorComplete()
                 }
                 .onErrorComplete()

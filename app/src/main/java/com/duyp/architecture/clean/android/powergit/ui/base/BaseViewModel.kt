@@ -49,7 +49,7 @@ abstract class BaseViewModel<S, I> : ViewModel() {
      *
      * @param stateFunc provide new state by applying current state
      */
-    protected fun setState(stateFunc: (S) -> S) {
+    protected fun setState(stateFunc: S.() -> S) {
         state.postValueIfNew(stateFunc.invoke(state.value ?: initState()))
     }
 

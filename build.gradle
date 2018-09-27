@@ -56,6 +56,7 @@ ext {
     junitParamsVersion = '1.1.1'
     hamcrestVersion = '1.3'
     mockitoVersion = '2.8.9'
+    mockitoKotlinVersion = '2.0.0-RC1'
     powerMockVersion = '1.7.3'
     conditionWatcherVersion = '0.2'
     coreTestingVersion = '2.0.0'
@@ -89,5 +90,8 @@ ext {
     hamcrest = "org.hamcrest:hamcrest-library:$hamcrestVersion"
     mockito = "org.mockito:mockito-core:$mockitoVersion"
     mockitoInline = "org.mockito:mockito-inline:$mockitoVersion"
+    mockitoKotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockitoKotlinVersion"
+    powerMock = "org.powermock:powermock-api-mockito2:$powerMockVersion"
+    powerMockJUnit = "org.powermock:powermock-module-junit4:$powerMockVersion"
     coreTesting = "android.arch.core:core-testing:$archVersion"
 }

@@ -2,11 +2,14 @@ package com.duyp.architecture.clean.android.powergit.domain.usecases
 
 import com.duyp.architecture.clean.android.powergit.domain.repositories.AuthenticationRepository
 import com.duyp.architecture.clean.android.powergit.domain.repositories.UserRepository
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Maybe
 import org.junit.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.Mock
-import org.mockito.Mockito.*
 
 
 class GetAuthenticationTest : UseCaseTest<GetAuthentication>() {
@@ -20,7 +23,7 @@ class GetAuthenticationTest : UseCaseTest<GetAuthentication>() {
     }
 
     @Test fun getAuthentication_noCurrentUser() {
-        `when`(mAuthenticationRepository.getCurrentUsername()).thenReturn(null)
+        whenever(mAuthenticationRepository.getCurrentUsername()).thenReturn(null)
 
         mUsecase.getCurrentUserAuthentication()
                 .test()
@@ -31,8 +34,8 @@ class GetAuthenticationTest : UseCaseTest<GetAuthentication>() {
     }
 
     @Test fun getAuthentication_hasCurrentUser_hasToken() {
-        `when`(mAuthenticationRepository.getCurrentUsername()).thenReturn("user 1")
-        `when`(mAuthenticationRepository.getAuthentication(anyString())).thenReturn(Maybe.just("token"))
+        whenever(mAuthenticationRepository.getCurrentUsername()).thenReturn("user 1")
+        whenever(mAuthenticationRepository.getAuthentication(any())).thenReturn(Maybe.just("token"))
 
         mUsecase.getCurrentUserAuthentication()
                 .test()
@@ -42,8 +45,8 @@ class GetAuthenticationTest : UseCaseTest<GetAuthentication>() {
     }
 
     @Test fun getAuthentication_hasCurrentUser_noToken() {
-        `when`(mAuthenticationRepository.getCurrentUsername()).thenReturn("user 2")
-        `when`(mAuthenticationRepository.getAuthentication(anyString())).thenReturn(Maybe.empty())
+        whenever(mAuthenticationRepository.getCurrentUsername()).thenReturn("user 2")
+        whenever(mAuthenticationRepository.getAuthentication(any())).thenReturn(Maybe.empty())
 
         mUsecase.getCurrentUserAuthentication()
                 .test()
@@ -53,8 +56,8 @@ class GetAuthenticationTest : UseCaseTest<GetAuthentication>() {
     }
 
     @Test fun getAuthentication_hasCurrentUser_tokenError_shouldCompleteWithoutValue() {
-        `when`(mAuthenticationRepository.getCurrentUsername()).thenReturn("user 3")
-        `when`(mAuthenticationRepository.getAuthentication(anyString())).thenReturn(Maybe.error(Exception("error")))
+        whenever(mAuthenticationRepository.getCurrentUsername()).thenReturn("user 3")
+        whenever(mAuthenticationRepository.getAuthentication(any())).thenReturn(Maybe.error(Exception("error")))
 
         mUsecase.getCurrentUserAuthentication()
                 .test()

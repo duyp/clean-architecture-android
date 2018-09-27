@@ -1,11 +1,11 @@
 package com.duyp.architecture.clean.android.powergit.domain.usecases
 
 import com.duyp.architecture.clean.android.powergit.domain.repositories.AuthenticationRepository
+import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Maybe
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
 
 class CheckUserTest : UseCaseTest<CheckUser>() {
 
@@ -18,7 +18,7 @@ class CheckUserTest : UseCaseTest<CheckUser>() {
 
     @Test
     fun checkUser_hasUserAuthentication() {
-        `when`(mAuthenticationRepository.getAuthentication(anyString())).thenReturn(Maybe.just("token"))
+        whenever(mAuthenticationRepository.getAuthentication(anyString())).thenReturn(Maybe.just("token"))
 
         mUsecase.isLoggedIn("user")
                 .test()
@@ -27,7 +27,7 @@ class CheckUserTest : UseCaseTest<CheckUser>() {
 
     @Test
     fun checkUser_noUserAuthentication() {
-        `when`(mAuthenticationRepository.getAuthentication(anyString())).thenReturn(Maybe.empty())
+        whenever(mAuthenticationRepository.getAuthentication(anyString())).thenReturn(Maybe.empty())
 
         mUsecase.isLoggedIn("user1")
                 .test()
@@ -36,7 +36,7 @@ class CheckUserTest : UseCaseTest<CheckUser>() {
 
     @Test
     fun checkUser_errorShouldReturnFalse() {
-        `when`(mAuthenticationRepository.getAuthentication(anyString())).thenReturn(Maybe.error(Exception("Error")))
+        whenever(mAuthenticationRepository.getAuthentication(anyString())).thenReturn(Maybe.error(Exception("Error")))
 
         mUsecase.isLoggedIn("user2")
                 .test()

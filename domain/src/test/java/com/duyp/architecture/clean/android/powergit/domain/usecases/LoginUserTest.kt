@@ -3,11 +3,14 @@ package com.duyp.architecture.clean.android.powergit.domain.usecases
 import com.duyp.architecture.clean.android.powergit.domain.entities.User
 import com.duyp.architecture.clean.android.powergit.domain.repositories.AuthenticationRepository
 import com.duyp.architecture.clean.android.powergit.domain.repositories.UserRepository
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
 import org.junit.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.Mock
-import org.mockito.Mockito.*
 
 class LoginUserTest : UseCaseTest<LoginUser> () {
 
@@ -20,7 +23,7 @@ class LoginUserTest : UseCaseTest<LoginUser> () {
     }
 
     @Test fun login_success() {
-        `when`(mUserRepository.login(anyString(), anyString())).thenAnswer {
+        whenever(mUserRepository.login(any(), any())).thenAnswer {
             Single.just(User(1, it.getArgument(0)))
         }
 
@@ -33,7 +36,7 @@ class LoginUserTest : UseCaseTest<LoginUser> () {
     }
 
     @Test fun login_error() {
-        `when`(mUserRepository.login(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
+        whenever(mUserRepository.login(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
                 .thenReturn(Single.error(Exception("error")))
 
         mUsecase.login("duyp", "abcd")

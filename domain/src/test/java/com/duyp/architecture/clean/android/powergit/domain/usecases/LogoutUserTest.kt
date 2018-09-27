@@ -2,11 +2,13 @@ package com.duyp.architecture.clean.android.powergit.domain.usecases
 
 import com.duyp.architecture.clean.android.powergit.domain.repositories.AuthenticationRepository
 import com.duyp.architecture.clean.android.powergit.domain.repositories.UserRepository
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Completable
 import org.junit.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.Mock
-import org.mockito.Mockito.*
 
 class LogoutUserTest : UseCaseTest<LogoutUser>() {
 
@@ -19,7 +21,7 @@ class LogoutUserTest : UseCaseTest<LogoutUser>() {
     }
 
     @Test fun logout_noCurrentUser_shouldComplete() {
-        `when`(mAuthenticationRepository.getCurrentUsername()).thenReturn(null)
+        whenever(mAuthenticationRepository.getCurrentUsername()).thenReturn(null)
 
         mUsecase.logoutCurrentUser()
                 .test()
@@ -30,8 +32,8 @@ class LogoutUserTest : UseCaseTest<LogoutUser>() {
     }
 
     @Test fun logout_hasCurrentUser_shouldDoLogout_success() {
-        `when`(mAuthenticationRepository.getCurrentUsername()).thenReturn("username")
-        `when`(mUserRepository.logout(ArgumentMatchers.anyString())).thenReturn(Completable.complete())
+        whenever(mAuthenticationRepository.getCurrentUsername()).thenReturn("username")
+        whenever(mUserRepository.logout(ArgumentMatchers.anyString())).thenReturn(Completable.complete())
 
         mUsecase.logoutCurrentUser()
                 .test()
@@ -42,8 +44,8 @@ class LogoutUserTest : UseCaseTest<LogoutUser>() {
     }
 
     @Test fun logout_hasCurrentUser_shouldDoLogout_error_shouldCompleteWithoutThrow() {
-        `when`(mAuthenticationRepository.getCurrentUsername()).thenReturn("username")
-        `when`(mUserRepository.logout(ArgumentMatchers.anyString())).thenReturn(Completable.error(Exception()))
+        whenever(mAuthenticationRepository.getCurrentUsername()).thenReturn("username")
+        whenever(mUserRepository.logout(ArgumentMatchers.anyString())).thenReturn(Completable.error(Exception()))
 
         mUsecase.logoutCurrentUser()
                 .test()
