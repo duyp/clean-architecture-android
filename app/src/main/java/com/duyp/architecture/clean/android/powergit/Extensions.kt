@@ -1,4 +1,5 @@
 package com.duyp.architecture.clean.android.powergit
+import android.app.Activity
 import android.app.FragmentManager
 import android.app.FragmentTransaction
 import android.arch.lifecycle.*
@@ -16,6 +17,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import timber.log.Timber
 
 /**
@@ -186,5 +188,21 @@ fun exceptionInDebug(t: Throwable) {
         throw t
     } else {
         Timber.e(t)
+    }
+}
+
+fun Activity.showToastMessage(messageEvent: Event<String>?) {
+    messageEvent?.let { event ->
+        event.getContentIfNotHandled()?.let { showToastMessage(it) }
+    }
+}
+
+fun Activity.showToastMessage(message: String) {
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+}
+
+fun Fragment.showToastMessage(message: String) {
+    this.context?.let {
+        Toast.makeText(it, message, Toast.LENGTH_SHORT).show()
     }
 }

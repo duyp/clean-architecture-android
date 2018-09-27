@@ -26,10 +26,6 @@ android {
         }
     }
 
-    dataBinding {
-        enabled = true
-    }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -65,13 +61,17 @@ dependencies {
     implementation "com.android.support:customtabs:$supportVersion"
 
     implementation('com.mikepenz:aboutlibraries:5.9.7@aar') { transitive = true }
-//    implementation 'com.github.daniel-stoneuk:material-about-library:2.3.0'
+    // implementation 'com.github.daniel-stoneuk:material-about-library:2.3.0'
 
     implementation 'com.mikhaellopez:circularimageview:3.2.0'
 
-    implementation "android.arch.lifecycle:extensions:$rootProject.lifecycleVersion"
-    implementation "android.arch.lifecycle:livedata:$rootProject.lifecycleVersion"
-    implementation "android.arch.lifecycle:viewmodel:$rootProject.lifecycleVersion"
+    implementation "android.arch.lifecycle:extensions:$rootProject.archVersion"
+    implementation "android.arch.lifecycle:livedata:$rootProject.archVersion"
+    implementation "android.arch.lifecycle:viewmodel:$rootProject.archVersion"
+
+    // RX
+    implementation rootProject.rxJava
+    implementation rootProject.rxAndroid
 
     // dagger
     implementation rootProject.daggerAndroid
@@ -81,5 +81,9 @@ dependencies {
 
     api "com.jakewharton.timber:timber:$rootProject.timberVersion"
 
-    testImplementation rootProject.junit
+    testImplementation junit
+    testImplementation hamcrest
+    testImplementation mockito
+    testImplementation mockitoInline
+    testImplementation coreTesting
 }

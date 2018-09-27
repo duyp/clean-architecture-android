@@ -1,34 +1,38 @@
 package com.duyp.architecture.clean.android.powergit.ui.base
 
-import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
-import android.databinding.DataBindingUtil
-import android.databinding.ViewDataBinding
 import android.os.Bundle
-import dagger.android.support.DaggerAppCompatActivity
+import io.reactivex.subjects.PublishSubject
 import java.lang.reflect.ParameterizedType
 import javax.inject.Inject
 
-abstract class ViewModelActivity<B : ViewDataBinding, VM : ViewModel> : DaggerAppCompatActivity() {
+/**
+ * Base activity with View Model
+ */
+abstract class ViewModelActivity<State, Intent, VM : BaseViewModel<State, Intent>> : BaseActivity() {
 
     @Inject
     internal lateinit var mViewModelFactory: ViewModelProvider.Factory
 
-    protected lateinit var mViewModel : VM
+    private val mIntent : PublishSubject<Intent> = PublishSubject.create()
 
-    protected lateinit var mBinding : B
+    protected lateinit var mViewModel: VM
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(getLayoutResource())
 
-        //init data binding
-        mBinding = DataBindingUtil.setContentView(this, getLayoutResource())
-
-        val viewModelClass = (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[1] as Class<VM>
+        // getting view model class (3rd position is ViewModel type)
+        val viewModelClass = (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[2] as Class<VM>
 
         mViewModel = ViewModelProviders.of(this, mViewModelFactory).get(viewModelClass)
+        mViewModel.processIntents(mIntent)
     }
 
-    abstract fun getLayoutResource() : Int
+    abstract fun getLayoutResource(): Int
+
+    protected fun intent(intent: Intent) {
+        mIntent.onNext(intent)
+    }
 }

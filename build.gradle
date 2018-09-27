@@ -45,7 +45,7 @@ ext {
     retrofitVersion = '2.4.0'
     daggerVersion = '2.16'
     roomVersion = '1.1.1'
-    lifecycleVersion = '1.1.1'
+    archVersion = '1.1.1'
     timberVersion = '4.7.0'
 
     // test dependencies
@@ -89,4 +89,5 @@ ext {
     hamcrest = "org.hamcrest:hamcrest-library:$hamcrestVersion"
     mockito = "org.mockito:mockito-core:$mockitoVersion"
     mockitoInline = "org.mockito:mockito-inline:$mockitoVersion"
+    coreTesting = "android.arch.core:core-testing:$archVersion"
 }

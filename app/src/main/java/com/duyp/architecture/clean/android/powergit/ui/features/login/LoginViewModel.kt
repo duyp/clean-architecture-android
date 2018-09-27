@@ -1,48 +1,53 @@
 package com.duyp.architecture.clean.android.powergit.ui.features.login
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
 import com.duyp.architecture.clean.android.powergit.Event
 import com.duyp.architecture.clean.android.powergit.domain.usecases.LoginUser
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
+import com.duyp.architecture.clean.android.powergit.domain.utils.CommonUtil
+import com.duyp.architecture.clean.android.powergit.ui.base.BaseViewModel
+import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class LoginViewModel @Inject constructor(private val mLoginUser: LoginUser) : ViewModel() {
+class LoginViewModel @Inject constructor(
+        private val mLoginUser: LoginUser
+) : BaseViewModel<LoginViewState, LoginIntent>() {
 
-    private val mCompositeDisposable = CompositeDisposable()
+    override fun initState() = LoginViewState()
 
-    var isLoading = false
-
-    val errorMessage: MutableLiveData<Event<String>> = MutableLiveData()
-
-    val loginSuccess: MutableLiveData<Event<Boolean>> = MutableLiveData()
-
-    fun login(username: String, password: String) {
-        if (username.isEmpty() || password.isEmpty()) {
-            errorMessage.value = Event("Please input username and password")
-        } else {
-            addDisposable(mLoginUser.login(username, password)
-                    .subscribeOn(Schedulers.io())
-                    .doOnSubscribe { isLoading = true }
-                    .subscribe({
-                        loginSuccess.postValue(Event(true))
-                    }, { throwable ->
-                        isLoading = false
-                        throwable.message?.let { errorMessage.postValue(Event(it)) }
-                    })
-            )
-        }
-    }
-
-    internal fun addDisposable(disposable: Disposable) {
-        mCompositeDisposable.add(disposable)
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        mCompositeDisposable.clear()
+    override fun composeIntent(intentSubject: Observable<LoginIntent>) {
+        addDisposable(intentSubject.subscribeOn(Schedulers.io())
+                .doOnNext {
+                    if (CommonUtil.isEmpty(it.username, it.password))
+                        setState { oldState ->
+                            oldState.copy(errorMessage = Event("Please input username and password"))
+                        }
+                }
+                .filter { !CommonUtil.isEmpty(it.username, it.password) }
+                .switchMapCompletable { intent ->
+                    mLoginUser.login(intent.username!!, intent.password!!)
+                            .doOnSubscribe {
+                                setState { oldState -> oldState.copy(isLoading = true) }
+                            }
+                            .doOnError { throwable ->
+                                setState {
+                                    it.copy(isLoading = false, errorMessage = Event(throwable.message ?: ""))
+                                }
+                            }
+                            .doOnComplete { setState { it.copy(loginSuccess = Event(Unit)) } }
+                            .onErrorComplete()
+                }
+                .onErrorComplete()
+                .subscribe())
     }
 }
 
+data class LoginViewState(
+        val isLoading: Boolean = false,
+        val errorMessage: Event<String>? = null,
+        val loginSuccess: Event<Unit>? = null
+)
+
+data class LoginIntent(
+        val username: String? = null,
+        val password: String? = null
+)
