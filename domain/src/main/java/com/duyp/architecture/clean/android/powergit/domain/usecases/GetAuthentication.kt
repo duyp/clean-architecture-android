@@ -15,8 +15,5 @@ class GetAuthentication @Inject constructor(
      */
     fun getCurrentUserAuthentication(): Maybe<String> =
             Maybe.fromCallable { mAuthenticationRepository.getCurrentUsername() }
-                    .flatMap {
-                        mAuthenticationRepository.getAuthentication(it)
-                                .onErrorComplete()
-                    }
+                    .map { mAuthenticationRepository.getAuthentication(it) }
 }

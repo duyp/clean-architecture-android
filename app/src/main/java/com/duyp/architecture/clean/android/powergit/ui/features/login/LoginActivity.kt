@@ -16,7 +16,7 @@ class LoginActivity : ViewModelActivity<LoginViewState, LoginIntent, LoginViewMo
         super.onCreate(savedInstanceState)
 
         btnLogin.setOnClickListener { login() }
-        edtPassword.setOnEditorActionListener { v, actionId, event ->
+        edtPassword.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 login()
                 true

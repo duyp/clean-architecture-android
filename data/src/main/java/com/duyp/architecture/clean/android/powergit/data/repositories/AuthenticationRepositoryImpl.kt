@@ -5,6 +5,7 @@ import com.duyp.architecture.clean.android.powergit.data.SharedPreferenceConstan
 import com.duyp.architecture.clean.android.powergit.data.utils.AccountManagerHelper
 import com.duyp.architecture.clean.android.powergit.domain.repositories.AuthenticationRepository
 import io.reactivex.Maybe
+import io.reactivex.Single
 import javax.inject.Inject
 
 class AuthenticationRepositoryImpl @Inject constructor(
@@ -12,8 +13,16 @@ class AuthenticationRepositoryImpl @Inject constructor(
         private val mSharedPreferences: SharedPreferences
 ) : AuthenticationRepository {
 
-    override fun getAuthentication(username: String): Maybe<String> {
-        return Maybe.fromCallable { mAccountManagerHelper.getAuth(username) }
+    override fun getAllAccounts(): Single<List<String>> {
+        return Maybe.fromCallable { mAccountManagerHelper.getAllAccounts() }
+                .map { it.toList() }
+                .flattenAsObservable { it }
+                .map { it.name }
+                .toList()
+    }
+
+    override fun getAuthentication(username: String): String? {
+        return mAccountManagerHelper.getAuth(username)
     }
 
     override fun addOrUpdateUser(username: String, password: String, auth: String) {

@@ -14,9 +14,7 @@ class CheckUser @Inject constructor(private val mAuthenticationRepository: Authe
      * @return Single emitting true if given user is logged in, otherwise false
      */
     fun isLoggedIn(username: String): Single<Boolean> =
-            mAuthenticationRepository.getAuthentication(username)
-                    .toSingle("")
-                    .map { !CommonUtil.isEmpty(it) }
+            Single.fromCallable { !CommonUtil.isEmpty(mAuthenticationRepository.getAuthentication(username)) }
                     .onErrorReturnItem(false)
 
     fun hasLoggedInUser(): Single<Boolean> =

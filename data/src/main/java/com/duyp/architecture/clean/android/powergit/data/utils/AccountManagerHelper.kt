@@ -14,6 +14,11 @@ class AccountManagerHelper @Inject internal constructor(
         @AccountType private val mAccountType: String) {
 
     /**
+     * Get all accounts in [AccountManager] with PowerGit account type
+     */
+    fun getAllAccounts() = mAccountManager.getAccountsByType(mAccountType)
+
+    /**
      * Get password for existing account in android account manager with given account name
      *
      * @param name account name
