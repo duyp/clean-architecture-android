@@ -16,4 +16,6 @@ dependencies {
     testImplementation rootProject.junit
     testImplementation rootProject.hamcrest
     testImplementation mockitoKotlin
+    testImplementation mockito
+    testImplementation mockitoInline
 }

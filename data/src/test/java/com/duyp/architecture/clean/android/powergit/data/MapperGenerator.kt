@@ -1,7 +1,5 @@
 package com.duyp.architecture.clean.android.powergit.data
 
-import com.duyp.architecture.clean.android.powergit.data.entities.user.UserLocalData
-import org.junit.Assert
 import org.junit.Test
 import java.util.*
 
@@ -9,8 +7,8 @@ class MapperGenerator {
 
     @Test
     fun generateMappers() {
-        Assert.assertEquals("abc", listObjectFields(UserLocalData::class.java, "\n",
-                "localData.%s = e.%s"))
+//        Assert.assertEquals("abc", listObjectFields(UserLocalData::class.java, "\n",
+//                "localData.%s = e.%s"))
     }
 
     fun listObjectFields(classA: Class<*>, separator: String, format: String): String {

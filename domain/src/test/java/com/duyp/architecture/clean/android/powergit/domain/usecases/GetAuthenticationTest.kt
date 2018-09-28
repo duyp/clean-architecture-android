@@ -1,7 +1,6 @@
 package com.duyp.architecture.clean.android.powergit.domain.usecases
 
 import com.duyp.architecture.clean.android.powergit.domain.repositories.AuthenticationRepository
-import com.duyp.architecture.clean.android.powergit.domain.repositories.UserRepository
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
@@ -15,8 +14,6 @@ import org.mockito.Mock
 class GetAuthenticationTest : UseCaseTest<GetAuthentication>() {
 
     @Mock private lateinit var mAuthenticationRepository: AuthenticationRepository
-
-    @Mock private lateinit var mUserRepository: UserRepository
 
     override fun createUseCase(): GetAuthentication {
         return GetAuthentication(mAuthenticationRepository)

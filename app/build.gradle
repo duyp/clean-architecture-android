@@ -84,5 +84,7 @@ dependencies {
     testImplementation junit
     testImplementation hamcrest
     testImplementation mockitoKotlin
+    testImplementation mockito
+    testImplementation mockitoInline
     testImplementation coreTesting
 }

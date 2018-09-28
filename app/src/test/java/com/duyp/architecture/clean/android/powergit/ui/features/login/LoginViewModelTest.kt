@@ -1,6 +1,7 @@
 package com.duyp.architecture.clean.android.powergit.ui.features.login
 
 import ViewModelTest
+import com.duyp.architecture.clean.android.powergit.domain.usecases.GetUser
 import com.duyp.architecture.clean.android.powergit.domain.usecases.LoginUser
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.verify
@@ -14,8 +15,11 @@ class LoginViewModelTest : ViewModelTest<LoginViewState, LoginIntent, LoginViewM
     @Mock
     internal lateinit var mLoginUser: LoginUser
 
+    @Mock
+    internal lateinit var mGetUser: GetUser
+
     override fun createViewModel(): LoginViewModel {
-        return LoginViewModel(mLoginUser)
+        return LoginViewModel(mLoginUser, mGetUser)
     }
 
     override fun setup() {
