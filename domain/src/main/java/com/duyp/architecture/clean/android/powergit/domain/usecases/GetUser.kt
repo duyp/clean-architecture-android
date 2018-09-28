@@ -1,12 +1,14 @@
 package com.duyp.architecture.clean.android.powergit.domain.usecases
 
 import com.duyp.architecture.clean.android.powergit.domain.repositories.AuthenticationRepository
+import com.duyp.architecture.clean.android.powergit.domain.repositories.UserRepository
 import io.reactivex.Maybe
 import javax.inject.Inject
 
 class GetUser @Inject constructor(
         private val mAuthenticationRepository: AuthenticationRepository,
-        private val mCheckUser: CheckUser
+        private val mCheckUser: CheckUser,
+        private val mUserRepository: UserRepository
 ) {
 
     /**
@@ -21,4 +23,9 @@ class GetUser @Inject constructor(
                                 .toMaybe()
                                 .flatMap { if (it) Maybe.just(username) else Maybe.empty() }
                     }
+
+    /**
+     * @return last logged in username
+     */
+    fun getLastLoggedInUsername() = mUserRepository.getLastLoggedInUsername()
 }

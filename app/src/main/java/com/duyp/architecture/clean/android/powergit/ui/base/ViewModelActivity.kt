@@ -8,7 +8,11 @@ import java.lang.reflect.ParameterizedType
 import javax.inject.Inject
 
 /**
- * Base activity with View Model
+ * Base activity with View Model which is provided by [ViewModelProvider] with injected [ViewModelProvider.Factory]
+ *
+ * @param [State] type of view state
+ * @param [Intent] type of view intent
+ * @param [VM] type of view model
  */
 abstract class ViewModelActivity<State, Intent, VM : BaseViewModel<State, Intent>> : BaseActivity() {
 
@@ -32,7 +36,7 @@ abstract class ViewModelActivity<State, Intent, VM : BaseViewModel<State, Intent
 
     abstract fun getLayoutResource(): Int
 
-    protected fun intent(intent: Intent) {
+    protected fun onIntent(intent: Intent) {
         mIntent.onNext(intent)
     }
 }

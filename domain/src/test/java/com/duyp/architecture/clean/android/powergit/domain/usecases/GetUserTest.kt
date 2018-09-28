@@ -1,6 +1,7 @@
 package com.duyp.architecture.clean.android.powergit.domain.usecases
 
 import com.duyp.architecture.clean.android.powergit.domain.repositories.AuthenticationRepository
+import com.duyp.architecture.clean.android.powergit.domain.repositories.UserRepository
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
 import org.junit.Test
@@ -12,8 +13,10 @@ class GetUserTest: UseCaseTest<GetUser>() {
 
     @Mock private lateinit var mCheckUser: CheckUser
 
+    @Mock private lateinit var mUserRepository: UserRepository
+
     override fun createUseCase(): GetUser {
-        return GetUser(mAuthenticationRepository, mCheckUser)
+        return GetUser(mAuthenticationRepository, mCheckUser, mUserRepository)
     }
 
     @Test fun getCurrentLoggedInUsername() {

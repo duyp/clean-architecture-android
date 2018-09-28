@@ -19,7 +19,6 @@ interface AuthenticationRepository {
      */
     fun logout(username: String)
 
-
     /**
      * Get current user name
      *

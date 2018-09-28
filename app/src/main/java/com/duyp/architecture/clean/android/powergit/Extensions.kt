@@ -18,6 +18,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.duyp.architecture.clean.android.powergit.ui.base.BaseViewModel
 import timber.log.Timber
 
 /**
@@ -115,8 +116,10 @@ fun Parcel.writeBoolean(value: Boolean) = writeInt(if (value) 1 else 0)
 fun Parcel.readBoolean() = readInt() != 0
 
 // endregion
-// region LiveData
 
+// =====================================================================================================================
+// region LiveData
+// =====================================================================================================================
 /** Uses `Transformations.map` on a LiveData */
 fun <X, Y> LiveData<X>.map(body: (X) -> Y): LiveData<Y> {
     return Transformations.map(this, body)
@@ -134,7 +137,17 @@ fun <T> MutableLiveData<T>.setValueIfNew(newValue: T) {
 fun <T> MutableLiveData<T>.postValueIfNew(newValue: T) {
     if (this.value != newValue) postValue(newValue)
 }
+
+/**
+ * Observes only non-null content
+ */
+fun <T> LiveData<T>.observeNonNull(owner: LifecycleOwner, nonNullContent: T.() -> Unit) {
+    this.observe(owner, Observer {
+        it?.let(nonNullContent)
+    })
+}
 // endregion
+// =====================================================================================================================
 
 // region ZonedDateTime
 //fun ZonedDateTime.toEpochMilli() = this.toInstant().toEpochMilli()
@@ -191,12 +204,6 @@ fun exceptionInDebug(t: Throwable) {
     }
 }
 
-fun Activity.showToastMessage(messageEvent: Event<String>?) {
-    messageEvent?.let { event ->
-        event.getContentIfNotHandled()?.let { showToastMessage(it) }
-    }
-}
-
 fun Activity.showToastMessage(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
@@ -206,3 +213,18 @@ fun Fragment.showToastMessage(message: String) {
         Toast.makeText(it, message, Toast.LENGTH_SHORT).show()
     }
 }
+
+/**
+ * Observes state of a [BaseViewModel] in a [LifecycleOwner] only if the emitted state is not null
+ */
+fun <S, I, VM : BaseViewModel<S, I>> LifecycleOwner.withState(vm: VM, state: S.() -> Unit) {
+    vm.state.observeNonNull(this, state)
+}
+
+/**
+ * Get an [Event] value only if the event is NOT NULL and its content hasn't been handled yet
+ */
+fun <T> event(event: Event<T>?, onEventUnhandledContent: T.() -> Unit) {
+    event?.get(onEventUnhandledContent)
+}
+
