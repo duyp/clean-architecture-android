@@ -9,6 +9,7 @@ import com.duyp.architecture.clean.android.powergit.domain.repositories.Authenti
 import com.duyp.architecture.clean.android.powergit.domain.repositories.UserRepository
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Single
+import junit.framework.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -71,17 +72,41 @@ class UserRepositoryImplTest {
 
     @Test
     fun logout() {
+        // just forward call to authentication repository
+        mUserRepository.logout("user")
+                .test()
+                .assertComplete()
+        verify(mAuthenticationRepository).logout("user")
     }
 
     @Test
     fun getUser() {
+
     }
 
     @Test
     fun getLastLoggedInUsername() {
+        whenever(mSharedPreferences.getString(any(), anyOrNull())).thenReturn("user 1")
+        Assert.assertEquals("user 1", mUserRepository.getLastLoggedInUsername())
     }
 
     @Test
     fun setLastLoggedInUsername() {
+        val editor = mock<SharedPreferences.Editor>()
+        whenever(mSharedPreferences.edit()).thenReturn(editor)
+        whenever(editor.putString(any(), anyOrNull())).thenReturn(editor)
+        mUserRepository.setLastLoggedInUsername("user 2")
+        verify(editor).putString(any(), eq("user 2"))
+        verify(editor).apply()
+    }
+
+    @Test
+    fun setLastLoggedInUsername_nullShouldRemove() {
+        val editor = mock<SharedPreferences.Editor>()
+        whenever(mSharedPreferences.edit()).thenReturn(editor)
+        whenever(editor.remove(any())).thenReturn(editor)
+        mUserRepository.setLastLoggedInUsername(null)
+        verify(editor).remove(any())
+        verify(editor).apply()
     }
 }

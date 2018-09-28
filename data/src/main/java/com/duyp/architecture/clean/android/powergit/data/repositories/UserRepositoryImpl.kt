@@ -39,7 +39,7 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override fun logout(username: String): Completable {
-        return Completable.create { mAuthenticationRepository.logout(username) }
+        return Completable.fromAction { mAuthenticationRepository.logout(username) }
     }
 
     override fun getUser(username: String): Flowable<User> {

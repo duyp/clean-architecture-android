@@ -16,10 +16,17 @@
         android:name=".PowerGitApp">
 
         <activity android:name=".ui.features.login.LoginActivity"
-            android:theme="@style/LoginTheme">
+            android:theme="@style/LoginTheme" />
+
+        <activity android:name=".ui.features.splash.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW">
+                    <!--Todo: github deep link-->
+                </action>
             </intent-filter>
         </activity>
 

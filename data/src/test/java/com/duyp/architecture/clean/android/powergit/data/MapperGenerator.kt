@@ -3,6 +3,10 @@ package com.duyp.architecture.clean.android.powergit.data
 import org.junit.Test
 import java.util.*
 
+/**
+ * Use this test to generate mapper codes,
+ * eg [com.duyp.architecture.clean.android.powergit.data.entities.user.UserApiToLocalMapper]
+ */
 class MapperGenerator {
 
     @Test

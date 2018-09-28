@@ -25,7 +25,8 @@ abstract class ViewModelActivity<State, Intent, VM : BaseViewModel<State, Intent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(getLayoutResource())
+        val i = getLayoutResource()
+        if (i != NO_LAYOUT) setContentView(i)
 
         // getting view model class (3rd position is ViewModel type)
         val viewModelClass = (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[2] as Class<VM>
@@ -38,5 +39,9 @@ abstract class ViewModelActivity<State, Intent, VM : BaseViewModel<State, Intent
 
     protected fun onIntent(intent: Intent) {
         mIntent.onNext(intent)
+    }
+
+    companion object {
+        const val NO_LAYOUT = 0
     }
 }
