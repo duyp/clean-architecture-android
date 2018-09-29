@@ -29,4 +29,9 @@
     <dimen name="avatar_size_large">@dimen/xxx_large</dimen>
     <dimen name="avatar_size_large_extra">90dp</dimen>
 
+    <dimen name="fab_size">55dp</dimen>
+    <dimen name="fab_spacing">86dp</dimen> <!-- keyline + fab margin -->
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="divider_height">@dimen/one</dimen>
+
 </resources>

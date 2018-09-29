@@ -5,7 +5,6 @@ import com.duyp.architecture.clean.android.powergit.event
 import com.duyp.architecture.clean.android.powergit.ui.base.ViewModelActivity
 import com.duyp.architecture.clean.android.powergit.ui.features.login.LoginActivity
 import com.duyp.architecture.clean.android.powergit.ui.features.main.MainActivity
-import com.duyp.architecture.clean.android.powergit.withState
 
 class SplashActivity: ViewModelActivity<SplashState, Any, SplashViewModel>() {
 
@@ -16,7 +15,7 @@ class SplashActivity: ViewModelActivity<SplashState, Any, SplashViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        withState(mViewModel) {
+        withState {
             event(navigation) {
                 when (this) {
                     Navigation.MAIN -> MainActivity.start(this@SplashActivity)

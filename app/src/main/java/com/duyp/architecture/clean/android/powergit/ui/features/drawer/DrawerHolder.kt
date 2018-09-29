@@ -89,11 +89,11 @@ class DrawerHolder @Inject constructor(
 
     private fun updateUser(user: User?) {
         if (user != null) {
-            mNavHeader.findViewById<TextView>(R.id.navFullName).text= user.displayName
-            mNavHeader.findViewById<TextView>(R.id.navUsername).text= user.login
+            mNavHeader.findViewById<TextView>(R.id.navFullName).text = user.displayName
+            mNavHeader.findViewById<TextView>(R.id.navUsername).text = user.login
         } else {
-            mNavHeader.findViewById<TextView>(R.id.navFullName).text= mActivity.getString(R.string.please_login)
-            mNavHeader.findViewById<TextView>(R.id.navUsername).text= ""
+            mNavHeader.findViewById<TextView>(R.id.navFullName).text = mActivity.getString(R.string.please_login)
+            mNavHeader.findViewById<TextView>(R.id.navUsername).text = ""
         }
         mNavHeader.findViewById<AvatarLayout>(R.id.navAvatarLayout).bindData(mAvatarLoader, user)
     }
