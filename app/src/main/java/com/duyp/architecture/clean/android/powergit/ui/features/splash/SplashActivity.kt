@@ -1,6 +1,5 @@
 package com.duyp.architecture.clean.android.powergit.ui.features.splash
 
-import android.content.Intent
 import android.os.Bundle
 import com.duyp.architecture.clean.android.powergit.event
 import com.duyp.architecture.clean.android.powergit.ui.base.ViewModelActivity
@@ -8,7 +7,7 @@ import com.duyp.architecture.clean.android.powergit.ui.features.login.LoginActiv
 import com.duyp.architecture.clean.android.powergit.ui.features.main.MainActivity
 import com.duyp.architecture.clean.android.powergit.withState
 
-class SplashActivity: ViewModelActivity<SplashState, SplashIntent, SplashViewModel>() {
+class SplashActivity: ViewModelActivity<SplashState, Any, SplashViewModel>() {
 
     override fun getLayoutResource(): Int {
         return NO_LAYOUT
@@ -21,18 +20,10 @@ class SplashActivity: ViewModelActivity<SplashState, SplashIntent, SplashViewMod
             event(navigation) {
                 when (this) {
                     Navigation.MAIN -> MainActivity.start(this@SplashActivity)
-                    Navigation.LOGIN -> startLogin()
+                    Navigation.LOGIN -> LoginActivity.start(this@SplashActivity)
                 }
                 finish()
             }
         }
-
-        onIntent(SplashIntent())
-
     }
-
-    private fun startLogin() {
-        startActivity(Intent(this, LoginActivity::class.java))
-    }
-
 }
