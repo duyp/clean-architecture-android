@@ -2,6 +2,7 @@ package com.duyp.architecture.clean.android.powergit.domain.usecases
 
 import com.duyp.architecture.clean.android.powergit.domain.entities.User
 import com.duyp.architecture.clean.android.powergit.domain.repositories.AuthenticationRepository
+import com.duyp.architecture.clean.android.powergit.domain.repositories.SettingRepository
 import com.duyp.architecture.clean.android.powergit.domain.repositories.UserRepository
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.times
@@ -16,10 +17,10 @@ class LoginUserTest : UseCaseTest<LoginUser> () {
 
     @Mock private lateinit var mUserRepository: UserRepository
 
-    @Mock private lateinit var mAuthenticationRepository: AuthenticationRepository
+    @Mock private lateinit var mSettingRepository: SettingRepository
 
     override fun createUseCase(): LoginUser {
-        return LoginUser(mUserRepository, mAuthenticationRepository)
+        return LoginUser(mUserRepository, mSettingRepository)
     }
 
     @Test fun login_success() {
@@ -31,8 +32,8 @@ class LoginUserTest : UseCaseTest<LoginUser> () {
                 .test()
                 .assertComplete()
 
-        verify(mAuthenticationRepository).setCurrentUsername("username")
-        verify(mUserRepository).setLastLoggedInUsername("username")
+        verify(mSettingRepository).setCurrentUsername("username")
+        verify(mSettingRepository).setLastLoggedInUsername("username")
     }
 
     @Test fun login_error() {
@@ -42,7 +43,7 @@ class LoginUserTest : UseCaseTest<LoginUser> () {
         mUsecase.login("duyp", "abcd")
                 .test()
                 .assertErrorMessage("error")
-        verify(mAuthenticationRepository, times(0)).setCurrentUsername(ArgumentMatchers.anyString())
-        verify(mUserRepository, times(0)).setLastLoggedInUsername(ArgumentMatchers.anyString())
+        verify(mSettingRepository, times(0)).setCurrentUsername(ArgumentMatchers.anyString())
+        verify(mSettingRepository, times(0)).setLastLoggedInUsername(ArgumentMatchers.anyString())
     }
 }

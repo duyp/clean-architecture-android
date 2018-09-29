@@ -26,17 +26,4 @@ interface UserRepository {
      * @return Flowable emitting user entity whenever user's data changed
      */
     fun getUser(username: String) : Flowable<User>
-
-    /**
-     * Get last logged in username
-     *
-     * @return last logged in username, null if no user logged in yet
-     */
-    fun getLastLoggedInUsername() : String?
-
-    /**
-     * Set last logged in username
-     *
-     */
-    fun setLastLoggedInUsername(username: String?)
 }

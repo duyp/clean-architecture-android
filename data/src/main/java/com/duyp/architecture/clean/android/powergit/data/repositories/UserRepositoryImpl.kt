@@ -1,7 +1,5 @@
 package com.duyp.architecture.clean.android.powergit.data.repositories
 
-import android.content.SharedPreferences
-import com.duyp.architecture.clean.android.powergit.data.SharedPreferenceConstants.KEY_LAST_LOGGED_IN_USER
 import com.duyp.architecture.clean.android.powergit.data.api.UserService
 import com.duyp.architecture.clean.android.powergit.data.database.UserDao
 import com.duyp.architecture.clean.android.powergit.data.entities.user.UserApiToLocalMapper
@@ -19,7 +17,6 @@ class UserRepositoryImpl @Inject constructor(
         private val mUserService: UserService,
         private val mUserDao: UserDao,
         private val mAuthenticationRepository: AuthenticationRepository,
-        private val mSharedPreferences: SharedPreferences,
         private val mApiHelper: ApiHelper
 ) : UserRepository {
 
@@ -45,18 +42,6 @@ class UserRepositoryImpl @Inject constructor(
     override fun getUser(username: String): Flowable<User> {
         return mUserDao.getUser(username)
                 .map { mUserLocalToEntityMapper.mapFrom(it) }
-    }
-
-    override fun getLastLoggedInUsername(): String? {
-        return mSharedPreferences.getString(KEY_LAST_LOGGED_IN_USER, null)
-    }
-
-    override fun setLastLoggedInUsername(username: String?) {
-        if (username != null) {
-            mSharedPreferences.edit().putString(KEY_LAST_LOGGED_IN_USER, username).apply()
-        } else {
-            mSharedPreferences.edit().remove(KEY_LAST_LOGGED_IN_USER).apply()
-        }
     }
 
 }
