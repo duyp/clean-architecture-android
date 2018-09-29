@@ -1,8 +1,12 @@
 package com.duyp.architecture.clean.android.powergit.di.modules
 
+import com.duyp.architecture.clean.android.powergit.di.AppComponent
 import com.duyp.architecture.clean.android.powergit.di.scopes.ActivityScoped
 import com.duyp.architecture.clean.android.powergit.ui.features.login.LoginActivity
 import com.duyp.architecture.clean.android.powergit.ui.features.login.LoginModule
+import com.duyp.architecture.clean.android.powergit.ui.features.main.MainActivity
+import com.duyp.architecture.clean.android.powergit.ui.features.main.MainActivityModule
+import com.duyp.architecture.clean.android.powergit.ui.features.main.MainModule
 import com.duyp.architecture.clean.android.powergit.ui.features.splash.SplashActivity
 import com.duyp.architecture.clean.android.powergit.ui.features.splash.SplashModule
 import dagger.Module
@@ -27,5 +31,12 @@ abstract class ActivityBindingModules {
     @ActivityScoped
     @ContributesAndroidInjector(modules = [SplashModule::class])
     internal abstract fun splashActivity(): SplashActivity
+
+    @ActivityScoped
+    @ContributesAndroidInjector(modules = [
+        MainModule::class,
+        MainActivityModule::class
+    ])
+    internal abstract fun mainActivity(): MainActivity
 
 }

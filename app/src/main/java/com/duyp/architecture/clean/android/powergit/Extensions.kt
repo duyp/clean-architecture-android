@@ -221,6 +221,8 @@ fun <S, I, VM : BaseViewModel<S, I>> LifecycleOwner.withState(vm: VM, state: S.(
     vm.state.observeNonNull(this, state)
 }
 
+
+
 /**
  * Get an [Event] value only if the event is NOT NULL and its content hasn't been handled yet
  */

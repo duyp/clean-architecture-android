@@ -5,6 +5,7 @@ import android.os.Bundle
 import com.duyp.architecture.clean.android.powergit.event
 import com.duyp.architecture.clean.android.powergit.ui.base.ViewModelActivity
 import com.duyp.architecture.clean.android.powergit.ui.features.login.LoginActivity
+import com.duyp.architecture.clean.android.powergit.ui.features.main.MainActivity
 import com.duyp.architecture.clean.android.powergit.withState
 
 class SplashActivity: ViewModelActivity<SplashState, SplashIntent, SplashViewModel>() {
@@ -19,7 +20,7 @@ class SplashActivity: ViewModelActivity<SplashState, SplashIntent, SplashViewMod
         withState(mViewModel) {
             event(navigation) {
                 when (this) {
-                    Navigation.MAIN -> startLogin() // todo start main activity instead
+                    Navigation.MAIN -> MainActivity.start(this@SplashActivity)
                     Navigation.LOGIN -> startLogin()
                 }
                 finish()

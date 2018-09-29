@@ -1,5 +1,7 @@
 package com.duyp.architecture.clean.android.powergit.ui.features.login
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -7,7 +9,7 @@ import com.duyp.architecture.clean.android.powergit.R
 import com.duyp.architecture.clean.android.powergit.event
 import com.duyp.architecture.clean.android.powergit.showToastMessage
 import com.duyp.architecture.clean.android.powergit.ui.base.ViewModelActivity
-import com.duyp.architecture.clean.android.powergit.withState
+import com.duyp.architecture.clean.android.powergit.ui.features.main.MainActivity
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : ViewModelActivity<LoginViewState, LoginIntent, LoginViewModel>() {
@@ -23,14 +25,15 @@ class LoginActivity : ViewModelActivity<LoginViewState, LoginIntent, LoginViewMo
             } else false
         }
 
-        withState(mViewModel) {
+        withState {
             setLoading(isLoading)
             event(errorMessage) {
                 showToastMessage(this)
             }
             event(loginSuccess) {
-                // todo navigate main screen
+                MainActivity.start(this@LoginActivity)
                 showToastMessage("login success!")
+                finish()
             }
             event(lastLoggedInUsername) {
                 edtUsername.setText(this)
@@ -50,5 +53,11 @@ class LoginActivity : ViewModelActivity<LoginViewState, LoginIntent, LoginViewMo
 
     override fun getLayoutResource(): Int {
         return R.layout.activity_login
+    }
+
+    companion object {
+        fun start(context: Context) {
+            context.startActivity(Intent(context, LoginActivity::class.java))
+        }
     }
 }

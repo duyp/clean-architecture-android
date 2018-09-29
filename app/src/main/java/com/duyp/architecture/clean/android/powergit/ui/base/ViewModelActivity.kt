@@ -3,6 +3,7 @@ package com.duyp.architecture.clean.android.powergit.ui.base
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import com.duyp.architecture.clean.android.powergit.withState
 import io.reactivex.subjects.PublishSubject
 import java.lang.reflect.ParameterizedType
 import javax.inject.Inject
@@ -22,6 +23,7 @@ abstract class ViewModelActivity<State, Intent, VM : BaseViewModel<State, Intent
     private val mIntent : PublishSubject<Intent> = PublishSubject.create()
 
     protected lateinit var mViewModel: VM
+    get
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,8 +39,12 @@ abstract class ViewModelActivity<State, Intent, VM : BaseViewModel<State, Intent
 
     abstract fun getLayoutResource(): Int
 
-    protected fun onIntent(intent: Intent) {
+    internal fun onIntent(intent: Intent) {
         mIntent.onNext(intent)
+    }
+
+    fun withState(state: State.() -> Unit) {
+        withState(mViewModel, state)
     }
 
     companion object {

@@ -36,7 +36,7 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(context: Context, requestAnnotations: RequestAnnotations,
+    fun provideOkHttpClient(@ApplicationContext context: Context, requestAnnotations: RequestAnnotations,
                             getAuthentication: GetAuthentication): OkHttpClient {
         // okHttp client
         val clientBuilder = OkHttpClient.Builder()

@@ -48,16 +48,16 @@ abstract class BaseViewModel<S, I> : ViewModel() {
     }
 
     /**
-     * Compose all intents based on given intents subject
-     * @param intentSubject the subject which will be subscribed by view's intents, see [processIntents]
-     */
-    protected abstract fun composeIntent(intentSubject: Observable<I>)
-
-    /**
      * Provide initial state to be used in [setState] in which the new state will be produced from current state,
      * therefore current state should not be null
      */
     protected abstract fun initState() : S
+
+    /**
+     * Compose all intents based on given intents subject
+     * @param intentSubject the subject which will be subscribed by view's intents, see [processIntents]
+     */
+    protected abstract fun composeIntent(intentSubject: Observable<I>)
 
     /**
      * access current state, if current state is null, [initState] will be passed
@@ -84,8 +84,8 @@ abstract class BaseViewModel<S, I> : ViewModel() {
      * Add an Rx's disposable into [mCompositeDisposable]. All disposables will be disposed when the ViewModel is
      * being cleared, see [onCleared]
      */
-    protected fun addDisposable(disposable: Disposable) {
-        mCompositeDisposable.add(disposable)
+    protected fun addDisposable(disposable: () -> Disposable) {
+        mCompositeDisposable.add(disposable.invoke())
     }
 
     override fun onCleared() {

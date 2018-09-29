@@ -12,16 +12,17 @@ class SplashViewModel @Inject constructor(
 ) : BaseViewModel<SplashState, SplashIntent>() {
 
     override fun composeIntent(intentSubject: Observable<SplashIntent>) {
-        addDisposable(intentSubject.subscribeOn(Schedulers.io())
-                .switchMapSingle { mCheckUser.hasLoggedInUser() }
-                .onErrorReturnItem(false)
-                .subscribe { hasLoggedInUser ->
-                    if (hasLoggedInUser)
-                        setState { copy(navigation = Event(Navigation.MAIN)) }
-                    else
-                        setState { copy(navigation = Event(Navigation.LOGIN)) }
-                }
-        )
+        addDisposable {
+            intentSubject.subscribeOn(Schedulers.io())
+                    .switchMapSingle { mCheckUser.hasLoggedInUser() }
+                    .onErrorReturnItem(false)
+                    .subscribe { hasLoggedInUser ->
+                        if (hasLoggedInUser)
+                            setState { copy(navigation = Event(Navigation.MAIN)) }
+                        else
+                            setState { copy(navigation = Event(Navigation.LOGIN)) }
+                    }
+        }
     }
 
     override fun initState() = SplashState()

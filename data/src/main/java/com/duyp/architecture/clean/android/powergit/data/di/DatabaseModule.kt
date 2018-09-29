@@ -9,8 +9,8 @@ import javax.inject.Singleton
 
 @Module class DatabaseModule {
 
-    @Provides @Singleton fun provideAppDatabase(context: Context) =
-            Room.databaseBuilder(context, AppDatabase::class.java, "powergit-database").build();
+    @Provides @Singleton fun provideAppDatabase(@ApplicationContext context: Context) =
+            Room.databaseBuilder(context, AppDatabase::class.java, "powergit-database").build()
 
     @Provides @Singleton fun provideUserDao(appDatabase: AppDatabase) = appDatabase.userDao()
 

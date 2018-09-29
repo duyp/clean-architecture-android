@@ -19,6 +19,9 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven {
+            url 'https://jitpack.io'
+        }
     }
 }
 
@@ -47,6 +50,7 @@ ext {
     roomVersion = '1.1.1'
     archVersion = '1.1.1'
     timberVersion = '4.7.0'
+    androidUtilsVersion = "2.2.8"
 
     // test dependencies
     testRunnerVersion = '1.0.1'

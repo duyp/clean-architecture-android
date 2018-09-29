@@ -24,31 +24,33 @@ class LoginViewModel @Inject constructor(
         }
 
         // login intent
-        addDisposable(intentSubject.subscribeOn(Schedulers.io())
-                // do nothing if login is in progress
-                .filter { !state().isLoading }
-                .doOnNext {
-                    if (CommonUtil.isEmpty(it.username, it.password))
-                        setState {
-                            copy(errorMessage = Event("Please input username and password"))
-                        }
-                }
-                .filter { !CommonUtil.isEmpty(it.username, it.password) }
-                .switchMapCompletable { intent ->
-                    mLoginUser.login(intent.username!!, intent.password!!)
-                            .doOnSubscribe {
-                                setState { copy(isLoading = true) }
+        addDisposable{
+            intentSubject.subscribeOn(Schedulers.io())
+                    // do nothing if login is in progress
+                    .filter { !state().isLoading }
+                    .doOnNext {
+                        if (CommonUtil.isEmpty(it.username, it.password))
+                            setState {
+                                copy(errorMessage = Event("Please input username and password"))
                             }
-                            .doOnError { throwable ->
-                                setState {
-                                    copy(isLoading = false, errorMessage = Event(throwable.message ?: ""))
+                    }
+                    .filter { !CommonUtil.isEmpty(it.username, it.password) }
+                    .switchMapCompletable { intent ->
+                        mLoginUser.login(intent.username!!, intent.password!!)
+                                .doOnSubscribe {
+                                    setState { copy(isLoading = true) }
                                 }
-                            }
-                            .doOnComplete { setState { copy(loginSuccess = Event(Unit)) } }
-                            .onErrorComplete()
-                }
-                .onErrorComplete()
-                .subscribe())
+                                .doOnError { throwable ->
+                                    setState {
+                                        copy(isLoading = false, errorMessage = Event(throwable.message ?: ""))
+                                    }
+                                }
+                                .doOnComplete { setState { copy(loginSuccess = Event(Unit)) } }
+                                .onErrorComplete()
+                    }
+                    .onErrorComplete()
+                    .subscribe()
+        }
     }
 }
 

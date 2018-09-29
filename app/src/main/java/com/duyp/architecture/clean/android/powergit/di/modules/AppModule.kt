@@ -6,6 +6,7 @@ import com.duyp.architecture.clean.android.powergit.PowerGitApp
 import com.duyp.architecture.clean.android.powergit.R
 import com.duyp.architecture.clean.android.powergit.data.api.ApiConstants
 import com.duyp.architecture.clean.android.powergit.data.di.AccountType
+import com.duyp.architecture.clean.android.powergit.data.di.ApplicationContext
 import com.google.gson.*
 import dagger.Module
 import dagger.Provides
@@ -21,6 +22,7 @@ class AppModule {
 
     @Provides
     @Singleton
+    @ApplicationContext
     fun provideContext(powerGitApp: PowerGitApp) = powerGitApp.applicationContext
 
     @Provides
@@ -37,16 +39,18 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideAccountManager(context: Context) = AccountManager.get(context)
+    fun provideAccountManager(@ApplicationContext context: Context) = AccountManager.get(context)
 
     @Provides
     @Singleton
-    fun provideSharedPreference(context: Context) = context.getSharedPreferences("power-git-preference", 0)
+    fun provideSharedPreference(@ApplicationContext context: Context) =
+            context.getSharedPreferences("power-git-preference", 0)
 
     @Provides
     @Singleton
     @AccountType
-    fun provideAccountType(context: Context) = context.getString(R.string.account_type)
+    fun provideAccountType(@ApplicationContext context: Context)
+            = context.getString(R.string.account_type)
 }
 
 private class DateDeserializer : JsonDeserializer<Date> {
