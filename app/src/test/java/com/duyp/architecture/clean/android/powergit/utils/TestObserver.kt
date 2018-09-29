@@ -10,28 +10,23 @@ import io.reactivex.internal.util.ExceptionHelper
  */
 class TestObserver<T> : Observer<T> {
 
-    private var value: T? = null
-
-    private var valueChanged = false
+    private val values: MutableList<T> = ArrayList()
 
     override fun onChanged(t: T?) {
-        value = t
-        valueChanged = true
+        t?.let { values.add(it) }
     }
 
     /**
-     * Assert that this Observer received the last value through [.onChanged] which provided predicate
-     * returns true
+     * Assert that this Observer received the value at given [position] through [.onChanged] with provided [valuePredicate]
      * @param valuePredicate should return true for expected value
      */
-    fun assertValue(valuePredicate: T.() -> Boolean) {
-        if (value == null) {
-            throw fail("No value present")
-        }
+    fun assertValue(position: Int, valuePredicate: T.() -> Boolean): OnGoingStub<T> {
+        failIfNoValue()
+
         var found = false
 
         try {
-            if (valuePredicate.invoke(this.value!!)) {
+            if (valuePredicate.invoke(this.values[position])) {
                 found = true
             }
         } catch (ex: Exception) {
@@ -41,38 +36,73 @@ class TestObserver<T> : Observer<T> {
         if (!found) {
             throw fail("Value not present")
         }
-        resetAssertion()
+        return OnGoingStub(this, position)
+    }
+
+    /**
+     * Assert this observer received the last value with provied [valuePredicate]
+     */
+    fun assertValue(valuePredicate: T.() -> Boolean): OnGoingStub<T> {
+        val position = values.size - 1
+        assertValue(position, valuePredicate)
+        return OnGoingStub(this, position)
+    }
+
+    /**
+     * Assert that this Observer received the value at given [position] which is equal to the given value
+     * @param value value to assert
+     */
+    fun assertValueEquals(position: Int, value: T): TestObserver<T> {
+        failIfNoValue()
+        if (!ObjectHelper.equals(this.values[position], value)) {
+            throw fail("Value not equal, expected: $value, actual: ${this.values[position]}")
+        }
+        return this
     }
 
     /**
      * Assert that this Observer received the last value which is equal to the given value
      * @param value value to assert
      */
-    fun assertValueEquals(value: T) {
-        if (!ObjectHelper.equals(this.value, value)) {
-            throw fail("Value not equal, expected: $value, actual: ${this.value}")
-        }
-        resetAssertion()
+    fun assertValueEquals(value: T): TestObserver<T> {
+        failIfNoValue()
+        assertValueEquals(values.size - 1, value)
+        return this
     }
+
+
 
     /**
      * Assert that this Observer haven't received any value yet
      */
-    fun assertNoValue() {
-        if (value != null) {
+    fun assertNoValue(): TestObserver<T> {
+        if (values.isNotEmpty()) {
             throw fail("Expect no value but has")
         }
-        resetAssertion()
+        return this
+    }
+
+    fun assertValuesCount(count: Int): TestObserver<T> {
+        if (values.size != count) {
+            throw fail("Expect $count values but has")
+        }
+        return this
+    }
+
+    fun assertValuesCount(countPredicate: (Int) -> Boolean): TestObserver<T> {
+        if (!countPredicate(values.size)) {
+            throw fail("Values count not present")
+        }
+        return this
     }
 
     /**
-     * Assert that this Observer haven't received any new value since last value received through [.onChanged]
+     * Fail if this observe hasn't receive any value yet
      */
-    fun assertValueNotChanged() {
-        if (valueChanged) {
-            throw fail("Value has been changed")
+    private fun failIfNoValue() {
+        if (values.isEmpty()) {
+            throw fail("No value present")
         }
-        resetAssertion()
     }
 
     /**
@@ -87,13 +117,32 @@ class TestObserver<T> : Observer<T> {
      */
     private fun fail(message: String): AssertionError {
         val b = message +
-                " (" + "value = " + value + ')'.toString()
+                " (" + "value = " + values + ')'.toString()
 
         return AssertionError(b)
     }
 
-    private fun resetAssertion() {
-        valueChanged = false
+    class OnGoingStub<T> (
+            private val testObserver: TestObserver<T>,
+            private val currentPosition: Int
+    ) {
+
+        fun withPrevious(valuePredicate: T.() -> Boolean): OnGoingStub<T> {
+            return testObserver.assertValue(currentPosition - 1, valuePredicate)
+        }
+
+        fun withNext(valuePredicate: T.() -> Boolean): OnGoingStub<T> {
+            return testObserver.assertValue(currentPosition + 1, valuePredicate)
+        }
+
+        fun noPrevious(): TestObserver<T> {
+            return testObserver.assertValuesCount { it == 1 }
+        }
+
+        fun noNext(): TestObserver<T> {
+            return testObserver.assertValuesCount { currentPosition == it - 1 }
+        }
+
     }
 
 }

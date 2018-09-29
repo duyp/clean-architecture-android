@@ -3,6 +3,7 @@ package com.duyp.architecture.clean.android.powergit.ui.features.login
 import ViewModelTest
 import com.duyp.architecture.clean.android.powergit.domain.usecases.GetUser
 import com.duyp.architecture.clean.android.powergit.domain.usecases.LoginUser
+import com.duyp.architecture.clean.android.powergit.utils.noValue
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -22,9 +23,22 @@ class LoginViewModelTest : ViewModelTest<LoginViewState, LoginIntent, LoginViewM
         return LoginViewModel(mLoginUser, mGetUser)
     }
 
-    override fun setup() {
-        super.setup()
+    @Test
+    fun noLastLoggedInUsername() {
+        whenever(mGetUser.getLastLoggedInUsername()).thenReturn(null)
         processIntents()
+
+        viewState().assertValue { lastLoggedInUsername!!.noValue() && !isLoading && errorMessage == null }
+                .noPrevious()
+    }
+
+    @Test
+    fun hasLastLoggedInUsername() {
+        whenever(mGetUser.getLastLoggedInUsername()).thenReturn("duyp")
+        processIntents()
+
+        viewState().assertValue { lastLoggedInUsername!!.peekContent() == "duyp" && !isLoading && errorMessage == null }
+                .noPrevious()
     }
 
     @Test
@@ -50,7 +64,7 @@ class LoginViewModelTest : ViewModelTest<LoginViewState, LoginIntent, LoginViewM
         intent(LoginIntent(null, ""))
 
         viewState().assertValue {
-            !isLoading && errorMessage != null
+            !isLoading && errorMessage!!.peekContent().contains("username")
         }
     }
 
@@ -59,9 +73,9 @@ class LoginViewModelTest : ViewModelTest<LoginViewState, LoginIntent, LoginViewM
         whenever(mLoginUser.login(any(), any())).thenReturn(Completable.error(Exception("login error")))
         intent(LoginIntent("duyp", "1234"))
 
-        viewState().assertValue {
-            !isLoading && errorMessage!!.peekContent() == "login error"
-        }
+        viewState().assertValue { !isLoading && errorMessage!!.peekContent() == "login error" }
+                .withPrevious { isLoading }
+
         verify(mLoginUser).login("duyp", "1234")
     }
 
@@ -70,9 +84,9 @@ class LoginViewModelTest : ViewModelTest<LoginViewState, LoginIntent, LoginViewM
         whenever(mLoginUser.login(any(), any())).thenReturn(Completable.complete())
         intent(LoginIntent("duyp1", "12345"))
 
-        viewState().assertValue {
-            isLoading && errorMessage == null && loginSuccess != null
-        }
+        viewState().assertValue { errorMessage == null && loginSuccess != null }
+                .withPrevious { isLoading }
+
         verify(mLoginUser).login("duyp1", "12345")
     }
 }

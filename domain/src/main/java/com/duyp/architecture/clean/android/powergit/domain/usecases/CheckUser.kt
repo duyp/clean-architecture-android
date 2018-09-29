@@ -2,7 +2,6 @@ package com.duyp.architecture.clean.android.powergit.domain.usecases
 
 import com.duyp.architecture.clean.android.powergit.domain.repositories.AuthenticationRepository
 import com.duyp.architecture.clean.android.powergit.domain.repositories.SettingRepository
-import com.duyp.architecture.clean.android.powergit.domain.utils.CommonUtil
 import io.reactivex.Maybe
 import io.reactivex.Single
 import javax.inject.Inject

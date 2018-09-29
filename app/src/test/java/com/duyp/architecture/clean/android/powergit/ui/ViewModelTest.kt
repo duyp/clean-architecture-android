@@ -14,6 +14,10 @@ import org.mockito.junit.MockitoJUnitRunner
  * Base class for all ViewModel unit tests and integration tests. The ViewModel will be created before any test
  * cases, and the view state will be observed immediately after that by an state observer which provide assertions to
  * verify state value.
+ *
+ * This test also included rules to make async works (Live data, RxJava) synchronous by using
+ * [InstantTaskExecutorRule] and [TrampolineSchedulerRule]
+ *
  * @param [State] type of view state
  * @param [Intent] type of intent
  * @param [VM] type of ViewModel, must extend [BaseViewModel]
@@ -34,6 +38,8 @@ abstract class ViewModelTest<State, Intent, VM : BaseViewModel<State, Intent>> {
     private lateinit var mStateObserver: TestObserver<State>
 
     protected lateinit var mViewModel: VM
+
+    private var isIntentProceed = false
 
     @Before
     @CallSuper
@@ -57,6 +63,8 @@ abstract class ViewModelTest<State, Intent, VM : BaseViewModel<State, Intent>> {
      * Post an intent
      */
     protected fun intent(intent: Intent) {
+        if (!isIntentProceed)
+            processIntents()
         mIntents.onNext(intent)
     }
 
@@ -64,6 +72,7 @@ abstract class ViewModelTest<State, Intent, VM : BaseViewModel<State, Intent>> {
      * Start processing intent (like activity / fragment onCreate)
      */
     protected fun processIntents() {
+        isIntentProceed = true
         mViewModel.processIntents(mIntents)
     }
 }

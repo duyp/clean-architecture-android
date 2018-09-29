@@ -28,4 +28,9 @@ open class Event<out T>(private val content: T) {
     fun get(onEventUnhandledContent: T.() -> Unit) {
         getContentIfNotHandled()?.let { onEventUnhandledContent(it) }
     }
+
+    override fun toString(): String {
+        return "Event(content=$content, hasBeenHandled=$hasBeenHandled)"
+    }
+
 }
