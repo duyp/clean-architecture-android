@@ -1,6 +1,5 @@
 package com.duyp.architecture.clean.android.powergit.di.modules
 
-import android.app.Activity
 import android.content.Context
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
@@ -18,7 +17,7 @@ abstract class ActivityModule<T: AppCompatActivity> {
 
     @Provides @ActivityContext fun provideContext(activity: T) = activity as Context
 
-    @Provides fun provideActivity(activity: T) = activity as Activity
+    @Provides fun provideActivity(activity: T) = activity as AppCompatActivity
 
     @Provides
     fun provideDefaultGlide(activity: T) = SimpleGlideLoader(activity)

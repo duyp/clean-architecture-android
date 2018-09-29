@@ -23,7 +23,6 @@ abstract class ViewModelActivity<State, Intent, VM : BaseViewModel<State, Intent
     private val mIntent : PublishSubject<Intent> = PublishSubject.create()
 
     protected lateinit var mViewModel: VM
-    get
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,11 +38,11 @@ abstract class ViewModelActivity<State, Intent, VM : BaseViewModel<State, Intent
 
     abstract fun getLayoutResource(): Int
 
-    internal fun onIntent(intent: Intent) {
+    protected fun onIntent(intent: Intent) {
         mIntent.onNext(intent)
     }
 
-    fun withState(state: State.() -> Unit) {
+    protected fun withState(state: State.() -> Unit) {
         withState(mViewModel, state)
     }
 
