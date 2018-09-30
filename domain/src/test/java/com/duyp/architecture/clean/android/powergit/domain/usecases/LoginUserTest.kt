@@ -1,7 +1,6 @@
 package com.duyp.architecture.clean.android.powergit.domain.usecases
 
-import com.duyp.architecture.clean.android.powergit.domain.entities.User
-import com.duyp.architecture.clean.android.powergit.domain.repositories.AuthenticationRepository
+import com.duyp.architecture.clean.android.powergit.domain.entities.UserEntity
 import com.duyp.architecture.clean.android.powergit.domain.repositories.SettingRepository
 import com.duyp.architecture.clean.android.powergit.domain.repositories.UserRepository
 import com.nhaarman.mockitokotlin2.any
@@ -25,7 +24,7 @@ class LoginUserTest : UseCaseTest<LoginUser> () {
 
     @Test fun login_success() {
         whenever(mUserRepository.login(any(), any())).thenAnswer {
-            Single.just(User(1, it.getArgument(0)))
+            Single.just(UserEntity(1, it.getArgument(0)))
         }
 
         mUsecase.login("username", "")

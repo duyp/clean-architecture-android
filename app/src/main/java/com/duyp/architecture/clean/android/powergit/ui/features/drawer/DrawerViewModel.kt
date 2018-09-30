@@ -1,7 +1,7 @@
 package com.duyp.architecture.clean.android.powergit.ui.features.drawer
 
 import com.duyp.architecture.clean.android.powergit.Event
-import com.duyp.architecture.clean.android.powergit.domain.entities.User
+import com.duyp.architecture.clean.android.powergit.domain.entities.UserEntity
 import com.duyp.architecture.clean.android.powergit.domain.usecases.GetUser
 import com.duyp.architecture.clean.android.powergit.domain.usecases.LogoutUser
 import com.duyp.architecture.clean.android.powergit.ui.base.BaseViewModel
@@ -69,7 +69,7 @@ class DrawerViewModel @Inject constructor(
 }
 
 data class DrawerViewState(
-        val user: User? = null,
+        val user: UserEntity? = null,
         val navigation: Event<DrawerNavigation>? = null,
         val refreshUser: Event<Unit>? = null
 )

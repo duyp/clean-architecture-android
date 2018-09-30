@@ -3,7 +3,7 @@ package com.duyp.architecture.clean.android.powergit.domain.entities
 import com.duyp.architecture.clean.android.powergit.domain.utils.CommonUtil
 import java.util.*
 
-data class User (
+data class UserEntity (
 
     var id: Long? = null,
 
@@ -92,7 +92,7 @@ data class User (
         return this.login == userLogin
     }
 
-    fun equals(user: User?): Boolean {
+    fun equals(user: UserEntity?): Boolean {
         return user != null && id == user.id
     }
 }

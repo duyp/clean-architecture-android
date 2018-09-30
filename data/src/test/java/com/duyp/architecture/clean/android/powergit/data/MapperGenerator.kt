@@ -11,17 +11,20 @@ class MapperGenerator {
 
     @Test
     fun generateMappers() {
-//        Assert.assertEquals("abc", listObjectFields(UserLocalData::class.java, "\n",
-//                "localData.%s = e.%s"))
+
+//        Assert.assertEquals("abc", listObjectFields(RepoEntity::class.java, "\n", "entity", "e"))
     }
 
-    fun listObjectFields(classA: Class<*>, separator: String, format: String): String {
+    fun listObjectFields(classA: Class<*>, separator: String, aName: String, bName: String): String {
         val sb = StringBuilder()
+        sb.append("val $aName = ${classA.simpleName}()").append(separator)
+        val format = "$aName.%s = $bName.%s"
         val fields = classA.declaredFields
         for (f in fields) {
             val name = f.name
             sb.append(String.format(Locale.ENGLISH, format, name, name)).append(separator)
         }
+        sb.append("return $aName").append(separator)
         return sb.toString()
     }
 }

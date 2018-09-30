@@ -1,6 +1,6 @@
 package com.duyp.architecture.clean.android.powergit.domain.usecases
 
-import com.duyp.architecture.clean.android.powergit.domain.entities.User
+import com.duyp.architecture.clean.android.powergit.domain.entities.UserEntity
 import com.duyp.architecture.clean.android.powergit.domain.repositories.AuthenticationRepository
 import com.duyp.architecture.clean.android.powergit.domain.repositories.SettingRepository
 import com.duyp.architecture.clean.android.powergit.domain.repositories.UserRepository
@@ -16,7 +16,7 @@ class GetUser @Inject constructor(
         private val mUserRepository: UserRepository
 ) {
 
-    fun getCurrentUser(): Flowable<User> = getCurrentLoggedInUsername()
+    fun getCurrentUser(): Flowable<UserEntity> = getCurrentLoggedInUsername()
             .flatMapPublisher {
                 mUserRepository.getUser(it)
             }

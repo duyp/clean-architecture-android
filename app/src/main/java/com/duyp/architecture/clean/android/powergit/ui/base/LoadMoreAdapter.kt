@@ -1,21 +1,27 @@
 package com.duyp.architecture.clean.android.powergit.ui.base
 
+import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import com.duyp.architecture.clean.android.powergit.R
 
-abstract class LoadMoreAdapter<VH: RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
+abstract class LoadMoreAdapter(mContext: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private val mLayoutInflater: LayoutInflater = LayoutInflater.from(mContext)
 
     companion object {
-        private const val TYPE_FOOTER = 0
+        private const val TYPE_PROGRESS = 0
         private const val TYPE_ITEM = 10
     }
 
     private var mIsProgressAdded = false
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
-            TYPE_FOOTER -> onCreateFooterViewHolder()
-            else -> onCreateItemViewHolder()
+            TYPE_PROGRESS -> onCreateProgressViewHolder(parent)
+            else -> onCreateItemViewHolder(parent, viewType)
         }
     }
 
@@ -24,25 +30,29 @@ abstract class LoadMoreAdapter<VH: RecyclerView.ViewHolder> : RecyclerView.Adapt
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (mIsProgressAdded && position == itemCount - 1) TYPE_FOOTER else TYPE_ITEM
+        return if (mIsProgressAdded && position == itemCount - 1) TYPE_PROGRESS else TYPE_ITEM
     }
 
-    override fun onBindViewHolder(holder: VH, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder.itemViewType) {
-            TYPE_FOOTER -> onBindHeaderViewHolder(holder, position)
+            TYPE_PROGRESS -> onBindHeaderViewHolder(holder, position)
             else -> onBindItemViewHolder(holder, position)
         }
     }
 
     abstract fun getTotalItem(): Int
 
-    abstract fun onCreateItemViewHolder(): VH
+    abstract fun onCreateItemViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder
 
-    abstract fun onCreateFooterViewHolder(): VH
+    abstract fun onBindItemViewHolder(holder: RecyclerView.ViewHolder, position: Int)
 
-    abstract fun onBindHeaderViewHolder(holder: VH, position: Int)
+    protected fun onCreateProgressViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
+        return DefaultProgressViewHolder(mLayoutInflater.inflate(R.layout.progress_layout, parent, false))
+    }
 
-    abstract fun onBindItemViewHolder(holder: VH, position: Int)
+    protected fun onBindHeaderViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+
+    }
 
     fun addProgress() {
         mIsProgressAdded = true
@@ -55,4 +65,6 @@ abstract class LoadMoreAdapter<VH: RecyclerView.ViewHolder> : RecyclerView.Adapt
     }
 
     fun isProgressAdded() = mIsProgressAdded
+
+    class DefaultProgressViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 }

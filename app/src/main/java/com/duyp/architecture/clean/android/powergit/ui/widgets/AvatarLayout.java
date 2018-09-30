@@ -11,7 +11,7 @@ import android.widget.FrameLayout;
 
 import com.duyp.androidutils.glide.loader.GlideLoader;
 import com.duyp.architecture.clean.android.powergit.R;
-import com.duyp.architecture.clean.android.powergit.domain.entities.User;
+import com.duyp.architecture.clean.android.powergit.domain.entities.UserEntity;
 
 import cn.gavinliu.android.lib.shapedimageview.ShapedImageView;
 
@@ -50,7 +50,7 @@ public class AvatarLayout extends FrameLayout {
         //}
     }
 
-    public void bindData(GlideLoader glideLoader, @Nullable User user) {
+    public void bindData(GlideLoader glideLoader, @Nullable UserEntity user) {
         if (user != null) {
             avatar.setContentDescription(user.getLogin());
             TooltipCompat.setTooltipText(avatar, user.getLogin());

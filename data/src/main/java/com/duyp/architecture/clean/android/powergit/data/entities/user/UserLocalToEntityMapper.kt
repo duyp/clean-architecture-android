@@ -1,12 +1,12 @@
 package com.duyp.architecture.clean.android.powergit.data.entities.user
 
 import com.duyp.architecture.clean.android.powergit.domain.entities.Mapper
-import com.duyp.architecture.clean.android.powergit.domain.entities.User
+import com.duyp.architecture.clean.android.powergit.domain.entities.UserEntity
 
-class UserLocalToEntityMapper() : Mapper<UserLocalData, User> (){
+class UserLocalToEntityMapper() : Mapper<UserLocalData, UserEntity> (){
 
-    override fun mapFrom(e: UserLocalData): User {
-        val userEntity = User()
+    override fun mapFrom(e: UserLocalData): UserEntity {
+        val userEntity = UserEntity()
         userEntity.id = e.id
         userEntity.login = e.login
         userEntity.avatarUrl = e.avatarUrl

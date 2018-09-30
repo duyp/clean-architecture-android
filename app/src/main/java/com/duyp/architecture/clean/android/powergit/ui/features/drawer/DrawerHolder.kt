@@ -10,7 +10,7 @@ import android.view.View
 import android.widget.TextView
 import com.duyp.androidutils.AlertUtils
 import com.duyp.architecture.clean.android.powergit.R
-import com.duyp.architecture.clean.android.powergit.domain.entities.User
+import com.duyp.architecture.clean.android.powergit.domain.entities.UserEntity
 import com.duyp.architecture.clean.android.powergit.event
 import com.duyp.architecture.clean.android.powergit.ui.features.login.LoginActivity
 import com.duyp.architecture.clean.android.powergit.ui.utils.AvatarLoader
@@ -87,7 +87,7 @@ class DrawerHolder @Inject constructor(
         return false
     }
 
-    private fun updateUser(user: User?) {
+    private fun updateUser(user: UserEntity?) {
         if (user != null) {
             mNavHeader.findViewById<TextView>(R.id.navFullName).text = user.displayName
             mNavHeader.findViewById<TextView>(R.id.navUsername).text = user.login

@@ -1,6 +1,6 @@
 package com.duyp.architecture.clean.android.powergit.domain.repositories
 
-import com.duyp.architecture.clean.android.powergit.domain.entities.User
+import com.duyp.architecture.clean.android.powergit.domain.entities.UserEntity
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -13,7 +13,7 @@ interface UserRepository {
      *
      * @return Single which emits user entity if successfully
      */
-    fun login(username: String, password: String): Single<User>
+    fun login(username: String, password: String): Single<UserEntity>
 
     /**
      * Logout an user
@@ -25,5 +25,5 @@ interface UserRepository {
      *
      * @return Flowable emitting user entity whenever user's data changed
      */
-    fun getUser(username: String) : Flowable<User>
+    fun getUser(username: String) : Flowable<UserEntity>
 }
