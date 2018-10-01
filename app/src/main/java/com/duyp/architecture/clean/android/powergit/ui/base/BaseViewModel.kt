@@ -69,7 +69,7 @@ abstract class BaseViewModel<S, I> : ViewModel() {
     /**
      * Get current state, [initState] will be returned if current state is null
      */
-    protected fun state() = state.value ?: initState()
+    fun state() = state.value ?: initState()
 
     /**
      * set new view state and post it through [state] live data

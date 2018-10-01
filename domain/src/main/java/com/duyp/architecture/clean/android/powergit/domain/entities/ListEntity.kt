@@ -12,4 +12,8 @@ data class ListEntity<T> (
 ) {
 
     fun canLoadMore() = next in 1..last
+
+    companion object {
+        const val STARTING_PAGE = 0
+    }
 }

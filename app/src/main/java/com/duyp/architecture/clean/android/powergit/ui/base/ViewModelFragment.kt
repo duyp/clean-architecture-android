@@ -17,7 +17,7 @@ abstract class ViewModelFragment<State, Intent, VM : BaseViewModel<State, Intent
     @Inject
     internal lateinit var mViewModelFactory: ViewModelProvider.Factory
 
-    private val mIntent : PublishSubject<Intent> = PublishSubject.create()
+    protected val mIntent : PublishSubject<Intent> = PublishSubject.create()
 
     protected lateinit var mViewModel: VM
 
@@ -41,8 +41,9 @@ abstract class ViewModelFragment<State, Intent, VM : BaseViewModel<State, Intent
         withState(mViewModel, state)
     }
 
-    // getting view model class (3rd position is ViewModel type)
-    private fun viewModelClass(): Class<VM> {
-        return (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[2] as Class<VM>
+    // getting view model class (normally last position is ViewModel type)
+    protected fun viewModelClass(): Class<VM> {
+        val type = (javaClass.genericSuperclass as ParameterizedType)
+        return type.actualTypeArguments[type.actualTypeArguments.lastIndex] as Class<VM>
     }
 }

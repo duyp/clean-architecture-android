@@ -25,6 +25,9 @@ class InfiniteScroller(
             return
         }
 
+        // dy < 0 mean scrolling up
+        if (dy < 0) return
+
         if (mLayoutManager == null) {
             initLayoutManager(recyclerView!!.layoutManager)
         }
