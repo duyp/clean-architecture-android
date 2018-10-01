@@ -1,6 +1,8 @@
 package com.duyp.architecture.clean.android.powergit.data.api
 
 import com.duyp.architecture.clean.android.powergit.data.api.annotations.Authenticated
+import com.duyp.architecture.clean.android.powergit.data.entities.PageableApiData
+import com.duyp.architecture.clean.android.powergit.data.entities.repo.RepoApiData
 import com.duyp.architecture.clean.android.powergit.data.entities.user.UserApiData
 import io.reactivex.Single
 import retrofit2.Response
@@ -24,9 +26,20 @@ interface UserService {
     //@GET("users/{username}/repos")
     //Single<PageableApiData<Repo>> getRepos(@Path("username") @NonNull String username, @QueryMap(encoded = true) Map<String, String> filterParams,
     //                                @Query("page") int page);
+
+
     //
-    //@GET("user/repos")
-    //Single<PageableApiData<Repo>> getRepos(@QueryMap(encoded = true) Map<String, String> filterParams, @Query(value = "page") int page);
+
+    @GET("users/{username}/repos")
+    fun getRepos(@Path("username") username: String, @QueryMap(encoded = true) filterParams: Map<String, String>?,
+                 @Query("page") page: Int):
+            Single<PageableApiData<RepoApiData>>
+
+    @GET("user/repos")
+    @Authenticated
+    fun getRepos(@QueryMap(encoded = true) filterParams: Map<String, String>, @Query(value = "page") page: Int):
+            Single<PageableApiData<RepoApiData>>
+
     //
     //@GET("users/{username}/starred")
     //Single<PageableApiData<Repo>>

@@ -96,9 +96,9 @@ class FilterOptions{
 
     companion object {
 
-        private val TYPE = "type"
-        private val SORT = "sort"
-        private val AFFILIATION = "affiliation"
-        private val DIRECTION = "direction"
+        private const val TYPE = "type"
+        private const val SORT = "sort"
+        private const val AFFILIATION = "affiliation"
+        private const val DIRECTION = "direction"
     }
 }

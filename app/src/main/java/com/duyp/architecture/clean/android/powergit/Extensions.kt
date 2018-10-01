@@ -230,3 +230,6 @@ fun <T> event(event: Event<T>?, onEventUnhandledContent: T.() -> Unit) {
     event?.get(onEventUnhandledContent)
 }
 
+fun Throwable.printStacktraceIfDebug() {
+    if (BuildConfig.DEBUG) this.printStackTrace()
+}

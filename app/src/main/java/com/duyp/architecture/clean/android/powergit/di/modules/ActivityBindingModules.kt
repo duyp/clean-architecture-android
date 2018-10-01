@@ -8,6 +8,7 @@ import com.duyp.architecture.clean.android.powergit.ui.features.login.LoginModul
 import com.duyp.architecture.clean.android.powergit.ui.features.main.MainActivity
 import com.duyp.architecture.clean.android.powergit.ui.features.main.MainActivityModule
 import com.duyp.architecture.clean.android.powergit.ui.features.main.MainModule
+import com.duyp.architecture.clean.android.powergit.ui.features.repo.list.RepoListModule
 import com.duyp.architecture.clean.android.powergit.ui.features.splash.SplashActivity
 import com.duyp.architecture.clean.android.powergit.ui.features.splash.SplashModule
 import dagger.Module
@@ -37,7 +38,8 @@ abstract class ActivityBindingModules {
     @ContributesAndroidInjector(modules = [
         MainModule::class,
         MainActivityModule::class,
-        DrawerModule::class
+        DrawerModule::class,
+        RepoListModule::class
     ])
     internal abstract fun mainActivity(): MainActivity
 

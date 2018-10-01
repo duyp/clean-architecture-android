@@ -10,7 +10,7 @@ import com.duyp.architecture.clean.android.powergit.ui.base.LoadMoreAdapter
 class InfiniteScroller(
         private val mAdapter: LoadMoreAdapter,
         private var mVisibleThreshold: Int = 3,
-        private val mOnLoadMore: () -> Boolean
+        private val mOnLoadMore: () -> Unit
 ) : RecyclerView.OnScrollListener() {
 
     private var mLoading = false
@@ -24,7 +24,6 @@ class InfiniteScroller(
             mIsNewlyAdded = false
             return
         }
-        onScrolled(dy > 0)
 
         if (mLayoutManager == null) {
             initLayoutManager(recyclerView!!.layoutManager)
@@ -44,19 +43,19 @@ class InfiniteScroller(
         }
 
         if (lastVisibleItemPosition + mVisibleThreshold > totalItemCount) {
-            if (mOnLoadMore()) {
-                mLoading = true
-                mAdapter.addProgress()
-            }
+            mOnLoadMore()
         }
     }
 
     fun reset() {
-        this.mLoading = false
+        mLoading = false
         mAdapter.removeProgress()
     }
 
-    protected fun onScrolled(isUp: Boolean) {}
+    fun setLoading() {
+        mLoading = true
+        mAdapter.addProgress()
+    }
 
     private fun initLayoutManager(layoutManager: RecyclerView.LayoutManager) {
         this.mLayoutManager = layoutManager

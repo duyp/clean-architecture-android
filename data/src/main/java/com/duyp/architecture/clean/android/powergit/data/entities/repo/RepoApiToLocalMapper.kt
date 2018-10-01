@@ -1,12 +1,15 @@
 package com.duyp.architecture.clean.android.powergit.data.entities.repo
 
+import com.duyp.architecture.clean.android.powergit.data.entities.user.UserApiToLocalMapper
 import com.duyp.architecture.clean.android.powergit.domain.entities.Mapper
 
 class RepoApiToLocalMapper: Mapper<RepoApiData, RepoLocalData>() {
 
+    private val mUserApiToLocalMapper = UserApiToLocalMapper()
+
     override fun mapFrom(e: RepoApiData): RepoLocalData {
         val localData = RepoLocalData(e.id)
-        localData.ownerUsername = e.owner?.login
+        e.owner?.let { localData.owner = mUserApiToLocalMapper.mapFrom(it) }
         localData.name = e.name
         localData.fullName = e.fullName
         localData.htmlUrl = e.htmlUrl

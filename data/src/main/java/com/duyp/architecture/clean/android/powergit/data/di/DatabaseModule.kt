@@ -14,4 +14,6 @@ import javax.inject.Singleton
 
     @Provides @Singleton fun provideUserDao(appDatabase: AppDatabase) = appDatabase.userDao()
 
+    @Provides @Singleton fun provideRepoDao(appDatabase: AppDatabase) = appDatabase.repoDao()
+
 }

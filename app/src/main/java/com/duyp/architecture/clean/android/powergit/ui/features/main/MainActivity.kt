@@ -13,8 +13,12 @@ class MainActivity : ViewModelActivity<MainViewState, MainIntent, MainViewModel>
 
     @Inject lateinit var mDrawerHolder: DrawerHolder
 
+    @Inject lateinit var mPagerAdapter: MainPagerAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        pager.adapter = mPagerAdapter
 
         // init drawer
         mDrawerHolder.init(drawer)

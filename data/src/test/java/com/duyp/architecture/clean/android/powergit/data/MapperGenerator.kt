@@ -1,5 +1,7 @@
 package com.duyp.architecture.clean.android.powergit.data
 
+import com.duyp.architecture.clean.android.powergit.domain.entities.repo.RepoEntity
+import org.junit.Assert
 import org.junit.Test
 import java.util.*
 
@@ -12,7 +14,7 @@ class MapperGenerator {
     @Test
     fun generateMappers() {
 
-//        Assert.assertEquals("abc", listObjectFields(RepoEntity::class.java, "\n", "entity", "e"))
+        Assert.assertEquals("abc", listObjectFields(RepoEntity::class.java, "\n", "entity", "e"))
     }
 
     fun listObjectFields(classA: Class<*>, separator: String, aName: String, bName: String): String {

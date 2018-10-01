@@ -27,5 +27,5 @@ data class PageableApiData<M> (
     var incompleteResults: Boolean = false,
 
     @SerializedName("items")
-    var items: List<M>? = null
+    var items: List<M>
 )

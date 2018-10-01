@@ -1,13 +1,14 @@
 package com.duyp.architecture.clean.android.powergit.domain.entities.repo
 
-import com.duyp.architecture.clean.android.powergit.domain.entities.UserEntity
 import java.util.*
 
 data class RepoEntity(
 
         var id: Long,
 
-        var owner: UserEntity? = null,
+        var ownerAvatarUrl: String? = null,
+
+        var ownerLogin: String? = null,
 
         var name: String? = null,
 

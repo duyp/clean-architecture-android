@@ -3,9 +3,9 @@ package com.duyp.architecture.clean.android.powergit.data.entities.repo
 import com.duyp.architecture.clean.android.powergit.domain.entities.Mapper
 import com.duyp.architecture.clean.android.powergit.domain.entities.repo.RepoEntity
 
-class RepoLocalToEntityMapper: Mapper<RepoLocalData, RepoEntity>() {
+class RepoApiToEntityMapper : Mapper<RepoApiData, RepoEntity>(){
 
-    override fun mapFrom(e: RepoLocalData): RepoEntity {
+    override fun mapFrom(e: RepoApiData): RepoEntity {
         val entity = RepoEntity(e.id)
         entity.ownerLogin = e.owner?.login
         entity.ownerAvatarUrl = e.owner?.avatarUrl
@@ -36,5 +36,6 @@ class RepoLocalToEntityMapper: Mapper<RepoLocalData, RepoEntity>() {
         entity.hasWiki = e.hasWiki
         entity.hasPages = e.hasPages
         return entity
+
     }
 }

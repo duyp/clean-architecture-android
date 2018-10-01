@@ -8,7 +8,7 @@ import java.util.*
 data class UserLocalData (
 
         @PrimaryKey
-        var id: Long,
+        var id: Long = 0,
 
         var login: String? = null,
 

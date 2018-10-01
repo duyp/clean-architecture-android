@@ -3,16 +3,16 @@ package com.duyp.architecture.clean.android.powergit.ui.base
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.duyp.architecture.clean.android.powergit.withState
+import dagger.android.support.DaggerFragment
 import io.reactivex.subjects.PublishSubject
 import java.lang.reflect.ParameterizedType
 import javax.inject.Inject
 
-abstract class ViewModelFragment<State, Intent, VM : BaseViewModel<State, Intent>> : Fragment() {
+abstract class ViewModelFragment<State, Intent, VM : BaseViewModel<State, Intent>> : DaggerFragment() {
 
     @Inject
     internal lateinit var mViewModelFactory: ViewModelProvider.Factory

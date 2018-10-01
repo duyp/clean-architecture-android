@@ -9,7 +9,7 @@ import com.duyp.architecture.clean.android.powergit.R
 
 abstract class LoadMoreAdapter(mContext: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val mLayoutInflater: LayoutInflater = LayoutInflater.from(mContext)
+    protected val mLayoutInflater: LayoutInflater = LayoutInflater.from(mContext)
 
     companion object {
         private const val TYPE_PROGRESS = 0

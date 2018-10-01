@@ -1,17 +1,20 @@
 package com.duyp.architecture.clean.android.powergit.data.entities.repo
 
+import android.arch.persistence.room.Embedded
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Index
 import android.arch.persistence.room.PrimaryKey
+import com.duyp.architecture.clean.android.powergit.data.entities.user.UserLocalData
 import java.util.*
 
-@Entity(tableName = "Repository", indices = [Index("ownerUsername")])
+@Entity(tableName = "Repository", indices = [Index("owner_login")])
 data class RepoLocalData(
 
         @PrimaryKey
-        var id: Long,
+        var id: Long = 0,
 
-        var ownerUsername: String? = null,
+        @Embedded(prefix = "owner_")
+        var owner: UserLocalData? = null,
 
         var name: String? = null,
 

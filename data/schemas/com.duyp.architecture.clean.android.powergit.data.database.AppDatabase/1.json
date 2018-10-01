@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "14972a6f292d4a88f6a5096b7f9cbf7f",
+    "identityHash": "d891c2a6fde30229afc2266791f09abb",
     "entities": [
       {
         "tableName": "User",
@@ -239,11 +239,412 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "Repository",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT, `fullName` TEXT, `htmlUrl` TEXT, `description` TEXT, `url` TEXT, `homepage` TEXT, `defaultBranch` TEXT, `language` TEXT, `createdAt` INTEGER, `updatedAt` INTEGER, `pushedAt` INTEGER, `size` INTEGER NOT NULL, `stargazersCount` INTEGER NOT NULL, `watchersCount` INTEGER NOT NULL, `forksCount` INTEGER NOT NULL, `openIssuesCount` INTEGER NOT NULL, `forks` INTEGER NOT NULL, `openIssues` INTEGER NOT NULL, `watchers` INTEGER NOT NULL, `fork` INTEGER, `hasIssues` INTEGER NOT NULL, `hasProjects` INTEGER NOT NULL, `hasDownloads` INTEGER NOT NULL, `hasWiki` INTEGER NOT NULL, `hasPages` INTEGER NOT NULL, `owner_id` INTEGER, `owner_login` TEXT, `owner_avatarUrl` TEXT, `owner_gravatarId` TEXT, `owner_url` TEXT, `owner_htmlUrl` TEXT, `owner_followersUrl` TEXT, `owner_followingUrl` TEXT, `owner_gistsUrl` TEXT, `owner_starredUrl` TEXT, `owner_subscriptionsUrl` TEXT, `owner_organizationsUrl` TEXT, `owner_reposUrl` TEXT, `owner_eventsUrl` TEXT, `owner_receivedEventsUrl` TEXT, `owner_type` TEXT, `owner_siteAdmin` INTEGER, `owner_name` TEXT, `owner_company` TEXT, `owner_blog` TEXT, `owner_location` TEXT, `owner_email` TEXT, `owner_hireable` INTEGER, `owner_bio` TEXT, `owner_publicRepos` INTEGER, `owner_publicGists` INTEGER, `owner_followers` INTEGER, `owner_following` INTEGER, `owner_createdAt` INTEGER, `owner_updatedAt` INTEGER, `owner_privateGists` INTEGER, `owner_totalPrivateRepos` INTEGER, `owner_ownedPrivateRepos` INTEGER, `owner_diskUsage` INTEGER, `owner_collaborators` INTEGER, `owner_twoFactorAuthentication` INTEGER, `owner_contributions` INTEGER, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "fullName",
+            "columnName": "fullName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "htmlUrl",
+            "columnName": "htmlUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "homepage",
+            "columnName": "homepage",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "defaultBranch",
+            "columnName": "defaultBranch",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "language",
+            "columnName": "language",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updatedAt",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "pushedAt",
+            "columnName": "pushedAt",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "size",
+            "columnName": "size",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stargazersCount",
+            "columnName": "stargazersCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "watchersCount",
+            "columnName": "watchersCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "forksCount",
+            "columnName": "forksCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "openIssuesCount",
+            "columnName": "openIssuesCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "forks",
+            "columnName": "forks",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "openIssues",
+            "columnName": "openIssues",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "watchers",
+            "columnName": "watchers",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fork",
+            "columnName": "fork",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "hasIssues",
+            "columnName": "hasIssues",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hasProjects",
+            "columnName": "hasProjects",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hasDownloads",
+            "columnName": "hasDownloads",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hasWiki",
+            "columnName": "hasWiki",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hasPages",
+            "columnName": "hasPages",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "owner.id",
+            "columnName": "owner_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.login",
+            "columnName": "owner_login",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.avatarUrl",
+            "columnName": "owner_avatarUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.gravatarId",
+            "columnName": "owner_gravatarId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.url",
+            "columnName": "owner_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.htmlUrl",
+            "columnName": "owner_htmlUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.followersUrl",
+            "columnName": "owner_followersUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.followingUrl",
+            "columnName": "owner_followingUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.gistsUrl",
+            "columnName": "owner_gistsUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.starredUrl",
+            "columnName": "owner_starredUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.subscriptionsUrl",
+            "columnName": "owner_subscriptionsUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.organizationsUrl",
+            "columnName": "owner_organizationsUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.reposUrl",
+            "columnName": "owner_reposUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.eventsUrl",
+            "columnName": "owner_eventsUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.receivedEventsUrl",
+            "columnName": "owner_receivedEventsUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.type",
+            "columnName": "owner_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.siteAdmin",
+            "columnName": "owner_siteAdmin",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.name",
+            "columnName": "owner_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.company",
+            "columnName": "owner_company",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.blog",
+            "columnName": "owner_blog",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.location",
+            "columnName": "owner_location",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.email",
+            "columnName": "owner_email",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.hireable",
+            "columnName": "owner_hireable",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.bio",
+            "columnName": "owner_bio",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.publicRepos",
+            "columnName": "owner_publicRepos",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.publicGists",
+            "columnName": "owner_publicGists",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.followers",
+            "columnName": "owner_followers",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.following",
+            "columnName": "owner_following",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.createdAt",
+            "columnName": "owner_createdAt",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.updatedAt",
+            "columnName": "owner_updatedAt",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.privateGists",
+            "columnName": "owner_privateGists",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.totalPrivateRepos",
+            "columnName": "owner_totalPrivateRepos",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.ownedPrivateRepos",
+            "columnName": "owner_ownedPrivateRepos",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.diskUsage",
+            "columnName": "owner_diskUsage",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.collaborators",
+            "columnName": "owner_collaborators",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.twoFactorAuthentication",
+            "columnName": "owner_twoFactorAuthentication",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.contributions",
+            "columnName": "owner_contributions",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_Repository_owner_login",
+            "unique": false,
+            "columnNames": [
+              "owner_login"
+            ],
+            "createSql": "CREATE  INDEX `index_Repository_owner_login` ON `${TABLE_NAME}` (`owner_login`)"
+          }
+        ],
+        "foreignKeys": []
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"14972a6f292d4a88f6a5096b7f9cbf7f\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"d891c2a6fde30229afc2266791f09abb\")"
     ]
   }
 }

@@ -43,6 +43,8 @@ class NetworkModule {
                 .connectTimeout(TIME_OUT_API.toLong(), TimeUnit.SECONDS)
                 .writeTimeout(TIME_OUT_API.toLong(), TimeUnit.SECONDS)
                 .readTimeout(TIME_OUT_API.toLong(), TimeUnit.SECONDS)
+                .addInterceptor(ContentTypeInterceptor())
+                .addInterceptor(PaginationInterceptor())
                 .addInterceptor(AuthorizationInterceptor(requestAnnotations) { ownerType ->
                     var token: String? = null
                     when (ownerType) {
@@ -52,8 +54,6 @@ class NetworkModule {
                     }
                     token
                 })
-                .addInterceptor(ContentTypeInterceptor())
-                .addInterceptor(PaginationInterceptor())
                 .followRedirects(true)
                 .followSslRedirects(true)
                 .retryOnConnectionFailure(true)

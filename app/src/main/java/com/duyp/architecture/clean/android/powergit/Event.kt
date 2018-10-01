@@ -33,4 +33,7 @@ open class Event<out T>(private val content: T) {
         return "Event(content=$content, hasBeenHandled=$hasBeenHandled)"
     }
 
+    companion object {
+        fun empty() = Event(Unit)
+    }
 }
