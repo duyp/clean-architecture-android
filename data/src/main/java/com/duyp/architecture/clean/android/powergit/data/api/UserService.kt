@@ -37,7 +37,7 @@ interface UserService {
 
     @GET("user/repos")
     @Authenticated
-    fun getRepos(@QueryMap(encoded = true) filterParams: Map<String, String>, @Query(value = "page") page: Int):
+    fun getMyRepos(@QueryMap(encoded = true) filterParams: Map<String, String>, @Query(value = "page") page: Int):
             Single<PageableApiData<RepoApiData>>
 
     //

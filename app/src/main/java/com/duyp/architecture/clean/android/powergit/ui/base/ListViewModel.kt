@@ -1,9 +1,8 @@
 package com.duyp.architecture.clean.android.powergit.ui.base
 
-import com.duyp.architecture.clean.android.powergit.Event
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
 import com.duyp.architecture.clean.android.powergit.printStacktraceIfDebug
-import com.duyp.architecture.clean.android.powergit.ui.features.repo.list.BasicListViewModel
+import com.duyp.architecture.clean.android.powergit.ui.Event
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 
@@ -136,6 +135,9 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
                     it.printStacktraceIfDebug()
                     mIsLoading = false
                     setListState { copy(showLoading = false, errorMessage = Event(it.message ?: "")) }
+                }
+                .doOnComplete {
+                    mIsLoading = false
                 }
                 .onErrorResumeNext { _: Throwable -> Observable.empty() }
     }

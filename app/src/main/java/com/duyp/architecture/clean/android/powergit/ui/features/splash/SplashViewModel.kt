@@ -1,7 +1,7 @@
 package com.duyp.architecture.clean.android.powergit.ui.features.splash
 
-import com.duyp.architecture.clean.android.powergit.Event
 import com.duyp.architecture.clean.android.powergit.domain.usecases.CheckUser
+import com.duyp.architecture.clean.android.powergit.ui.Event
 import com.duyp.architecture.clean.android.powergit.ui.base.BaseViewModel
 import io.reactivex.Observable
 import javax.inject.Inject

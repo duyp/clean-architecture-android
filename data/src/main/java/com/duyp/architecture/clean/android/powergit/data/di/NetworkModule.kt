@@ -4,6 +4,7 @@ import android.content.Context
 import com.duyp.architecture.clean.android.powergit.data.BuildConfig
 import com.duyp.architecture.clean.android.powergit.data.api.ApiConstants.TIME_OUT_API
 import com.duyp.architecture.clean.android.powergit.data.api.UserService
+import com.duyp.architecture.clean.android.powergit.data.api.annotations.AnnotationWrapCallAdapterFactory
 import com.duyp.architecture.clean.android.powergit.data.api.annotations.OwnerType
 import com.duyp.architecture.clean.android.powergit.data.api.annotations.RequestAnnotations
 import com.duyp.architecture.clean.android.powergit.data.api.converters.GithubResponseConverter
@@ -82,11 +83,15 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient, gson: Gson) = Retrofit.Builder()
+    fun provideRetrofit(okHttpClient: OkHttpClient, gson: Gson, requestAnnotations: RequestAnnotations) = Retrofit.Builder()
             .baseUrl(BuildConfig.REST_URL)
             .client(okHttpClient)
             .addConverterFactory(GithubResponseConverter(gson))
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+            .addCallAdapterFactory(
+                    AnnotationWrapCallAdapterFactory.create(
+                            RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()), requestAnnotations
+                    )
+            )
             .build()
 
     @Provides

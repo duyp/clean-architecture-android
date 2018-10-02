@@ -1,8 +1,4 @@
-package com.duyp.architecture.clean.android.powergit.ui.features.repo.list
-
-import com.duyp.architecture.clean.android.powergit.ui.base.ListIntent
-import com.duyp.architecture.clean.android.powergit.ui.base.ListState
-import com.duyp.architecture.clean.android.powergit.ui.base.ListViewModel
+package com.duyp.architecture.clean.android.powergit.ui.base
 
 /**
  * Basic version if [ListViewModel] where the view only need to show a list of data without any other intents and

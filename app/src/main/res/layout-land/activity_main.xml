@@ -22,8 +22,7 @@
             android:id="@+id/pager"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-        <include layout="@layout/main_bottom_navigation"
-            android:id="@+id/bottom"/>
+        <include layout="@layout/main_bottom_navigation"/>
 
     </android.support.design.widget.CoordinatorLayout>
 

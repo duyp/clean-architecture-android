@@ -10,12 +10,18 @@ class MainViewModel @Inject constructor(
     override fun initState() = MainViewState()
 
     override fun composeIntent(intentSubject: Observable<MainIntent>) {
-
+        addDisposable {
+            intentSubject.ofType(MainIntent.OnPageSelected::class.java)
+                    .doOnNext { setState { copy(currentPage = it.page) } }
+                    .subscribe()
+        }
     }
 }
 
 data class MainViewState(
-        val value: Int? = 1
+        val currentPage: Int = 0
 )
 
-interface MainIntent
+sealed class MainIntent {
+    data class OnPageSelected(val page: Int): MainIntent()
+}

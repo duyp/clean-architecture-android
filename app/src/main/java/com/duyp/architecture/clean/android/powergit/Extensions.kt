@@ -18,6 +18,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.duyp.architecture.clean.android.powergit.ui.Event
 import com.duyp.architecture.clean.android.powergit.ui.base.BaseViewModel
 import timber.log.Timber
 
@@ -51,6 +52,24 @@ fun ViewGroup.inflate(@LayoutRes layout: Int, attachToRoot: Boolean = false): Vi
  */
 inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> FragmentTransaction) {
     beginTransaction().func().commit()
+}
+
+/**
+ * Create a [Fragment] instance with bundle consumer
+ */
+fun <F: Fragment> fragmentInstance(fragment: () -> F, bundle: Bundle.() -> Unit): F {
+    val f = fragment()
+    val b = Bundle()
+    bundle(b)
+    f.arguments = b
+    return f
+}
+
+inline fun <reified T: Fragment> Fragment.withArguments(bundle: Bundle.() -> Unit): T {
+    val b = Bundle()
+    bundle(b)
+    this.arguments = b
+    return this as T
 }
 
 // region ViewModels

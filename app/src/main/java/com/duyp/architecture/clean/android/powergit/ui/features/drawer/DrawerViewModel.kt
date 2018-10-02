@@ -1,9 +1,9 @@
 package com.duyp.architecture.clean.android.powergit.ui.features.drawer
 
-import com.duyp.architecture.clean.android.powergit.Event
 import com.duyp.architecture.clean.android.powergit.domain.entities.UserEntity
 import com.duyp.architecture.clean.android.powergit.domain.usecases.GetUser
 import com.duyp.architecture.clean.android.powergit.domain.usecases.LogoutUser
+import com.duyp.architecture.clean.android.powergit.ui.Event
 import com.duyp.architecture.clean.android.powergit.ui.base.BaseViewModel
 import io.reactivex.Flowable
 import io.reactivex.Observable

@@ -24,11 +24,15 @@ abstract class ViewModelFragment<State, Intent, VM : BaseViewModel<State, Intent
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mViewModel = ViewModelProviders.of(this, mViewModelFactory).get(viewModelClass())
-        mViewModel.processIntents(mIntent)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(getLayoutResource(), container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mViewModel.processIntents(mIntent)
     }
 
     abstract fun getLayoutResource(): Int

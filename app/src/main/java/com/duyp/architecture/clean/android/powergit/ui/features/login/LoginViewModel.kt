@@ -1,9 +1,9 @@
 package com.duyp.architecture.clean.android.powergit.ui.features.login
 
-import com.duyp.architecture.clean.android.powergit.Event
 import com.duyp.architecture.clean.android.powergit.domain.usecases.GetUser
 import com.duyp.architecture.clean.android.powergit.domain.usecases.LoginUser
 import com.duyp.architecture.clean.android.powergit.domain.utils.CommonUtil
+import com.duyp.architecture.clean.android.powergit.ui.Event
 import com.duyp.architecture.clean.android.powergit.ui.base.BaseViewModel
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
@@ -42,7 +42,8 @@ class LoginViewModel @Inject constructor(
                                 }
                                 .doOnError { throwable ->
                                     setState {
-                                        copy(isLoading = false, errorMessage = Event(throwable.message ?: ""))
+                                        copy(isLoading = false, errorMessage = Event(throwable.message
+                                                ?: ""))
                                     }
                                 }
                                 .doOnComplete { setState { copy(loginSuccess = Event(Unit)) } }

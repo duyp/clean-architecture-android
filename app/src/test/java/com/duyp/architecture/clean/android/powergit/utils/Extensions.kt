@@ -1,6 +1,6 @@
 package com.duyp.architecture.clean.android.powergit.utils
 
-import com.duyp.architecture.clean.android.powergit.Event
+import com.duyp.architecture.clean.android.powergit.ui.Event
 
 fun <T> Event<T>.noValue() = this.peekContent() == null
 
