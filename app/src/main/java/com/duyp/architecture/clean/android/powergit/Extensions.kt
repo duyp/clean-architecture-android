@@ -221,8 +221,6 @@ fun <S, I, VM : BaseViewModel<S, I>> LifecycleOwner.withState(vm: VM, state: S.(
     vm.state.observeNonNull(this, state)
 }
 
-
-
 /**
  * Get an [Event] value only if the event is NOT NULL and its content hasn't been handled yet
  */
@@ -233,3 +231,5 @@ fun <T> event(event: Event<T>?, onEventUnhandledContent: T.() -> Unit) {
 fun Throwable.printStacktraceIfDebug() {
     if (BuildConfig.DEBUG) this.printStackTrace()
 }
+
+fun String?.or(elseString: String): String = this ?: elseString

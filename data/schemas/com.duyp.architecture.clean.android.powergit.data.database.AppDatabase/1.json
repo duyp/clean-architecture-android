@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "d891c2a6fde30229afc2266791f09abb",
+    "identityHash": "9a2f685f07408fad3f1e4059b6327e31",
     "entities": [
       {
         "tableName": "User",
@@ -242,7 +242,7 @@
       },
       {
         "tableName": "Repository",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT, `fullName` TEXT, `htmlUrl` TEXT, `description` TEXT, `url` TEXT, `homepage` TEXT, `defaultBranch` TEXT, `language` TEXT, `createdAt` INTEGER, `updatedAt` INTEGER, `pushedAt` INTEGER, `size` INTEGER NOT NULL, `stargazersCount` INTEGER NOT NULL, `watchersCount` INTEGER NOT NULL, `forksCount` INTEGER NOT NULL, `openIssuesCount` INTEGER NOT NULL, `forks` INTEGER NOT NULL, `openIssues` INTEGER NOT NULL, `watchers` INTEGER NOT NULL, `fork` INTEGER, `hasIssues` INTEGER NOT NULL, `hasProjects` INTEGER NOT NULL, `hasDownloads` INTEGER NOT NULL, `hasWiki` INTEGER NOT NULL, `hasPages` INTEGER NOT NULL, `owner_id` INTEGER, `owner_login` TEXT, `owner_avatarUrl` TEXT, `owner_gravatarId` TEXT, `owner_url` TEXT, `owner_htmlUrl` TEXT, `owner_followersUrl` TEXT, `owner_followingUrl` TEXT, `owner_gistsUrl` TEXT, `owner_starredUrl` TEXT, `owner_subscriptionsUrl` TEXT, `owner_organizationsUrl` TEXT, `owner_reposUrl` TEXT, `owner_eventsUrl` TEXT, `owner_receivedEventsUrl` TEXT, `owner_type` TEXT, `owner_siteAdmin` INTEGER, `owner_name` TEXT, `owner_company` TEXT, `owner_blog` TEXT, `owner_location` TEXT, `owner_email` TEXT, `owner_hireable` INTEGER, `owner_bio` TEXT, `owner_publicRepos` INTEGER, `owner_publicGists` INTEGER, `owner_followers` INTEGER, `owner_following` INTEGER, `owner_createdAt` INTEGER, `owner_updatedAt` INTEGER, `owner_privateGists` INTEGER, `owner_totalPrivateRepos` INTEGER, `owner_ownedPrivateRepos` INTEGER, `owner_diskUsage` INTEGER, `owner_collaborators` INTEGER, `owner_twoFactorAuthentication` INTEGER, `owner_contributions` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT, `fullName` TEXT, `htmlUrl` TEXT, `description` TEXT, `url` TEXT, `homepage` TEXT, `defaultBranch` TEXT, `language` TEXT, `createdAt` INTEGER, `updatedAt` INTEGER, `pushedAt` INTEGER, `size` INTEGER NOT NULL, `stargazersCount` INTEGER NOT NULL, `watchersCount` INTEGER NOT NULL, `forksCount` INTEGER NOT NULL, `openIssuesCount` INTEGER NOT NULL, `forks` INTEGER NOT NULL, `openIssues` INTEGER NOT NULL, `watchers` INTEGER NOT NULL, `fork` INTEGER NOT NULL, `hasIssues` INTEGER NOT NULL, `hasProjects` INTEGER NOT NULL, `hasDownloads` INTEGER NOT NULL, `hasWiki` INTEGER NOT NULL, `hasPages` INTEGER NOT NULL, `owner_id` INTEGER, `owner_login` TEXT, `owner_avatarUrl` TEXT, `owner_gravatarId` TEXT, `owner_url` TEXT, `owner_htmlUrl` TEXT, `owner_followersUrl` TEXT, `owner_followingUrl` TEXT, `owner_gistsUrl` TEXT, `owner_starredUrl` TEXT, `owner_subscriptionsUrl` TEXT, `owner_organizationsUrl` TEXT, `owner_reposUrl` TEXT, `owner_eventsUrl` TEXT, `owner_receivedEventsUrl` TEXT, `owner_type` TEXT, `owner_siteAdmin` INTEGER, `owner_name` TEXT, `owner_company` TEXT, `owner_blog` TEXT, `owner_location` TEXT, `owner_email` TEXT, `owner_hireable` INTEGER, `owner_bio` TEXT, `owner_publicRepos` INTEGER, `owner_publicGists` INTEGER, `owner_followers` INTEGER, `owner_following` INTEGER, `owner_createdAt` INTEGER, `owner_updatedAt` INTEGER, `owner_privateGists` INTEGER, `owner_totalPrivateRepos` INTEGER, `owner_ownedPrivateRepos` INTEGER, `owner_diskUsage` INTEGER, `owner_collaborators` INTEGER, `owner_twoFactorAuthentication` INTEGER, `owner_contributions` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -368,7 +368,7 @@
             "fieldPath": "fork",
             "columnName": "fork",
             "affinity": "INTEGER",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "hasIssues",
@@ -644,7 +644,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"d891c2a6fde30229afc2266791f09abb\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"9a2f685f07408fad3f1e4059b6327e31\")"
     ]
   }
 }

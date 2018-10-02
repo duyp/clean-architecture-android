@@ -1,15 +1,12 @@
 package com.duyp.architecture.clean.android.powergit.ui.base
 
-import android.content.Context
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.duyp.architecture.clean.android.powergit.R
+import com.duyp.architecture.clean.android.powergit.inflate
 
-abstract class LoadMoreAdapter(mContext: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    protected val mLayoutInflater: LayoutInflater = LayoutInflater.from(mContext)
+abstract class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         private const val TYPE_PROGRESS = 0
@@ -47,7 +44,7 @@ abstract class LoadMoreAdapter(mContext: Context) : RecyclerView.Adapter<Recycle
     abstract fun onBindItemViewHolder(holder: RecyclerView.ViewHolder, position: Int)
 
     protected fun onCreateProgressViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        return DefaultProgressViewHolder(mLayoutInflater.inflate(R.layout.progress_layout, parent, false))
+        return DefaultProgressViewHolder(parent.inflate(R.layout.progress_layout))
     }
 
     protected fun onBindHeaderViewHolder(holder: RecyclerView.ViewHolder, position: Int) {

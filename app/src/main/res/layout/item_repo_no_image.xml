@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="?android:selectableItemBackground"
+    android:padding="@dimen/regular">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:textColor="?android:textColorPrimary"
+            android:textStyle="bold"
+            tools:text="When one acquires music and afterlife, one is able to capture heaven."/>
+
+        <TextView
+            android:id="@+id/tvDes"
+            style="@style/text_description"
+            android:layout_marginTop="@dimen/xx_tiny"
+            android:layout_marginBottom="@dimen/xx_tiny"
+            android:text="@string/description" />
+
+        <com.duyp.architecture.clean.android.powergit.ui.widgets.AutoLinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/xx_tiny"
+            app:auto_gravity="start"
+            app:auto_orientation="horizontal">
+
+            <TextView
+                android:id="@+id/stars"
+                style="@style/TextAppearance.AppCompat.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/xx_tiny"
+                android:drawablePadding="@dimen/xx_tiny"
+                android:drawableStart="@drawable/ic_star_small"
+                android:gravity="start|center"
+                android:textColor="?android:attr/textColorSecondary"
+                tools:text="1000"/>
+
+            <TextView
+                android:id="@+id/forks"
+                style="@style/TextAppearance.AppCompat.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/xx_tiny"
+                android:drawablePadding="@dimen/xx_tiny"
+                android:drawableStart="@drawable/ic_fork_small"
+                android:gravity="start|center"
+                android:textColor="?android:attr/textColorSecondary"
+                tools:text="5000"/>
+
+            <TextView
+                android:id="@+id/date"
+                style="@style/TextAppearance.AppCompat.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/xx_tiny"
+                android:drawablePadding="@dimen/xx_tiny"
+                android:drawableStart="@drawable/ic_time_small"
+                android:gravity="start|center"
+                android:textColor="?android:attr/textColorSecondary"
+                tools:text="50 minutes ago"/>
+
+            <TextView
+                android:id="@+id/size"
+                style="@style/TextAppearance.AppCompat.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/xx_tiny"
+                android:drawablePadding="@dimen/xx_tiny"
+                android:drawableStart="@drawable/ic_storage_small"
+                android:gravity="start|center"
+                android:textColor="?android:attr/textColorSecondary"
+                tools:text="100 MB"
+                tools:visibility="visible"/>
+
+            <TextView
+                android:id="@+id/language"
+                style="@style/TextAppearance.AppCompat.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="start|center"
+                android:textColor="?android:attr/textColorSecondary"
+                android:visibility="gone"
+                tools:text="TypeScript"
+                tools:visibility="visible"/>
+        </com.duyp.architecture.clean.android.powergit.ui.widgets.AutoLinearLayout>
+    </LinearLayout>
+</RelativeLayout>

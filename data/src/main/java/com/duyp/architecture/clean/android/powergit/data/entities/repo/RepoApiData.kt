@@ -73,7 +73,7 @@ data class RepoApiData (
         var private: Boolean = false,
 
         @SerializedName("fork")
-        var fork: Boolean? = null,
+        var fork: Boolean = false,
 
         @SerializedName("has_issues")
         var hasIssues: Boolean = false,

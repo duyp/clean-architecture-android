@@ -50,7 +50,7 @@ data class RepoEntity(
 
         var private: Boolean = false,
 
-        var fork: Boolean? = null,
+        var fork: Boolean = false,
 
         var hasIssues: Boolean = false,
 
