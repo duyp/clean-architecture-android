@@ -10,12 +10,13 @@ import javax.inject.Inject
 
 class RepoListViewModel @Inject constructor(
         private val mGetUserRepoList: GerUserRepoList
-): BasicListViewModel<RepoEntity>(), AdapterData<RepoEntity> {
+): BasicListViewModel<RepoEntity, RepoEntity>(), AdapterData<RepoEntity> {
 
     private val mFilterOptions = FilterOptions()
 
+    override fun getItem(listItem: RepoEntity) = listItem
+
     override fun loadPageObservable(page: Int): Observable<ListEntity<RepoEntity>> {
-        return mGetUserRepoList.getRepoList("duyp", mFilterOptions, page)
-                .toObservable()
+        return mGetUserRepoList.getRepoList("duyp", mFilterOptions, page).toObservable()
     }
 }

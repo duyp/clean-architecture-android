@@ -23,23 +23,18 @@ class RepoRepositoryImpl @Inject constructor(
 
     private val mRepoLocalToEntityMapper = RepoLocalToEntityMapper()
 
-    override fun getUserRepoList(username: String, filterOptions: FilterOptions, page: Int): Single<ListEntity<RepoEntity>> {
+    override fun getUserRepoListApi(username: String, filterOptions: FilterOptions, page: Int): Single<ListEntity<RepoEntity>> {
         return mUserService.getRepos(username, filterOptions.getQueryMap(), page)
                 .doOnSuccess {
                     // save to database
                     mRepoDao.insertList(mRepoAPiToLocalMapper.mapFrom(it.items))
                 }
                 .map { mRepoListApiToEntityMapper.mapFrom(it) }
-                .onErrorResumeNext { throwable ->
-                    if (page == ListEntity.STARTING_PAGE) {
-                        // api error when loading first page, let load from database
-                        mRepoDao.getUserRepos(username)
-                                .map { mRepoLocalToEntityMapper.mapFrom(it) }
-                                .map { ListEntity(items = it, isApiData = false) }
-                    } else {
-                        Single.error(throwable)
-                    }
-                }
     }
 
+    override fun getUserRepoListLocal(username: String, filterOptions: FilterOptions): Single<ListEntity<RepoEntity>> {
+        return mRepoDao.getUserRepos(username)
+                .map { mRepoLocalToEntityMapper.mapFrom(it) }
+                .map { ListEntity(items = it, isApiData = false) }
+    }
 }
