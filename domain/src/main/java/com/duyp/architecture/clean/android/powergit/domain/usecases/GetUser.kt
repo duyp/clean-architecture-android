@@ -1,11 +1,13 @@
 package com.duyp.architecture.clean.android.powergit.domain.usecases
 
 import com.duyp.architecture.clean.android.powergit.domain.entities.UserEntity
+import com.duyp.architecture.clean.android.powergit.domain.entities.exception.AuthenticationException
 import com.duyp.architecture.clean.android.powergit.domain.repositories.AuthenticationRepository
 import com.duyp.architecture.clean.android.powergit.domain.repositories.SettingRepository
 import com.duyp.architecture.clean.android.powergit.domain.repositories.UserRepository
 import com.duyp.architecture.clean.android.powergit.domain.utils.CommonUtil
 import io.reactivex.Flowable
+import io.reactivex.Maybe
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -27,14 +29,15 @@ class GetUser @Inject constructor(
      * @return Maybe emitting username of current logged in user, complete if no logged in user
      */
     fun getCurrentLoggedInUsername(): Single<String> =
-            Single.fromCallable { mSettingRepository.getCurrentUsername() }
+            Maybe.fromCallable { mSettingRepository.getCurrentUsername() }
+                    .toSingle("")
                     .flatMap { username ->
                         mCheckUser.isLoggedIn(username)
                                 .flatMap {
                                     if (it)
                                         Single.just(username)
                                     else
-                                        Single.error(NoSuchElementException())
+                                        Single.error(AuthenticationException())
                                 }
                     }
 

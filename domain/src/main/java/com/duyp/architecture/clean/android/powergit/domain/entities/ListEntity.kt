@@ -8,7 +8,8 @@ data class ListEntity<T> (
         val totalCount: Int = 0,
         val incompleteResults: Boolean = false,
         val items: List<T>,
-        val isApiData: Boolean
+        val isApiData: Boolean,
+        val apiError: Throwable? = null
 ) {
 
     fun canLoadMore() = next in 1..last

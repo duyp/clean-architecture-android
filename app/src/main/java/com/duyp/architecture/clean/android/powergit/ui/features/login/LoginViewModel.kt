@@ -42,8 +42,7 @@ class LoginViewModel @Inject constructor(
                                 }
                                 .doOnError { throwable ->
                                     setState {
-                                        copy(isLoading = false, errorMessage = Event(throwable.message
-                                                ?: ""))
+                                        copy(isLoading = false, errorMessage = Event(throwable.message ?: ""))
                                     }
                                 }
                                 .doOnComplete { setState { copy(loginSuccess = Event(Unit)) } }

@@ -19,6 +19,7 @@ class GerUserRepoList @Inject constructor(
                         if (page == ListEntity.STARTING_PAGE) {
                             // api error when loading first page, let load from database
                             mRepoRepository.getUserRepoListLocal(username, filterOptions)
+                                    .map { it.copy(apiError = throwable) }
                         } else {
                             Single.error(throwable)
                         }
@@ -32,6 +33,7 @@ class GerUserRepoList @Inject constructor(
                                     if (page == ListEntity.STARTING_PAGE) {
                                         // api error when loading first page, let load from database
                                         mRepoRepository.getUserRepoListLocal(username, filterOptions)
+                                                .map { it.copy(apiError = throwable) }
                                     } else {
                                         Single.error(throwable)
                                     }

@@ -3,6 +3,7 @@ package com.duyp.architecture.clean.android.powergit.ui.features.main
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.view.ViewPager
 import com.duyp.architecture.clean.android.powergit.R
 import com.duyp.architecture.clean.android.powergit.showToastMessage
 import com.duyp.architecture.clean.android.powergit.ui.base.ViewModelActivity
@@ -21,6 +22,17 @@ class MainActivity : ViewModelActivity<MainViewState, MainIntent, MainViewModel>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         pager.adapter = mPagerAdapter
+
+        pager.addOnPageChangeListener(object: ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {}
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+            override fun onPageSelected(position: Int) {
+                onIntent(MainIntent.OnPageSelected(position))
+            }
+
+        })
         bottomNavigation.setOnMenuItemClickListener(object: BottomNavigation.OnMenuItemSelectionListener {
 
             override fun onMenuItemSelect(id: Int, position: Int, fromUser: Boolean) {
@@ -56,8 +68,8 @@ class MainActivity : ViewModelActivity<MainViewState, MainIntent, MainViewModel>
     private fun setCurrentPage(position: Int) {
         if (position != pager.currentItem) {
             pager.currentItem = position
-            bottomNavigation.setSelectedIndex(position, true)
         }
+        bottomNavigation.setSelectedIndex(position, true)
     }
 
     companion object {

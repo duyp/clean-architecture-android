@@ -1,6 +1,7 @@
 package com.duyp.architecture.clean.android.powergit.ui.base
 
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
+import com.duyp.architecture.clean.android.powergit.domain.entities.exception.AuthenticationException
 import com.duyp.architecture.clean.android.powergit.printStacktraceIfDebug
 import com.duyp.architecture.clean.android.powergit.ui.Event
 import io.reactivex.Observable
@@ -27,7 +28,7 @@ import io.reactivex.schedulers.Schedulers
  *
  * See some examples:
  *  - Basic [com.duyp.architecture.clean.android.powergit.ui.features.repo.list.RepoListViewModel]
- *  - Extended [com.duyp.architecture.clean.android.powergit.ui.features.repo.list.RepoListViewModel]
+ *  - Extended [to be continued]
  *
  * @param [S] View State
  * @param [I] View Intent, must extends [ListIntent]
@@ -118,23 +119,43 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
         return loadPageObservable(page)
                 .doOnSubscribe {
                     mIsLoading = true
-                    setListState { copy(showLoading = page == ListEntity.STARTING_PAGE) }
+                    setListState {
+                        copy(
+                                showEmptyView = false,
+                                requireLogin = false,
+                                showOfflineNotice = false,
+                                showLoading = page == ListEntity.STARTING_PAGE
+                        )
+                    }
                 }
                 .doOnNext {
                     mListEntity = it
                     mIsLoading = false
+                    val err = mListEntity!!.apiError?.message ?: ""
                     setListState {
                         copy(
                                 showLoading = false,
+                                showEmptyView = getTotalCount() == 0,
                                 loadCompleted = Event.empty(),
-                                showOfflineNotice = !mListEntity!!.isApiData
+                                showOfflineNotice = !mListEntity!!.isApiData,
+                                errorMessage = if (err.isEmpty()) null else Event(err)
                         )
                     }
                 }
                 .doOnError {
                     it.printStacktraceIfDebug()
                     mIsLoading = false
-                    setListState { copy(showLoading = false, errorMessage = Event(it.message ?: "")) }
+                    if (it is AuthenticationException) {
+                        mListEntity = null
+                    }
+                    setListState {
+                        copy(
+                                showLoading = false,
+                                showEmptyView = getTotalCount() == 0,
+                                errorMessage = Event(it.message ?: ""),
+                                requireLogin = it is AuthenticationException
+                        )
+                    }
                 }
                 .doOnComplete {
                     mIsLoading = false
@@ -146,6 +167,8 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
 data class ListState(
         val showLoading: Boolean = false,
         val showOfflineNotice: Boolean = false,
+        val showEmptyView: Boolean = false,
+        val requireLogin: Boolean = false,
         val refresh: Event<Unit>? = null,
         val errorMessage: Event<String>? = null,
         val loadingMore: Event<Unit>? = null,

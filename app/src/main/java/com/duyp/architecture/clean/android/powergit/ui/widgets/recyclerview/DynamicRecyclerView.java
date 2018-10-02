@@ -3,17 +3,14 @@ package com.duyp.architecture.clean.android.powergit.ui.widgets.recyclerview;
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
-import android.view.View;
 
 import com.duyp.architecture.clean.android.powergit.R;
 import com.duyp.architecture.clean.android.powergit.ui.utils.ViewHelper;
-import com.duyp.architecture.clean.android.powergit.ui.widgets.StateLayout;
 
 
 /**
@@ -23,25 +20,7 @@ import com.duyp.architecture.clean.android.powergit.ui.widgets.StateLayout;
  */
 public class DynamicRecyclerView extends RecyclerView {
 
-    private StateLayout emptyView;
-    @Nullable private View parentView;
     private BottomPaddingDecoration bottomPaddingDecoration;
-
-    @NonNull private AdapterDataObserver observer = new AdapterDataObserver() {
-        @Override public void onChanged() {
-            showEmptyView();
-        }
-
-        @Override public void onItemRangeInserted(int positionStart, int itemCount) {
-            super.onItemRangeInserted(positionStart, itemCount);
-            showEmptyView();
-        }
-
-        @Override public void onItemRangeRemoved(int positionStart, int itemCount) {
-            super.onItemRangeRemoved(positionStart, itemCount);
-            showEmptyView();
-        }
-    };
 
     public DynamicRecyclerView(@NonNull Context context) {
         this(context, null);
@@ -55,16 +34,6 @@ public class DynamicRecyclerView extends RecyclerView {
         super(context, attrs, defStyle);
     }
 
-    @Override public void setAdapter(@Nullable Adapter adapter) {
-        super.setAdapter(adapter);
-        if (isInEditMode()) return;
-        if (adapter != null) {
-            adapter.registerAdapterDataObserver(observer);
-            observer.onChanged();
-        }
-    }
-
-
     public void removeBottomDecoration() {
         if (bottomPaddingDecoration != null) {
             removeItemDecoration(bottomPaddingDecoration);
@@ -75,48 +44,6 @@ public class DynamicRecyclerView extends RecyclerView {
     public void addDecoration() {
         bottomPaddingDecoration = BottomPaddingDecoration.with(getContext());
         addItemDecoration(bottomPaddingDecoration);
-    }
-
-    private void showEmptyView() {
-        Adapter<?> adapter = getAdapter();
-        if (adapter != null) {
-            if (emptyView != null) {
-                if (adapter.getItemCount() == 0) {
-                    showParentOrSelf(false);
-                } else {
-                    showParentOrSelf(true);
-                }
-            }
-        } else {
-            if (emptyView != null) {
-                showParentOrSelf(false);
-            }
-        }
-    }
-
-    private void showParentOrSelf(boolean showRecyclerView) {
-        if (parentView != null)
-            parentView.setVisibility(VISIBLE);
-        setVisibility(VISIBLE);
-        emptyView.setVisibility(!showRecyclerView ? VISIBLE : GONE);
-    }
-
-    public void setEmptyView(@NonNull StateLayout emptyView, @Nullable View parentView) {
-        this.emptyView = emptyView;
-        this.parentView = parentView;
-        showEmptyView();
-    }
-
-    public void setEmptyView(@NonNull StateLayout emptyView) {
-        setEmptyView(emptyView, null);
-    }
-
-    public void hideProgress(@NonNull StateLayout view) {
-        view.hideProgress();
-    }
-
-    public void showProgress(@NonNull StateLayout view) {
-        view.showProgress();
     }
 
     public void addKeyLineDivider() {

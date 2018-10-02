@@ -35,6 +35,8 @@ public class StateLayout extends NestedScrollView {
     @State
     String emptyTextValue;
     @State
+    String reloadTextValue;
+    @State
     boolean showReload = true;
 
     public StateLayout(Context context) {
@@ -92,6 +94,11 @@ public class StateLayout extends NestedScrollView {
     public void setEmptyText(@NonNull String text) {
         this.emptyTextValue = text + "\n\n¯\\_(ツ)_/¯";
         emptyText.setText(emptyTextValue);
+    }
+
+    public void setReloadText(@NonNull String text) {
+        this.reloadTextValue = text;
+        reload.setText(reloadTextValue);
     }
 
     public void showEmptyState() {

@@ -7,6 +7,7 @@ import android.view.View
 import com.duyp.architecture.clean.android.powergit.R
 import com.duyp.architecture.clean.android.powergit.event
 import com.duyp.architecture.clean.android.powergit.showToastMessage
+import com.duyp.architecture.clean.android.powergit.ui.features.login.LoginActivity
 import com.duyp.architecture.clean.android.powergit.ui.widgets.recyclerview.scroll.InfiniteScroller
 import com.duyp.architecture.clean.android.powergit.ui.widgets.recyclerview.scroll.RecyclerViewFastScroller
 import kotlinx.android.synthetic.main.refresh_recycler_view.*
@@ -29,15 +30,12 @@ abstract class ListFragment<EntityType, ListType, A: LoadMoreAdapter, I: ListInt
 
     private lateinit var mInfiniteScroller: InfiniteScroller
 
-    private var mIsRefreshing = false
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mAdapter = createAdapter(mViewModel)
         mInfiniteScroller = InfiniteScroller(mAdapter) { onIntent(mViewModel.getLoadMoreIntent()) }
 
         recyclerView.adapter = mAdapter
-        recyclerView.setEmptyView(stateLayout, refreshLayout)
         recyclerView.addOnScrollListener(mInfiniteScroller)
         fastScroller.attachRecyclerView(recyclerView)
         refreshLayout.setOnRefreshListener { refresh() }
@@ -51,7 +49,10 @@ abstract class ListFragment<EntityType, ListType, A: LoadMoreAdapter, I: ListInt
      * Call this to update [ListState] for this fragment, normally called inside [withState]
      */
     protected fun onListStateUpdated(s: ListState) {
+
         setUiRefreshing(s.showLoading)
+
+        updateEmptyView(s.showEmptyView)
 
         event(s.refresh) { refresh() }
 
@@ -61,13 +62,21 @@ abstract class ListFragment<EntityType, ListType, A: LoadMoreAdapter, I: ListInt
 
         event(s.errorMessage) { showErrorMessage(this) }
 
-        if (s.showOfflineNotice) {
-            showOfflineNotice()
-        }
-    }
+        updateOfflineNotice(s.showOfflineNotice)
 
-    protected fun showOfflineNotice() {
-        showToastMessage("Showing offline data")
+        if (s.requireLogin) {
+            stateLayout.setEmptyText("Please login")
+            stateLayout.setReloadText("Login")
+            stateLayout.setOnReloadListener {
+                LoginActivity.start(requireContext())
+            }
+            refreshLayout.isEnabled = false
+        } else {
+            stateLayout.setEmptyText("No Data")
+            stateLayout.setReloadText("Reload")
+            stateLayout.setOnReloadListener { refresh() }
+            refreshLayout.isEnabled = true
+        }
     }
 
     protected fun showErrorMessage(message: String) {
@@ -79,22 +88,35 @@ abstract class ListFragment<EntityType, ListType, A: LoadMoreAdapter, I: ListInt
     }
 
     private fun refresh() {
-        if (!mIsRefreshing) {
-            onIntent(mViewModel.getRefreshIntent())
-            mInfiniteScroller.reset()
-            mIsRefreshing = true
-        }
+        onIntent(mViewModel.getRefreshIntent())
+        mInfiniteScroller.reset()
     }
 
     private fun onLoadCompleted() {
         mInfiniteScroller.reset()
         mAdapter.notifyDataSetChanged()
-        mIsRefreshing = false
     }
 
     private fun setUiRefreshing(refreshing: Boolean) {
-        refreshLayout.post {
-            refreshLayout.isRefreshing = refreshing
+        refreshLayout?.post {
+            refreshLayout?.isRefreshing = refreshing
+        }
+    }
+
+    protected fun updateOfflineNotice(showIt: Boolean) {
+        tvOfflineNotice.visibility = if (showIt) View.VISIBLE else View.GONE
+    }
+
+    protected fun updateEmptyView(showIt: Boolean) {
+        if (recyclerView == null || stateLayout == null)
+            return
+
+        if (showIt) {
+            recyclerView.visibility = View.GONE
+            stateLayout.visibility = View.VISIBLE
+        } else {
+            recyclerView.visibility = View.VISIBLE
+            stateLayout.visibility = View.GONE
         }
     }
 }

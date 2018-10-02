@@ -5,9 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import com.duyp.architecture.clean.android.powergit.R
-import com.duyp.architecture.clean.android.powergit.event
-import com.duyp.architecture.clean.android.powergit.showToastMessage
+import com.duyp.architecture.clean.android.powergit.*
 import com.duyp.architecture.clean.android.powergit.ui.base.ViewModelActivity
 import com.duyp.architecture.clean.android.powergit.ui.features.main.MainActivity
 import kotlinx.android.synthetic.main.activity_login.*
@@ -24,6 +22,7 @@ class LoginActivity : ViewModelActivity<LoginViewState, LoginIntent, LoginViewMo
                 true
             } else false
         }
+        tvSkip.setOnClickListener { navigateMain() }
 
         withState {
             setLoading(isLoading)
@@ -31,15 +30,20 @@ class LoginActivity : ViewModelActivity<LoginViewState, LoginIntent, LoginViewMo
                 showToastMessage(this)
             }
             event(loginSuccess) {
-                MainActivity.start(this@LoginActivity)
                 showToastMessage("login success!")
-                finish()
+                hideKeyboard()
+                navigateMain()
             }
             event(lastLoggedInUsername) {
                 edtUsername.setText(this)
                 edtPassword.requestFocus()
+                showKeyboard(edtPassword)
             }
         }
+    }
+
+    override fun getLayoutResource(): Int {
+        return R.layout.activity_login
     }
 
     private fun login() {
@@ -51,8 +55,9 @@ class LoginActivity : ViewModelActivity<LoginViewState, LoginIntent, LoginViewMo
         progress.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
-    override fun getLayoutResource(): Int {
-        return R.layout.activity_login
+    private fun navigateMain() {
+        MainActivity.start(this@LoginActivity)
+        finish()
     }
 
     companion object {

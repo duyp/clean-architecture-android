@@ -17,6 +17,8 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.Toast
 import com.duyp.architecture.clean.android.powergit.ui.Event
 import com.duyp.architecture.clean.android.powergit.ui.base.BaseViewModel
@@ -224,13 +226,40 @@ fun exceptionInDebug(t: Throwable) {
 }
 
 fun Activity.showToastMessage(message: String) {
-    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    if (!message.isEmpty()) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
 }
 
 fun Fragment.showToastMessage(message: String) {
-    this.context?.let {
-        Toast.makeText(it, message, Toast.LENGTH_SHORT).show()
+    if (this.context != null && !message.isEmpty()) {
+        Toast.makeText(this.context, message, Toast.LENGTH_SHORT).show()
     }
+}
+
+fun Fragment.hideKeyboard() {
+    view?.let { activity?.hideKeyboard(it) }
+}
+
+fun Fragment.showKeyboard(editText: EditText) {
+    activity?.showKeyboard(editText)
+}
+
+fun Activity.hideKeyboard() {
+    hideKeyboard(if (currentFocus == null) View(this) else currentFocus)
+}
+
+fun Context.hideKeyboard(view: View) {
+    val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+}
+
+fun Activity.showKeyboard(yourEditText: EditText) {
+    try {
+        val input = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        input.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+        input.showSoftInput(yourEditText, InputMethodManager.SHOW_IMPLICIT)
+    } catch (ignored: Exception) { }
 }
 
 /**
