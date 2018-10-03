@@ -1,11 +1,15 @@
-package com.duyp.architecture.clean.android.powergit.domain.entities
+package com.duyp.architecture.clean.android.powergit.data.entities.gist
 
+import com.duyp.architecture.clean.android.powergit.data.entities.user.UserApiData
+import com.google.gson.annotations.SerializedName
 import java.util.*
 
-data class GistEntity(
+data class GistApiData(
 
+        @SerializedName("nooope")
         var id: Long = 0,
 
+        @SerializedName("id")
         var gistId: String? = null,
 
         var url: String? = null,
@@ -38,7 +42,7 @@ data class GistEntity(
 
         //GithubFileModel files;
 
-        var user: UserEntity? = null,
+        var user: UserApiData? = null,
 
-        var owner: UserEntity? = null
+        var owner: UserApiData? = null
 )

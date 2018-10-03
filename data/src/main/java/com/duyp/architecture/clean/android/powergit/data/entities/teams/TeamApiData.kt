@@ -1,6 +1,6 @@
-package com.duyp.architecture.clean.android.powergit.domain.entities
+package com.duyp.architecture.clean.android.powergit.data.entities.teams
 
-data class TeamsEntity(
+data class TeamApiData(
 
         var id: Long = 0,
 

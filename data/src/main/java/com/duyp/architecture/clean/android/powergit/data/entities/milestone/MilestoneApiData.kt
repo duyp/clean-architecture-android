@@ -1,8 +1,9 @@
-package com.duyp.architecture.clean.android.powergit.domain.entities
+package com.duyp.architecture.clean.android.powergit.data.entities.milestone
 
+import com.duyp.architecture.clean.android.powergit.data.entities.user.UserApiData
 import java.util.*
 
-class MilestoneEntity(
+class MilestoneApiData(
 
         var id: Long = 0,
 
@@ -30,5 +31,5 @@ class MilestoneEntity(
 
         var dueOn: Date? = null,
 
-        var creator: UserEntity? = null
+        var creator: UserApiData? = null
 )

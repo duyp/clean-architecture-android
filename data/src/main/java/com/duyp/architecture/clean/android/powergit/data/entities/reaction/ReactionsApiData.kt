@@ -1,6 +1,9 @@
-package com.duyp.architecture.clean.android.powergit.domain.entities
+package com.duyp.architecture.clean.android.powergit.data.entities.reaction
 
-data class ReactionsEntity(
+import com.duyp.architecture.clean.android.powergit.data.entities.user.UserApiData
+import com.google.gson.annotations.SerializedName
+
+data class ReactionsApiData(
 
         var id: Long = 0,
 
@@ -8,12 +11,14 @@ data class ReactionsEntity(
 
         var content: String? = null,
 
-        var user: UserEntity? = null,
+        var user: UserApiData? = null,
 
         var total_count: Int = 0,
 
+        @SerializedName("+1")
         var plusOne: Int = 0,
 
+        @SerializedName("-1")
         var minusOne: Int = 0,
 
         var laugh: Int = 0,

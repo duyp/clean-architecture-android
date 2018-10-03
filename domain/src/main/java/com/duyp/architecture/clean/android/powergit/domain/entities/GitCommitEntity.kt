@@ -2,22 +2,21 @@ package com.duyp.architecture.clean.android.powergit.domain.entities
 
 class GitCommitEntity(
 
-    var sha: String? = null,
+        var sha: String? = null,
 
-    var url: String? = null,
+        var url: String? = null,
 
-    var message: String? = null,
+        var message: String? = null,
 
-    //public @SerializedName("distinct")
-    var distincted: Boolean = false,
+        var distincted: Boolean = false,
 
-    var commentCount: Int = 0,
+        var commentCount: Int = 0,
 
-    var author: UserEntity? = null,
+        var author: UserEntity? = null,
 
-    var committer: UserEntity? = null,
+        var committer: UserEntity? = null,
 
-    var tree: UserEntity? = null,
+        var tree: UserEntity? = null,
 
-    var parents: List<GitCommitEntity>? = null
+        var parents: List<GitCommitEntity>? = null
 )

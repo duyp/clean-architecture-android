@@ -6,23 +6,21 @@ import java.util.*
 
 data class EventEntity(
 
-    var id: Long = 0,
+        var id: Long = 0,
 
-    @EventType
-    var type: String? = null,
+        @EventType
+        var type: String? = null,
 
-    //@SerializedName("created_at")
-    var createdAt: Date? = null,
+        var createdAt: Date? = null,
 
-    var actor: UserEntity? = null,
+        var actor: UserEntity? = null,
 
-    var repo: RepoEntity? = null,
+        var repo: RepoEntity? = null,
 
-    var payload: PayloadEntity? = null,
+        var payload: PayloadEntity? = null,
 
-    //@SerializedName("public")
-    var publicEvent: Boolean = false,
+        var publicEvent: Boolean = false,
 
-    // not a response field from github api, used to identify this event is belong to whom (user received events)
-    var receivedOwner: String? = null
+        // not a response field from github api, used to identify this event is belong to whom (user received events)
+        var receivedOwner: String? = null
 )

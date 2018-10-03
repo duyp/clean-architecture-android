@@ -1,12 +1,14 @@
-package com.duyp.architecture.clean.android.powergit.domain.entities
+package com.duyp.architecture.clean.android.powergit.data.entities.comment
 
+import com.duyp.architecture.clean.android.powergit.data.entities.reaction.ReactionsApiData
+import com.duyp.architecture.clean.android.powergit.data.entities.user.UserApiData
 import java.util.*
 
-data class CommentEntity(
+data class CommentApiData(
 
         var id: Long = 0,
 
-        var user: UserEntity? = null,
+        var user: UserApiData? = null,
 
         var url: String? = null,
 
@@ -36,7 +38,7 @@ data class CommentEntity(
 
         var authorAssociation: String? = null,
 
-        var reactions: ReactionsEntity? = null,
+        var reactions: ReactionsApiData? = null,
 
         var position: Int = 0,
 

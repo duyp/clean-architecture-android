@@ -1,8 +1,10 @@
-package com.duyp.architecture.clean.android.powergit.domain.entities
+package com.duyp.architecture.clean.android.powergit.data.entities.release
 
+import com.duyp.architecture.clean.android.powergit.data.entities.user.UserApiData
+import com.google.gson.annotations.SerializedName
 import java.util.*
 
-data class ReleaseEntity(
+data class ReleaseApiData(
 
         var id: Long = 0,
 
@@ -24,10 +26,13 @@ data class ReleaseEntity(
 
         var login: String? = null,
 
+        @SerializedName("tarball_url")
         var tarballUrl: String? = null,
 
+        @SerializedName("body_html")
         var body: String? = null,
 
+        @SerializedName("zipball_url")
         var zipBallUrl: String? = null,
 
         var draft: Boolean = false,
@@ -38,7 +43,7 @@ data class ReleaseEntity(
 
         var publishedAt: Date? = null,
 
-        var author: UserEntity? = null,
+        var author: UserApiData? = null,
 
-        var assets: List<ReleaseAssetEntity>? = null
+        var assets: List<ReleaseAssetApiData>? = null
 )

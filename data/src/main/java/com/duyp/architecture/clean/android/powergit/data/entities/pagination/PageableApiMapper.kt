@@ -1,4 +1,4 @@
-package com.duyp.architecture.clean.android.powergit.data.entities
+package com.duyp.architecture.clean.android.powergit.data.entities.pagination
 
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.Mapper

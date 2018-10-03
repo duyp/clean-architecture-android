@@ -1,7 +1,7 @@
 package com.duyp.architecture.clean.android.powergit.data.api
 
 import com.duyp.architecture.clean.android.powergit.data.api.annotations.Authenticated
-import com.duyp.architecture.clean.android.powergit.data.entities.PageableApiData
+import com.duyp.architecture.clean.android.powergit.data.entities.pagination.PageableApiData
 import com.duyp.architecture.clean.android.powergit.data.entities.repo.RepoApiData
 import com.duyp.architecture.clean.android.powergit.data.entities.user.UserApiData
 import io.reactivex.Single
