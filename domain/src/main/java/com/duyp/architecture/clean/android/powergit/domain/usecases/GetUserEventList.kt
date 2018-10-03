@@ -17,10 +17,9 @@ class GetUserEventList @Inject constructor(
      * @param page page to load
      * @param receivedEvents true if get received event, else get self event
      */
-    fun getMyUserEvents(listEntity: ListEntity<EventEntity>, receivedEvents: Boolean): Single<ListEntity<EventEntity>> =
+    fun getMyUserEvents(page: Int, receivedEvents: Boolean): Single<ListEntity<EventEntity>> =
             mGetUser.getCurrentLoggedInUsername()
-                    .flatMap { getUserEvents(listEntity, it, receivedEvents) }
-
+                    .flatMap { getUserEvents(page, it, receivedEvents) }
 
     /**
      * Get events of given user
@@ -28,10 +27,9 @@ class GetUserEventList @Inject constructor(
      * @param page page to load
      * @param receivedEvents true if get received event, else get self event
      */
-    fun getUserEvents(listEntity: ListEntity<EventEntity>, username: String, receivedEvents: Boolean):
+    fun getUserEvents(page: Int, username: String, receivedEvents: Boolean):
             Single<ListEntity<EventEntity>> =
-            (if (receivedEvents) mEventRepository.getUserReceivedEvents(username, listEntity.next)
-            else mEventRepository.getUserEvents(username, listEntity.next))
-                    .map { it.copy(items = listEntity.items + it.items) }
+            (if (receivedEvents) mEventRepository.getUserReceivedEvents(username, page)
+            else mEventRepository.getUserEvents(username, page))
 
 }

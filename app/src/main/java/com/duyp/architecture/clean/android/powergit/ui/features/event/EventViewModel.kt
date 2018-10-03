@@ -17,12 +17,12 @@ class EventViewModel @Inject constructor(
 
     override fun getItem(listItem: EventEntity) = listItem
 
-    override fun loadPageObservable(listEntity: ListEntity<EventEntity>): Observable<ListEntity<EventEntity>> {
+    override fun loadPage(page: Int): Observable<ListEntity<EventEntity>> {
         val isReceivedEvents = type == EventType.RECEIVED
         return if (username == null) {
-            mGetUserEventList.getMyUserEvents(listEntity, isReceivedEvents).toObservable()
+            mGetUserEventList.getMyUserEvents(page, isReceivedEvents).toObservable()
         } else {
-            mGetUserEventList.getUserEvents(listEntity, username!!, isReceivedEvents).toObservable()
+            mGetUserEventList.getUserEvents(page, username!!, isReceivedEvents).toObservable()
         }
     }
 }

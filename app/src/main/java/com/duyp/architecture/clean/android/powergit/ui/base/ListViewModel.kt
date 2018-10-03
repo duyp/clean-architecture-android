@@ -2,6 +2,7 @@ package com.duyp.architecture.clean.android.powergit.ui.base
 
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.exception.AuthenticationException
+import com.duyp.architecture.clean.android.powergit.domain.entities.mergeWithPreviousPage
 import com.duyp.architecture.clean.android.powergit.printStacktraceIfDebug
 import com.duyp.architecture.clean.android.powergit.ui.Event
 import io.reactivex.Observable
@@ -54,7 +55,7 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
                     .subscribeOn(Schedulers.io())
                     // do nothing if loading is in progress
                     .filter { !mIsLoading }
-                    .switchMap { loadPage(ListEntity.STARTING_PAGE) }
+                    .switchMap { loadData(true) }
                     .subscribe()
         }
 
@@ -63,21 +64,21 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
             intentSubject.ofType(getLoadMoreIntent()::class.java)
                     .subscribeOn(Schedulers.io())
                     // do nothing if loading is in progress and can't load more with current list
-                    .filter { !mIsLoading && (mListEntity?.canLoadMore() ?: false) }
+                    .filter { !mIsLoading && mListEntity.canLoadMore() }
                     .doOnNext {
                         setListState { copy(loadingMore = Event.empty()) }
                     }
-                    .switchMap { loadPage(mListEntity!!.next) }
+                    .switchMap { loadData(false) }
                     .subscribe()
         }
     }
 
-    override fun getTotalCount(): Int = mListEntity?.items?.size ?: 0
+    override fun getTotalCount(): Int = mListEntity.items.size
 
     override fun getItemAtPosition(position: Int): EntityType? {
-        if (mListEntity == null || mListEntity!!.items.isEmpty() || position < 0 || position >= getTotalCount())
+        if (mListEntity.items.isEmpty() || position < 0 || position >= getTotalCount())
             return null
-        return getItem(mListEntity!!.items[position])
+        return getItem(mListEntity.items[position])
     }
 
     protected abstract fun getItem(listItem: ListType): EntityType
@@ -98,7 +99,7 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
     /**
      * Implement this to load specific page
      */
-    protected abstract fun loadPageObservable(listEntity: ListEntity<ListType>): Observable<ListEntity<ListType>>
+    protected abstract fun loadPage(page: Int): Observable<ListEntity<ListType>>
 
     /**
      * In some cases the final view model might have more intents than basic [ListIntent], so it has to specific
@@ -115,15 +116,16 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
      * Load specific page and set corresponding state (show loading, load completed, offline notice if data is came
      * from offline storage...)
      */
-    private fun loadPage(page: Int): Observable<ListEntity<ListType>> {
-        return loadPageObservable(mListEntity)
+    private fun loadData(refresh: Boolean): Observable<ListEntity<ListType>> {
+        return loadPage(if (refresh) ListEntity.STARTING_PAGE else mListEntity.next)
+                .mergeWithPreviousPage(previousList = mListEntity)
                 .doOnSubscribe {
                     mIsLoading = true
                     setListState {
                         copy(
                                 showEmptyView = false,
                                 showOfflineNotice = false,
-                                showLoading = page == ListEntity.STARTING_PAGE,
+                                showLoading = refresh,
                                 requireLogin = false
                         )
                     }
@@ -131,12 +133,12 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
                 .doOnNext {
                     mListEntity = it
                     mIsLoading = false
-                    val err = mListEntity!!.apiError?.message ?: ""
+                    val err = mListEntity.apiError?.message ?: ""
                     setListState {
                         copy(
                                 showLoading = false,
                                 showEmptyView = getTotalCount() == 0,
-                                showOfflineNotice = mListEntity!!.isOfflineData,
+                                showOfflineNotice = mListEntity.isOfflineData,
                                 loadCompleted = Event.empty(),
                                 errorMessage = if (err.isEmpty()) null else Event(err)
                         )
