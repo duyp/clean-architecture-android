@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-kapt'
 
+apply plugin: 'com.apollographql.android'
+
 android {
     compileSdkVersion rootProject.compileSdkVersion
     defaultConfig {
@@ -63,6 +65,8 @@ dependencies {
     api retrofitGsonConverter
     api retrofitRxJava2Adapter
     api okhttpLogging
+    // graphql
+    implementation 'com.apollographql.apollo:apollo-rx2-support:0.4.1'
 
     implementation rxJava
     
