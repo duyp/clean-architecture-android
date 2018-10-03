@@ -18,8 +18,6 @@ class PullRequestApiToEntityMapper: Mapper<PullRequestApiData, PullRequestEntity
 
     private val mCommitApiToEntityMapper = CommitApiToEntityMapper()
 
-    private val mPullRequestApiToEntityMapper = PullRequestApiToEntityMapper()
-
     private val mReactionsApiToEntityMapper = ReactionsApiToEntityMapper()
 
     override fun mapFrom(e: PullRequestApiData): PullRequestEntity {
@@ -61,7 +59,7 @@ class PullRequestApiToEntityMapper: Mapper<PullRequestApiData, PullRequestEntity
         entity.milestone = e.milestone?.let { mMileStoneApiToEntity.mapFrom(it) }
         entity.base = e.base?.let { mCommitApiToEntityMapper.mapFrom(it) }
         entity.head = e.head?.let { mCommitApiToEntityMapper.mapFrom(it) }
-        entity.pullRequest = e.pullRequest?.let { mPullRequestApiToEntityMapper.mapFrom(it) }
+        entity.pullRequest = e.pullRequest?.let { this.mapFrom(it) }
         entity.reactions = e.reactions?.let { mReactionsApiToEntityMapper.mapFrom(it) }
         return entity
     }

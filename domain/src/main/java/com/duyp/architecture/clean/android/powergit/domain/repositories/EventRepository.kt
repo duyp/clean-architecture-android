@@ -6,8 +6,8 @@ import io.reactivex.Single
 
 interface EventRepository {
 
-    fun getUserEvents(username: String): Single<ListEntity<EventEntity>>
+    fun getUserEvents(username: String, page: Int): Single<ListEntity<EventEntity>>
 
-    fun getUserReceivedEvents(): Single<ListEntity<EventEntity>>
+    fun getUserReceivedEvents(username: String, page: Int): Single<ListEntity<EventEntity>>
 
 }

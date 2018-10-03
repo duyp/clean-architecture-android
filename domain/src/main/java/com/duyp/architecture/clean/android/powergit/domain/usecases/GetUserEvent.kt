@@ -12,16 +12,31 @@ class GetUserEvent @Inject constructor(
 ) {
 
     /**
-     * Get current user events (received events), requires logged in user.
+     * Get current user received events, requires logged in user.
      */
-    fun getMyUserEvents(): Single<ListEntity<EventEntity>> =
+    fun getMyUserReceivedEvents(page: Int): Single<ListEntity<EventEntity>> =
             mGetUser.getCurrentLoggedInUsername()
-                    .flatMap { mEventRepository.getUserReceivedEvents() }
+                    .flatMap { mEventRepository.getUserReceivedEvents(it, page) }
+
+    /**
+     * Get current user events
+     */
+    fun getMyUserEvents(page: Int): Single<ListEntity<EventEntity>> =
+            mGetUser.getCurrentLoggedInUsername()
+                    .flatMap { mEventRepository.getUserEvents(it, page) }
+
+    /**
+     * Get received events of given user
+     */
+    fun getUserReceivedEvents(username: String, page: Int): Single<ListEntity<EventEntity>> =
+            mEventRepository.getUserReceivedEvents(username, page)
 
     /**
      * Get events of given user
      */
-    fun getUserEvents(username: String): Single<ListEntity<EventEntity>> =
-            mEventRepository.getUserEvents(username)
+    fun getUserEvents(username: String, page: Int): Single<ListEntity<EventEntity>> =
+            mEventRepository.getUserEvents(username, page)
+
+
 
 }

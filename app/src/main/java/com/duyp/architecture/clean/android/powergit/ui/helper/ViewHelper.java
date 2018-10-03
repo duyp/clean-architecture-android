@@ -1,4 +1,4 @@
-package com.duyp.architecture.clean.android.powergit.ui.utils;
+package com.duyp.architecture.clean.android.powergit.ui.helper;
 
 import android.content.Context;
 import android.content.res.ColorStateList;

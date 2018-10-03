@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="?android:selectableItemBackground"
+    android:paddingBottom="@dimen/tiny"
+    android:paddingEnd="@dimen/regular"
+    android:paddingTop="@dimen/tiny"
+    tools:ignore="RtlSymmetry">
+
+    <com.mikhaellopez.circularimageview.CircularImageView
+        style="@style/avatar_circle"
+        android:id="@+id/avatarLayout"
+        android:layout_marginEnd="@dimen/regular"
+        android:layout_marginStart="@dimen/regular"
+        android:transitionName="@string/icon_transition"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/TextAppearance.AppCompat.Subhead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:textColor="?android:textColorPrimary"
+            android:transitionName="@string/title_transition"
+            tools:text="When one acquires music and afterlife, one is able to capture heaven."/>
+
+        <TextView
+            android:id="@+id/description"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:textColor="?android:attr/textColorSecondary"
+            android:visibility="gone"
+            tools:text="Hello World"
+            tools:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/date"
+            style="@style/TextAppearance.AppCompat.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/tiny"
+            android:gravity="center|start"
+            android:textColor="?android:attr/textColorTertiary"
+            tools:drawableStart="@drawable/ic_notification"
+            tools:text="50 minutes ago"/>
+    </LinearLayout>
+</LinearLayout>

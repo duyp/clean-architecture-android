@@ -11,7 +11,7 @@ class RepoListAdapter(
         private val data: AdapterData<RepoEntity>,
         private val glideLoader: GlideLoader,
         private val withAvatar: Boolean = true
-        ): LoadMoreAdapter() {
+): LoadMoreAdapter() {
 
     override fun getTotalItem(): Int {
         return data.getTotalCount()

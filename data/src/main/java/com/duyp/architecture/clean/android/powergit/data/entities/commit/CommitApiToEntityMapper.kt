@@ -10,8 +10,6 @@ class CommitApiToEntityMapper: Mapper<CommitApiData, CommitEntity>() {
 
     private val mGitCommitApiToEntityMapper = GitCommitApiToEntityMapper()
 
-    private val mCommitApiToEntityMapper = CommitApiToEntityMapper()
-
     override fun mapFrom(e: CommitApiData): CommitEntity {
         val entity = CommitEntity()
         entity.sha = e.sha
@@ -23,7 +21,7 @@ class CommitApiToEntityMapper: Mapper<CommitApiData, CommitEntity>() {
         entity.author = e.author?.let { mUserApiToEntityMapper.mapFrom(it) }
         entity.committer = e.committer?.let { mUserApiToEntityMapper.mapFrom(it) }
         entity.tree = e.tree?.let { mUserApiToEntityMapper.mapFrom(it) }
-        entity.parents = e.parents?.let { mCommitApiToEntityMapper.mapFrom(it) }
+        entity.parents = e.parents?.let { this.mapFrom(it) }
         entity.gitCommit = e.gitCommit?.let { mGitCommitApiToEntityMapper.mapFrom(it) }
         return entity
     }

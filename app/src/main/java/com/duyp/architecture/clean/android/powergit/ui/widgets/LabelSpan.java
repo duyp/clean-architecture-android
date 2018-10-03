@@ -14,7 +14,7 @@ import android.text.TextUtils;
 import android.text.style.CharacterStyle;
 import android.text.style.ReplacementSpan;
 
-import com.duyp.architecture.clean.android.powergit.ui.utils.ViewHelper;
+import com.duyp.architecture.clean.android.powergit.ui.helper.ViewHelper;
 
 import java.util.Locale;
 

@@ -1,6 +1,7 @@
 package com.duyp.architecture.clean.android.powergit.data.api
 
 import com.duyp.architecture.clean.android.powergit.data.api.annotations.Authenticated
+import com.duyp.architecture.clean.android.powergit.data.entities.event.EventApiData
 import com.duyp.architecture.clean.android.powergit.data.entities.pagination.PageableApiData
 import com.duyp.architecture.clean.android.powergit.data.entities.repo.RepoApiData
 import com.duyp.architecture.clean.android.powergit.data.entities.user.UserApiData
@@ -17,18 +18,13 @@ interface UserService {
     @Authenticated
     fun getUser(@Path("username") username: String): Single<UserApiData>
 
-    //@GET("users/{username}/received_events")
-    //Single<PageableApiData<Event>> getReceivedEvents(@NonNull @Path("username") String userName, @Query("page") int page);
-    //
-    //@GET("users/{username}/events")
-    //Single<PageableApiData<Event>> getUserEvents(@NonNull @Path("username") String userName, @Query("page") int page);
-    //
-    //@GET("users/{username}/repos")
-    //Single<PageableApiData<Repo>> getRepos(@Path("username") @NonNull String username, @QueryMap(encoded = true) Map<String, String> filterParams,
-    //                                @Query("page") int page);
+    @GET("users/{username}/received_events")
+    fun getReceivedEvents(@Path("username") userName: String, @Query("page") page: Int):
+            Single<PageableApiData<EventApiData>>
 
-
-    //
+    @GET("users/{username}/events")
+    fun getUserEvents(@Path("username") userName: String, @Query("page") page: Int):
+            Single<PageableApiData<EventApiData>>
 
     @GET("users/{username}/repos")
     fun getRepos(@Path("username") username: String, @QueryMap(encoded = true) filterParams: Map<String, String>?,

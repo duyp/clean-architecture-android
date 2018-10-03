@@ -3,6 +3,7 @@ package com.duyp.architecture.clean.android.powergit.di.modules
 import com.duyp.architecture.clean.android.powergit.di.AppComponent
 import com.duyp.architecture.clean.android.powergit.di.scopes.ActivityScoped
 import com.duyp.architecture.clean.android.powergit.ui.features.drawer.DrawerModule
+import com.duyp.architecture.clean.android.powergit.ui.features.event.EventModule
 import com.duyp.architecture.clean.android.powergit.ui.features.login.LoginActivity
 import com.duyp.architecture.clean.android.powergit.ui.features.login.LoginModule
 import com.duyp.architecture.clean.android.powergit.ui.features.main.MainActivity
@@ -39,7 +40,8 @@ abstract class ActivityBindingModules {
         MainModule::class,
         MainActivityModule::class,
         DrawerModule::class,
-        RepoListModule::class
+        RepoListModule::class,
+        EventModule::class
     ])
     internal abstract fun mainActivity(): MainActivity
 

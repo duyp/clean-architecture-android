@@ -52,6 +52,7 @@ ext {
     archVersion = '1.1.1'
     timberVersion = '4.7.0'
     androidUtilsVersion = "2.2.8"
+    commonmarkVersion = "0.9.0"
 
     // test dependencies
     testRunnerVersion = '1.0.1'

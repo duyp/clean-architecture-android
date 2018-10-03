@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import com.duyp.architecture.clean.android.powergit.R
 import com.duyp.architecture.clean.android.powergit.ui.features.main.MainActivity
-import com.duyp.architecture.clean.android.powergit.ui.utils.ViewHelper
+import com.duyp.architecture.clean.android.powergit.ui.helper.ViewHelper
 import com.evernote.android.state.StateSaver
 import dagger.android.support.DaggerAppCompatActivity
 import java.util.*

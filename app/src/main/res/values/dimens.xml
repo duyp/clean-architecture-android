@@ -34,4 +34,5 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="divider_height">@dimen/one</dimen>
 
+    <item name="drawable_callback" type="id" />
 </resources>

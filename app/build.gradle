@@ -68,7 +68,16 @@ dependencies {
     implementation 'it.sephiroth.android.library.bottomnavigation:bottom-navigation:2.0.2'
     implementation 'cn.gavinliu.android.lib:ShapedImageView:0.8.3'
     implementation 'com.mikhaellopez:circularimageview:3.2.0'
-    implementation "com.evernote:android-state:1.1.0"
+    implementation "com.evernote:android-state:1.1.6"
+    implementation 'com.github.nightwhistler:HtmlSpanner:0.4'
+    implementation 'org.jsoup:jsoup:1.10.3'
+
+    implementation "com.atlassian.commonmark:commonmark:$commonmarkVersion"
+    implementation "com.atlassian.commonmark:commonmark-ext-autolink:$commonmarkVersion"
+    implementation "com.atlassian.commonmark:commonmark-ext-gfm-strikethrough:$commonmarkVersion"
+    implementation "com.atlassian.commonmark:commonmark-ext-gfm-tables:$commonmarkVersion"
+    implementation "com.atlassian.commonmark:commonmark-ext-ins:$commonmarkVersion"
+    implementation "com.atlassian.commonmark:commonmark-ext-yaml-front-matter:$commonmarkVersion"
 
     implementation "android.arch.lifecycle:extensions:$rootProject.archVersion"
     implementation "android.arch.lifecycle:livedata:$rootProject.archVersion"

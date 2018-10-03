@@ -7,6 +7,17 @@ import dagger.android.support.DaggerApplication
 
 class PowerGitApp : DaggerApplication() {
 
+    companion object {
+        private lateinit var instance: PowerGitApp
+
+        fun getInstance() = instance
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        instance = this
+    }
+
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
         return DaggerAppComponent.builder().create(this)
     }

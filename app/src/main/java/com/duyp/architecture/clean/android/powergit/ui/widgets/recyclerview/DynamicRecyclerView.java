@@ -10,7 +10,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 
 import com.duyp.architecture.clean.android.powergit.R;
-import com.duyp.architecture.clean.android.powergit.ui.utils.ViewHelper;
+import com.duyp.architecture.clean.android.powergit.ui.helper.ViewHelper;
 
 
 /**
