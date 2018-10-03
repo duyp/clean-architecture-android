@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.view.ViewPager
+import android.view.Menu
 import com.duyp.architecture.clean.android.powergit.R
 import com.duyp.architecture.clean.android.powergit.showToastMessage
 import com.duyp.architecture.clean.android.powergit.ui.base.ViewModelActivity
@@ -55,8 +56,15 @@ class MainActivity : ViewModelActivity<MainViewState, MainIntent, MainViewModel>
         }
     }
 
+    override fun canBack() = false
+
     override fun getLayoutResource(): Int {
         return R.layout.activity_main
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.search, menu)
+        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onBackPressed() {

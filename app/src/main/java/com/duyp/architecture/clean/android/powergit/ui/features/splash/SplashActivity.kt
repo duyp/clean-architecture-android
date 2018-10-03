@@ -25,4 +25,6 @@ class SplashActivity: ViewModelActivity<SplashState, Any, SplashViewModel>() {
             }
         }
     }
+
+    override fun canBack() = false
 }

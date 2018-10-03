@@ -46,6 +46,8 @@ class LoginActivity : ViewModelActivity<LoginViewState, LoginIntent, LoginViewMo
         return R.layout.activity_login
     }
 
+    override fun canBack() = false
+
     private fun login() {
         onIntent(LoginIntent(edtUsername.text.toString(), edtPassword.text.toString()))
     }

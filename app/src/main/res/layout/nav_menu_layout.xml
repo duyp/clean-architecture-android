@@ -24,7 +24,7 @@
         app:itemBackground="?attr/selectableItemBackground"
         app:itemIconTint="@color/search_tab_highlighter"
         app:itemTextColor="@color/search_tab_highlighter"
-        app:menu="@menu/drawer_menu"/>
+        app:menu="@menu/drawer"/>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/accountsNav"
