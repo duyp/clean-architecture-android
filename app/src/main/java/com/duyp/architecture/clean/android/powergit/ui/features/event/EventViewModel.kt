@@ -2,13 +2,13 @@ package com.duyp.architecture.clean.android.powergit.ui.features.event
 
 import com.duyp.architecture.clean.android.powergit.domain.entities.EventEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
-import com.duyp.architecture.clean.android.powergit.domain.usecases.GetUserEvent
+import com.duyp.architecture.clean.android.powergit.domain.usecases.GetUserEventList
 import com.duyp.architecture.clean.android.powergit.ui.base.BasicListViewModel
 import io.reactivex.Observable
 import javax.inject.Inject
 
 class EventViewModel @Inject constructor(
-        private val mGetUserEvent: GetUserEvent
+        private val mGetUserEventList: GetUserEventList
 ): BasicListViewModel<EventEntity, EventEntity>() {
 
     var username: String? = null
@@ -17,20 +17,12 @@ class EventViewModel @Inject constructor(
 
     override fun getItem(listItem: EventEntity) = listItem
 
-    override fun loadPageObservable(page: Int): Observable<ListEntity<EventEntity>> {
-        return when (type) {
-            EventType.RECEIVED ->
-                if (username == null) {
-                    mGetUserEvent.getMyUserReceivedEvents(page).toObservable()
-                } else {
-                    mGetUserEvent.getUserReceivedEvents(username!!, page).toObservable()
-                }
-            else ->
-                if (username == null) {
-                    mGetUserEvent.getMyUserEvents(page).toObservable()
-                } else {
-                    mGetUserEvent.getUserEvents(username!!, page).toObservable()
-                }
+    override fun loadPageObservable(listEntity: ListEntity<EventEntity>): Observable<ListEntity<EventEntity>> {
+        val isReceivedEvents = type == EventType.RECEIVED
+        return if (username == null) {
+            mGetUserEventList.getMyUserEvents(listEntity, isReceivedEvents).toObservable()
+        } else {
+            mGetUserEventList.getUserEvents(listEntity, username!!, isReceivedEvents).toObservable()
         }
     }
 }

@@ -37,7 +37,7 @@ class MainActivity : ViewModelActivity<MainViewState, MainIntent, MainViewModel>
         bottomNavigation.setOnMenuItemClickListener(object: BottomNavigation.OnMenuItemSelectionListener {
 
             override fun onMenuItemSelect(id: Int, position: Int, fromUser: Boolean) {
-                if (position > 1) {
+                if (position > 2) {
                     showToastMessage("Coming soon...")
                     bottomNavigation.post { bottomNavigation.setSelectedIndex(pager.currentItem, true) }
                 }

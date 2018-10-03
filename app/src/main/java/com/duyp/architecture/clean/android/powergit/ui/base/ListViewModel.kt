@@ -35,7 +35,7 @@ import io.reactivex.schedulers.Schedulers
  */
 abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewModel<S, I>(), AdapterData<EntityType> {
 
-    private var mListEntity: ListEntity<ListType>? = null
+    private var mListEntity: ListEntity<ListType> = ListEntity()
 
     private var mIsLoading: Boolean = false
 
@@ -98,7 +98,7 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
     /**
      * Implement this to load specific page
      */
-    protected abstract fun loadPageObservable(page: Int): Observable<ListEntity<ListType>>
+    protected abstract fun loadPageObservable(listEntity: ListEntity<ListType>): Observable<ListEntity<ListType>>
 
     /**
      * In some cases the final view model might have more intents than basic [ListIntent], so it has to specific
@@ -116,7 +116,7 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
      * from offline storage...)
      */
     private fun loadPage(page: Int): Observable<ListEntity<ListType>> {
-        return loadPageObservable(page)
+        return loadPageObservable(mListEntity)
                 .doOnSubscribe {
                     mIsLoading = true
                     setListState {
@@ -146,7 +146,7 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
                     it.printStacktraceIfDebug()
                     mIsLoading = false
                     if (it is AuthenticationException) {
-                        mListEntity = null
+                        mListEntity = ListEntity()
                     }
                     setListState {
                         copy(

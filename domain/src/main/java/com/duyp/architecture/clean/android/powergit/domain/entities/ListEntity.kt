@@ -14,14 +14,16 @@ data class ListEntity<T> (
 
         val incompleteResults: Boolean = false,
 
-        val items: List<T>,
+        val items: List<T> = emptyList(),
 
-        val isOfflineData: Boolean,
+        val isOfflineData: Boolean = false,
 
         val apiError: Throwable? = null
 ) {
 
     fun canLoadMore() = next in 1..last
+
+    fun nextIsFirstPage() = next == STARTING_PAGE
 
     companion object {
         const val STARTING_PAGE = 0

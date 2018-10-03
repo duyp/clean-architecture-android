@@ -13,10 +13,11 @@ class GerUserRepoList @Inject constructor(
         private val mGetUser: GetUser
 ) {
 
-    fun getRepoList(username: String, filterOptions: FilterOptions, page: Int): Single<ListEntity<RepoEntity>> =
-            mRepoRepository.getUserRepoListApi(username, filterOptions, page)
+    fun getRepoList(listEntity: ListEntity<RepoEntity>, username: String, filterOptions: FilterOptions):
+            Single<ListEntity<RepoEntity>> =
+            mRepoRepository.getUserRepoListApi(username, filterOptions, listEntity.next)
                     .onErrorResumeNext { throwable ->
-                        if (page == ListEntity.STARTING_PAGE) {
+                        if (listEntity.nextIsFirstPage()) {
                             // api error when loading first page, let load from database
                             mRepoRepository.getUserRepoListLocal(username, filterOptions)
                                     .map { it.copy(apiError = throwable) }
@@ -24,13 +25,15 @@ class GerUserRepoList @Inject constructor(
                             Single.error(throwable)
                         }
                     }
+                    .map { it.copy(items = listEntity.items + it.items) }
 
-    fun getCurrentUserRepoList(filterOptions: FilterOptions, page: Int): Single<ListEntity<RepoEntity>> =
+    fun getCurrentUserRepoList(listEntity: ListEntity<RepoEntity>, filterOptions: FilterOptions):
+            Single<ListEntity<RepoEntity>> =
             mGetUser.getCurrentLoggedInUsername()
                     .flatMap { username ->
-                        mRepoRepository.getUserRepoListApi(null, filterOptions, page)
+                        mRepoRepository.getUserRepoListApi(null, filterOptions, listEntity.next)
                                 .onErrorResumeNext { throwable ->
-                                    if (page == ListEntity.STARTING_PAGE) {
+                                    if (listEntity.nextIsFirstPage()) {
                                         // api error when loading first page, let load from database
                                         mRepoRepository.getUserRepoListLocal(username, filterOptions)
                                                 .map { it.copy(apiError = throwable) }
@@ -39,4 +42,5 @@ class GerUserRepoList @Inject constructor(
                                     }
                                 }
                     }
+                    .map { it.copy(items = listEntity.items + it.items) }
 }
