@@ -40,6 +40,6 @@ class RepoRepositoryImpl @Inject constructor(
     override fun getUserRepoListLocal(username: String, filterOptions: FilterOptions): Single<ListEntity<RepoEntity>> {
         return mRepoDao.getUserRepos(username)
                 .map { mRepoLocalToEntityMapper.mapFrom(it) }
-                .map { ListEntity(items = it, isApiData = false) }
+                .map { ListEntity(items = it, isOfflineData = true) }
     }
 }

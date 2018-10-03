@@ -122,9 +122,9 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
                     setListState {
                         copy(
                                 showEmptyView = false,
-                                requireLogin = false,
                                 showOfflineNotice = false,
-                                showLoading = page == ListEntity.STARTING_PAGE
+                                showLoading = page == ListEntity.STARTING_PAGE,
+                                requireLogin = false
                         )
                     }
                 }
@@ -136,8 +136,8 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
                         copy(
                                 showLoading = false,
                                 showEmptyView = getTotalCount() == 0,
+                                showOfflineNotice = mListEntity!!.isOfflineData,
                                 loadCompleted = Event.empty(),
-                                showOfflineNotice = !mListEntity!!.isApiData,
                                 errorMessage = if (err.isEmpty()) null else Event(err)
                         )
                     }
@@ -152,6 +152,7 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
                         copy(
                                 showLoading = false,
                                 showEmptyView = getTotalCount() == 0,
+                                showOfflineNotice = false,
                                 errorMessage = Event(it.message ?: ""),
                                 requireLogin = it is AuthenticationException
                         )

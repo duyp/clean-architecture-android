@@ -8,7 +8,7 @@ data class ListEntity<T> (
         val totalCount: Int = 0,
         val incompleteResults: Boolean = false,
         val items: List<T>,
-        val isApiData: Boolean,
+        val isOfflineData: Boolean,
         val apiError: Throwable? = null
 ) {
 
