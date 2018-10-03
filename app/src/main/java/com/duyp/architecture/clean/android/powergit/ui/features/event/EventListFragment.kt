@@ -15,7 +15,7 @@ class EventListFragment: BasicListFragment<EventEntity, EventEntity, EventListAd
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mViewModel.username = arguments?.getString(BundleConstants.EXTRA_DATA)
+        mViewModel.username = arguments?.getString(BundleConstants.EXTRA_USERNAME)
         mViewModel.type = arguments?.getEnum<EventType>(BundleConstants.EXTRA_TYPE)
     }
 

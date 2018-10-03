@@ -14,7 +14,7 @@ class RepoListFragment: BasicListFragment<RepoEntity, RepoEntity, RepoListAdapte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mViewModel.mUsername = arguments?.getString(BundleConstants.EXTRA_DATA)
+        mViewModel.mUsername = arguments?.getString(BundleConstants.EXTRA_USERNAME)
     }
 
     override fun createAdapter(data: AdapterData<RepoEntity>): RepoListAdapter {

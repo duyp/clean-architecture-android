@@ -19,7 +19,7 @@ class MainPagerAdapter @Inject constructor(@ActivityFragmentManager fm: Fragment
             0 -> EventListFragment().withArguments { putEnum(BundleConstants.EXTRA_TYPE, EventType.RECEIVED) }
             1 -> RepoListFragment()
             else -> EventListFragment().withArguments {
-                putString(BundleConstants.EXTRA_DATA, "duyp")
+                putString(BundleConstants.EXTRA_USERNAME, "duyp")
                 putEnum(BundleConstants.EXTRA_TYPE, EventType.SELF)
             }
         }
