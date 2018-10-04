@@ -1,7 +1,6 @@
 package com.duyp.architecture.clean.android.powergit.ui.features.event
 
 import android.content.res.Resources
-import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
@@ -12,6 +11,7 @@ import com.duyp.architecture.clean.android.powergit.R
 import com.duyp.architecture.clean.android.powergit.domain.entities.EventEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.type.EventType.*
 import com.duyp.architecture.clean.android.powergit.inflate
+import com.duyp.architecture.clean.android.powergit.ui.base.adapter.BaseViewHolder
 import com.duyp.architecture.clean.android.powergit.ui.provider.markdown.MarkDownProvider
 import com.duyp.architecture.clean.android.powergit.ui.utils.AvatarLoader
 import com.duyp.architecture.clean.android.powergit.ui.utils.ParseDateFormat
@@ -28,7 +28,7 @@ import com.duyp.architecture.clean.android.powergit.ui.widgets.SpannableBuilder
 class EventViewHolder private constructor(
         itemView: View,
         private val avatarLoader: AvatarLoader
-) : RecyclerView.ViewHolder(itemView) {
+) : BaseViewHolder<EventEntity>(itemView) {
 
     internal var avatar: ImageView? = itemView.findViewById(R.id.avatarLayout)
     internal var description: TextView? = itemView.findViewById(R.id.description)
@@ -37,48 +37,48 @@ class EventViewHolder private constructor(
 
     private val resources: Resources = itemView.resources
 
-    fun bind(eventsModel: EventEntity) {
-        appendAvatar(eventsModel)
+    override fun bindData(data: EventEntity) {
+        appendAvatar(data)
         val spannableBuilder = SpannableBuilder.builder()
-        appendActor(eventsModel, spannableBuilder)
+        appendActor(data, spannableBuilder)
         description!!.maxLines = 2
         description!!.text = ""
         description!!.visibility = View.GONE
-        if (eventsModel.type != null) {
-            val type = eventsModel.type
+        if (data.type != null) {
+            val type = data.type
             when (type) {
-                WatchEvent -> appendWatch(spannableBuilder, eventsModel)
-                CreateEvent -> appendCreateEvent(spannableBuilder, eventsModel)
-                CommitCommentEvent -> appendCommitComment(spannableBuilder, eventsModel)
-                DownloadEvent -> appendDownloadEvent(spannableBuilder, eventsModel)
-                FollowEvent -> appendFollowEvent(spannableBuilder, eventsModel)
-                ForkEvent -> appendForkEvent(spannableBuilder, eventsModel)
-                GistEvent -> appendGistEvent(spannableBuilder, eventsModel)
-                GollumEvent -> appendGollumEvent(spannableBuilder, eventsModel)
-                IssueCommentEvent -> appendIssueCommentEvent(spannableBuilder, eventsModel)
-                IssuesEvent -> appendIssueEvent(spannableBuilder, eventsModel)
-                MemberEvent -> appendMemberEvent(spannableBuilder, eventsModel)
-                PublicEvent -> appendPublicEvent(spannableBuilder, eventsModel)
-                PullRequestEvent -> appendPullRequestEvent(spannableBuilder, eventsModel)
-                PullRequestReviewCommentEvent -> appendPullRequestReviewCommentEvent(spannableBuilder, eventsModel)
-                PullRequestReviewEvent -> appendPullRequestReviewCommentEvent(spannableBuilder, eventsModel)
-                RepositoryEvent -> appendPublicEvent(spannableBuilder, eventsModel)
-                PushEvent -> appendPushEvent(spannableBuilder, eventsModel)
-                TeamAddEvent -> appendTeamEvent(spannableBuilder, eventsModel)
-                DeleteEvent -> appendDeleteEvent(spannableBuilder, eventsModel)
-                ReleaseEvent -> appendReleaseEvent(spannableBuilder, eventsModel)
-                ForkApplyEvent -> appendForkApplyEvent(spannableBuilder, eventsModel)
-                OrgBlockEvent -> appendOrgBlockEvent(spannableBuilder, eventsModel)
-                ProjectCardEvent -> appendProjectCardEvent(spannableBuilder, eventsModel, false)
-                ProjectColumnEvent -> appendProjectCardEvent(spannableBuilder, eventsModel, true)
-                OrganizationEvent -> appendOrganizationEvent(spannableBuilder, eventsModel)
-                ProjectEvent -> appendProjectCardEvent(spannableBuilder, eventsModel, false)
+                WatchEvent -> appendWatch(spannableBuilder, data)
+                CreateEvent -> appendCreateEvent(spannableBuilder, data)
+                CommitCommentEvent -> appendCommitComment(spannableBuilder, data)
+                DownloadEvent -> appendDownloadEvent(spannableBuilder, data)
+                FollowEvent -> appendFollowEvent(spannableBuilder, data)
+                ForkEvent -> appendForkEvent(spannableBuilder, data)
+                GistEvent -> appendGistEvent(spannableBuilder, data)
+                GollumEvent -> appendGollumEvent(spannableBuilder, data)
+                IssueCommentEvent -> appendIssueCommentEvent(spannableBuilder, data)
+                IssuesEvent -> appendIssueEvent(spannableBuilder, data)
+                MemberEvent -> appendMemberEvent(spannableBuilder, data)
+                PublicEvent -> appendPublicEvent(spannableBuilder, data)
+                PullRequestEvent -> appendPullRequestEvent(spannableBuilder, data)
+                PullRequestReviewCommentEvent -> appendPullRequestReviewCommentEvent(spannableBuilder, data)
+                PullRequestReviewEvent -> appendPullRequestReviewCommentEvent(spannableBuilder, data)
+                RepositoryEvent -> appendPublicEvent(spannableBuilder, data)
+                PushEvent -> appendPushEvent(spannableBuilder, data)
+                TeamAddEvent -> appendTeamEvent(spannableBuilder, data)
+                DeleteEvent -> appendDeleteEvent(spannableBuilder, data)
+                ReleaseEvent -> appendReleaseEvent(spannableBuilder, data)
+                ForkApplyEvent -> appendForkApplyEvent(spannableBuilder, data)
+                OrgBlockEvent -> appendOrgBlockEvent(spannableBuilder, data)
+                ProjectCardEvent -> appendProjectCardEvent(spannableBuilder, data, false)
+                ProjectColumnEvent -> appendProjectCardEvent(spannableBuilder, data, true)
+                OrganizationEvent -> appendOrganizationEvent(spannableBuilder, data)
+                ProjectEvent -> appendProjectCardEvent(spannableBuilder, data, false)
             }
             date!!.gravity = Gravity.CENTER
             //date.setEventsIcon(type.getDrawableRes());
         }
         title!!.text = spannableBuilder
-        date!!.text = ParseDateFormat.getTimeAgo(eventsModel.createdAt)
+        date!!.text = ParseDateFormat.getTimeAgo(data.createdAt)
     }
 
     private fun appendOrganizationEvent(spannableBuilder: SpannableBuilder, eventsModel: EventEntity) {
@@ -168,7 +168,6 @@ class EventViewHolder private constructor(
             val max = 5
             var appended = 0
             for (commit in commits!!) {
-                if (commit == null) continue
                 var sha = commit.sha
                 if (TextUtils.isEmpty(sha)) continue
                 sha = if (sha!!.length > 7) sha.substring(0, 7) else sha
@@ -393,7 +392,7 @@ class EventViewHolder private constructor(
         else
             eventsModel.payload!!
                     .commitComment
-        val commitId = if (comment != null && comment.commitId != null && comment.commitId!!.length > 10)
+        val commitId = if (comment?.commitId != null && comment.commitId!!.length > 10)
             comment.commitId!!.substring(0, 10)
         else
             null
@@ -405,7 +404,7 @@ class EventViewHolder private constructor(
                 .append(" ")
                 .append(eventsModel.repo!!.name)
                 .url(if (commitId != null) "@$commitId" else "")
-        if (comment != null && comment.body != null) {
+        if (comment?.body != null) {
             MarkDownProvider.stripMdText(description!!, comment.body!!.replace("\\r?\\n|\\r".toRegex(), " "))
             description!!.visibility = View.VISIBLE
         } else {

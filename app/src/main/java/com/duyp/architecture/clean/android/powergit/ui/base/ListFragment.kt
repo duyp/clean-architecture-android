@@ -7,6 +7,8 @@ import android.view.View
 import com.duyp.architecture.clean.android.powergit.R
 import com.duyp.architecture.clean.android.powergit.event
 import com.duyp.architecture.clean.android.powergit.showToastMessage
+import com.duyp.architecture.clean.android.powergit.ui.base.adapter.AdapterData
+import com.duyp.architecture.clean.android.powergit.ui.base.adapter.LoadMoreAdapter
 import com.duyp.architecture.clean.android.powergit.ui.features.login.LoginActivity
 import com.duyp.architecture.clean.android.powergit.ui.widgets.recyclerview.scroll.InfiniteScroller
 import com.duyp.architecture.clean.android.powergit.ui.widgets.recyclerview.scroll.RecyclerViewFastScroller

@@ -18,15 +18,16 @@ class MainPagerAdapter @Inject constructor(@ActivityFragmentManager fm: Fragment
         return when (position) {
             0 -> EventListFragment().withArguments { putEnum(BundleConstants.EXTRA_TYPE, EventType.RECEIVED) }
             1 -> RepoListFragment()
-            else -> EventListFragment().withArguments {
-                putString(BundleConstants.EXTRA_USERNAME, "duyp")
+            2 -> EventListFragment().withArguments {
+                putString(BundleConstants.EXTRA_USERNAME, "hungpn")
                 putEnum(BundleConstants.EXTRA_TYPE, EventType.SELF)
             }
+            else -> RepoListFragment().withArguments { putString(BundleConstants.EXTRA_USERNAME, "hungpn") }
         }
     }
 
     override fun getCount(): Int {
-        return 3
+        return 4
     }
 
 }

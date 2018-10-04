@@ -1,7 +1,6 @@
 package com.duyp.architecture.clean.android.powergit.ui.features.repo.list
 
 import android.graphics.Color
-import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.text.format.Formatter
 import android.view.View
@@ -13,6 +12,7 @@ import com.duyp.architecture.clean.android.powergit.R
 import com.duyp.architecture.clean.android.powergit.domain.entities.repo.RepoEntity
 import com.duyp.architecture.clean.android.powergit.inflate
 import com.duyp.architecture.clean.android.powergit.or
+import com.duyp.architecture.clean.android.powergit.ui.base.adapter.BaseViewHolder
 import com.duyp.architecture.clean.android.powergit.ui.provider.color.ColorsProvider
 import com.duyp.architecture.clean.android.powergit.ui.utils.ParseDateFormat
 import com.duyp.architecture.clean.android.powergit.ui.widgets.LabelSpan
@@ -22,7 +22,7 @@ import java.text.NumberFormat
 class RepoViewHolder private constructor(
         itemView: View,
         private val glideLoader: GlideLoader
-): RecyclerView.ViewHolder(itemView) {
+): BaseViewHolder<RepoEntity>(itemView) {
 
     private val title = itemView.findViewById<TextView>(R.id.title)
     private val date = itemView.findViewById<TextView>(R.id.date)
@@ -38,38 +38,38 @@ class RepoViewHolder private constructor(
     private var forkColor: Int = itemView.context.resources.getColor(R.color.material_indigo_700)
     private var privateColor: Int = itemView.context.resources.getColor(R.color.material_grey_700)
 
-    fun bind(repo: RepoEntity) {
-        if (repo.fork) {
+    override fun bindData(data: RepoEntity) {
+        if (data.fork) {
             title.text = SpannableBuilder.builder()
                     .append(" $forked ", LabelSpan(forkColor))
                     .append(" ")
-                    .append(repo.name, LabelSpan(Color.TRANSPARENT))
-        } else if (repo.private) {
+                    .append(data.name, LabelSpan(Color.TRANSPARENT))
+        } else if (data.private) {
             title.text = SpannableBuilder.builder()
                     .append(" $privateRepo ", LabelSpan(privateColor))
                     .append(" ")
-                    .append(repo.name, LabelSpan(Color.TRANSPARENT))
+                    .append(data.name, LabelSpan(Color.TRANSPARENT))
         } else {
-            title.text = repo.fullName
+            title.text = data.fullName
         }
 
-        des.text = repo.description.or("No description")
+        des.text = data.description.or("No description")
 
-        // boolean isOrg = repo.getOwner() != null && repo.getOwner().isOrganizationType();
+        // boolean isOrg = data.getOwner() != null && data.getOwner().isOrganizationType();
         avatar?.let {
             it.visibility = View.VISIBLE
-            glideLoader.loadImage(repo.ownerAvatarUrl, it)
+            glideLoader.loadImage(data.ownerAvatarUrl, it)
         }
 
-        val repoSize = if (repo.size > 0) repo.size * 1000 else repo.size
+        val repoSize = if (data.size > 0) data.size * 1000 else data.size
         size.text = Formatter.formatFileSize(size.context, repoSize)
         val numberFormat = NumberFormat.getNumberInstance()
-        stars.text = numberFormat.format(repo.stargazersCount)
-        forks.text = numberFormat.format(repo.forks)
-        date.text = ParseDateFormat.getTimeAgo(repo.updatedAt)
-        if (!TextUtils.isEmpty(repo.language)) {
-            language.text = repo.language
-            language.setTextColor(ColorsProvider.getColorAsColor(repo.language!!, language.context))
+        stars.text = numberFormat.format(data.stargazersCount)
+        forks.text = numberFormat.format(data.forks)
+        date.text = ParseDateFormat.getTimeAgo(data.updatedAt)
+        if (!TextUtils.isEmpty(data.language)) {
+            language.text = data.language
+            language.setTextColor(ColorsProvider.getColorAsColor(data.language!!, language.context))
             language.visibility = View.VISIBLE
         } else {
             language.text = ""

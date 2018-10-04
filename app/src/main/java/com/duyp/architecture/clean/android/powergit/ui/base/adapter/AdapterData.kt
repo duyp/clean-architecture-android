@@ -1,4 +1,4 @@
-package com.duyp.architecture.clean.android.powergit.ui.base
+package com.duyp.architecture.clean.android.powergit.ui.base.adapter
 
 /**
  * Represents data to be rendered on RecyclerView's Adapter

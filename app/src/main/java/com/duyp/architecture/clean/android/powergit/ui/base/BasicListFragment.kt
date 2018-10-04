@@ -2,6 +2,7 @@ package com.duyp.architecture.clean.android.powergit.ui.base
 
 import android.os.Bundle
 import android.view.View
+import com.duyp.architecture.clean.android.powergit.ui.base.adapter.LoadMoreAdapter
 
 /**
  * Basic fragment to shows a list on RecyclerView. Please see [BasicListViewModel] for more understanding.

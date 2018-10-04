@@ -1,4 +1,4 @@
-package com.duyp.architecture.clean.android.powergit.ui.base
+package com.duyp.architecture.clean.android.powergit.ui.base.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -32,7 +32,7 @@ abstract class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder.itemViewType) {
-            TYPE_PROGRESS -> onBindHeaderViewHolder(holder, position)
+            TYPE_PROGRESS -> onBindProgressViewHolder(holder, position)
             else -> onBindItemViewHolder(holder, position)
         }
     }
@@ -47,7 +47,7 @@ abstract class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
         return DefaultProgressViewHolder(parent.inflate(R.layout.progress_layout))
     }
 
-    protected fun onBindHeaderViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    protected fun onBindProgressViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
     }
 

@@ -5,7 +5,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 
-import com.duyp.architecture.clean.android.powergit.ui.base.LoadMoreAdapter
+import com.duyp.architecture.clean.android.powergit.ui.base.adapter.LoadMoreAdapter
 
 class InfiniteScroller(
         private val mAdapter: LoadMoreAdapter,

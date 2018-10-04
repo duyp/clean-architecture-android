@@ -4,8 +4,8 @@ import com.duyp.architecture.clean.android.powergit.domain.entities.FilterOption
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.repo.RepoEntity
 import com.duyp.architecture.clean.android.powergit.domain.usecases.repo.GerUserRepoList
-import com.duyp.architecture.clean.android.powergit.ui.base.AdapterData
 import com.duyp.architecture.clean.android.powergit.ui.base.BasicListViewModel
+import com.duyp.architecture.clean.android.powergit.ui.base.adapter.AdapterData
 import io.reactivex.Observable
 import javax.inject.Inject
 
