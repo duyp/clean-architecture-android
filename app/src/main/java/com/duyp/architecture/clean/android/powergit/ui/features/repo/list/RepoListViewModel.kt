@@ -19,11 +19,11 @@ class RepoListViewModel @Inject constructor(
 
     override fun getItem(listItem: RepoEntity) = listItem
 
-    override fun loadPage(page: Int): Observable<ListEntity<RepoEntity>> {
+    override fun loadList(currentList: ListEntity<RepoEntity>): Observable<ListEntity<RepoEntity>> {
         return if (mUsername != null)
-            mGetUserRepoList.getRepoList(page, mUsername!!, mFilterOptions).toObservable()
+            mGetUserRepoList.getRepoList(currentList, mUsername!!, mFilterOptions).toObservable()
         else
-            mGetUserRepoList.getCurrentUserRepoList(page, mFilterOptions).toObservable()
+            mGetUserRepoList.getCurrentUserRepoList(currentList, mFilterOptions).toObservable()
     }
 
 }

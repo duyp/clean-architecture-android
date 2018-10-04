@@ -23,9 +23,9 @@ class RepoRepositoryImpl @Inject constructor(
 
     private val mRepoLocalToEntityMapper = RepoLocalToEntityMapper()
 
-    override fun getUserRepoListApi(username: String?, filterOptions: FilterOptions, page: Int):
+    override fun getUserRepoList(username: String, isMyUser: Boolean, filterOptions: FilterOptions, page: Int):
             Single<ListEntity<RepoEntity>> {
-        val api = if (username == null)
+        val api = if (isMyUser)
             mUserService.getMyRepos(filterOptions.getQueryMap(), page)
         else
             mUserService.getRepos(username, filterOptions.getQueryMap(), page)
@@ -35,11 +35,15 @@ class RepoRepositoryImpl @Inject constructor(
                     mRepoDao.insertList(mRepoAPiToLocalMapper.mapFrom(it.items))
                 }
                 .map { mRepoListApiToEntityMapper.mapFrom(it) }
-    }
-
-    override fun getUserRepoListLocal(username: String, filterOptions: FilterOptions): Single<ListEntity<RepoEntity>> {
-        return mRepoDao.getUserRepos(username)
-                .map { mRepoLocalToEntityMapper.mapFrom(it) }
-                .map { ListEntity(items = it, isOfflineData = true) }
+                .onErrorResumeNext { throwable ->
+                    if (page == ListEntity.STARTING_PAGE) {
+                        // api error when loading first page, let load from database
+                        return@onErrorResumeNext mRepoDao.getUserRepos(username)
+                                .map { mRepoLocalToEntityMapper.mapFrom(it) }
+                                .map { ListEntity(items = it, isOfflineData = true, apiError = throwable) }
+                    } else {
+                        return@onErrorResumeNext Single.error(throwable)
+                    }
+                }
     }
 }

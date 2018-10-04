@@ -2,7 +2,6 @@ package com.duyp.architecture.clean.android.powergit.ui.base
 
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.exception.AuthenticationException
-import com.duyp.architecture.clean.android.powergit.domain.entities.mergeWithPreviousPage
 import com.duyp.architecture.clean.android.powergit.printStacktraceIfDebug
 import com.duyp.architecture.clean.android.powergit.ui.Event
 import io.reactivex.Observable
@@ -99,7 +98,7 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
     /**
      * Implement this to load specific page
      */
-    protected abstract fun loadPage(page: Int): Observable<ListEntity<ListType>>
+    protected abstract fun loadList(currentList: ListEntity<ListType>): Observable<ListEntity<ListType>>
 
     /**
      * In some cases the final view model might have more intents than basic [ListIntent], so it has to specific
@@ -117,8 +116,7 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
      * from offline storage...)
      */
     private fun loadData(refresh: Boolean): Observable<ListEntity<ListType>> {
-        return loadPage(if (refresh) ListEntity.STARTING_PAGE else mListEntity.next)
-                .mergeWithPreviousPage(previousList = mListEntity)
+        return loadList(if (refresh) ListEntity() else mListEntity)
                 .doOnSubscribe {
                     mIsLoading = true
                     setListState {

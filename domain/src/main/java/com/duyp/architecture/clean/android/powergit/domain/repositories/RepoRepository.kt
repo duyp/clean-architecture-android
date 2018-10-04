@@ -7,7 +7,6 @@ import io.reactivex.Single
 
 interface RepoRepository {
 
-    fun getUserRepoListApi(username: String?, filterOptions: FilterOptions, page: Int): Single<ListEntity<RepoEntity>>
-
-    fun getUserRepoListLocal(username: String, filterOptions: FilterOptions): Single<ListEntity<RepoEntity>>
+    fun getUserRepoList(username: String, isMyUser: Boolean, filterOptions: FilterOptions, page: Int):
+            Single<ListEntity<RepoEntity>>
 }

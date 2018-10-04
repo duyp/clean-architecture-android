@@ -19,6 +19,7 @@ interface UserService {
     fun getUser(@Path("username") username: String): Single<UserApiData>
 
     @GET("users/{username}/received_events")
+    @Authenticated
     fun getReceivedEvents(@Path("username") userName: String, @Query("page") page: Int):
             Single<PageableApiData<EventApiData>>
 

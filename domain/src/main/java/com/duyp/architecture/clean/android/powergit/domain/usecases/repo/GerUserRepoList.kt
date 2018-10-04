@@ -2,6 +2,7 @@ package com.duyp.architecture.clean.android.powergit.domain.usecases.repo
 
 import com.duyp.architecture.clean.android.powergit.domain.entities.FilterOptions
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
+import com.duyp.architecture.clean.android.powergit.domain.entities.mergeWithPreviousPage
 import com.duyp.architecture.clean.android.powergit.domain.entities.repo.RepoEntity
 import com.duyp.architecture.clean.android.powergit.domain.repositories.RepoRepository
 import com.duyp.architecture.clean.android.powergit.domain.usecases.GetUser
@@ -14,43 +15,34 @@ class GerUserRepoList @Inject constructor(
 ) {
 
     /**
-     * Get repo list of given user with given filter options for specific page
+     * Get repo list of given user with given filter options. The next page of given list will be load and appended
+     * with previous page, that means the result list contains all items from starting page to current page
      *
-     * @param page page to load
+     * @param currentList current list entity
      * @param filterOptions option to filter result
+     *
+     * @return new list appended with previous list, contains all items from starting page to current page
      */
-    fun getRepoList(page: Int, username: String, filterOptions: FilterOptions):
+    fun getRepoList(currentList: ListEntity<RepoEntity>, username: String, filterOptions: FilterOptions):
             Single<ListEntity<RepoEntity>> =
-            mRepoRepository.getUserRepoListApi(username, filterOptions, page)
-                    .onErrorResumeNext { throwable ->
-                        if (page == ListEntity.STARTING_PAGE) {
-                            // api error when loading first page, let load from database
-                            mRepoRepository.getUserRepoListLocal(username, filterOptions)
-                                    .map { it.copy(apiError = throwable) }
-                        } else {
-                            Single.error(throwable)
-                        }
-                    }
+            mRepoRepository.getUserRepoList(username, false, filterOptions, currentList.next)
+                    .mergeWithPreviousPage(currentList)
 
     /**
-     * Get repo list of current logged in user with given filter options for specific page
+     * Get next page of repo list of current logged in user with given filter options. The next page of given list
+     * will be load and appended with previous page, that means the result list contains all items from starting
+     * page to current page
      *
-     * @param page page to load
+     * @param currentList current list entity
      * @param filterOptions option to filter result
+     *
+     * @return new list appended with previous list, contains all items from starting page to current page
      */
-    fun getCurrentUserRepoList(page: Int, filterOptions: FilterOptions):
+    fun getCurrentUserRepoList(currentList: ListEntity<RepoEntity>, filterOptions: FilterOptions):
             Single<ListEntity<RepoEntity>> =
             mGetUser.getCurrentLoggedInUsername()
                     .flatMap { username ->
-                        mRepoRepository.getUserRepoListApi(null, filterOptions, page)
-                                .onErrorResumeNext { throwable ->
-                                    if (page == ListEntity.STARTING_PAGE) {
-                                        // api error when loading first page, let load from database
-                                        mRepoRepository.getUserRepoListLocal(username, filterOptions)
-                                                .map { it.copy(apiError = throwable) }
-                                    } else {
-                                        Single.error(throwable)
-                                    }
-                                }
+                        mRepoRepository.getUserRepoList(username, true, filterOptions, currentList.next)
                     }
+                    .mergeWithPreviousPage(currentList)
 }
