@@ -25,6 +25,10 @@ class EventViewModel @Inject constructor(
             mGetUserEventList.getUserEvents(currentList, username!!, isReceivedEvents).toObservable()
         }
     }
+
+    override fun areItemEquals(old: EventEntity, new: EventEntity): Boolean {
+        return old.id == new.id
+    }
 }
 
 enum class EventType {

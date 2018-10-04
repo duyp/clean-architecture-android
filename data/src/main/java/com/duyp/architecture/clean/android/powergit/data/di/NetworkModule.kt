@@ -33,11 +33,11 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRequestAnnotations() = RequestAnnotations()
+    internal fun provideRequestAnnotations() = RequestAnnotations()
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(@ApplicationContext context: Context, requestAnnotations: RequestAnnotations,
+    internal fun provideOkHttpClient(@ApplicationContext context: Context, requestAnnotations: RequestAnnotations,
                             getAuthentication: GetAuthentication): OkHttpClient {
         // okHttp client
         val clientBuilder = OkHttpClient.Builder()
@@ -83,7 +83,7 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient, gson: Gson, requestAnnotations: RequestAnnotations) = Retrofit.Builder()
+    internal fun provideRetrofit(okHttpClient: OkHttpClient, gson: Gson, requestAnnotations: RequestAnnotations) = Retrofit.Builder()
             .baseUrl(BuildConfig.REST_URL)
             .client(okHttpClient)
             .addConverterFactory(GithubResponseConverter(gson))
@@ -92,9 +92,9 @@ class NetworkModule {
                             RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()), requestAnnotations
                     )
             )
-            .build()
+            .build()!!
 
     @Provides
     @Singleton
-    fun provideUserService(retrofit: Retrofit) = retrofit.create(UserService::class.java)
+    internal fun provideUserService(retrofit: Retrofit) = retrofit.create(UserService::class.java)!!
 }

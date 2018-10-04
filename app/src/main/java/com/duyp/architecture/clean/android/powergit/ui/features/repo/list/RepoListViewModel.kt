@@ -26,4 +26,7 @@ class RepoListViewModel @Inject constructor(
             mGetUserRepoList.getCurrentUserRepoList(currentList, mFilterOptions).toObservable()
     }
 
+    override fun areItemEquals(old: RepoEntity, new: RepoEntity): Boolean {
+        return old.id == new.id
+    }
 }

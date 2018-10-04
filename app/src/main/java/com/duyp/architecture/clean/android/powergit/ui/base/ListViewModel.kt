@@ -1,5 +1,6 @@
 package com.duyp.architecture.clean.android.powergit.ui.base
 
+import android.support.v7.util.DiffUtil
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.exception.AuthenticationException
 import com.duyp.architecture.clean.android.powergit.printStacktraceIfDebug
@@ -102,6 +103,14 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
     protected abstract fun loadList(currentList: ListEntity<ListType>): Observable<ListEntity<ListType>>
 
     /**
+     * Compares two items for diff utils, see [calculateDiffResult]
+     *
+     * @return true if they are equal. By default we use [equals] and either the [ListType] should override equals()
+     * method or the child view model should override this method to compare 2 items
+     */
+    protected abstract fun areItemEquals(old: ListType, new: ListType): Boolean
+
+    /**
      * In some cases the final view model might have more intents than basic [ListIntent], so it has to specific
      * refresh intent as well as load more intent to make this class's functionality works
      */
@@ -111,6 +120,51 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
      * see [getRefreshIntent]
      */
     abstract fun getLoadMoreIntent(): I
+
+    /**
+     * Calculate differences between current list and new list
+     *
+     * @return [DiffUtil.DiffResult] reflect the changes
+     */
+    protected fun calculateDiffResult(newList: ListEntity<ListType>): DiffUtil.DiffResult {
+        return DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+
+            override fun getOldListSize() = mListEntity.items.size
+
+            override fun getNewListSize() = newList.items.size
+
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return areItemEquals(mListEntity.items[oldItemPosition], newList.items[newItemPosition])
+            }
+
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return areContentsEquals(mListEntity.items[oldItemPosition], newList.items[newItemPosition])
+            }
+
+            override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+                return getChangePayload(mListEntity.items[oldItemPosition], newList.items[newItemPosition])
+            }
+        }, false)
+    }
+
+    /**
+     * Compares content of two items for diff utils, see [calculateDiffResult].
+     *
+     * @return true if content is the same. By default we use [equals] and either the [ListType] should override equals()
+     * method or the child view model should override this method to compare 2 items. If our entity is data class,
+     * there is no need to override equals() since it already done by Kotlin
+     */
+    open protected fun areContentsEquals(old: ListType, new: ListType): Boolean {
+        return old?.equals(new) ?: false
+    }
+
+    /**
+     * get change payload of the old and the new item, used for partial updating item in recycler view
+     * see [DiffUtil.Callback.getChangePayload]
+     */
+    open protected fun getChangePayload(old: ListType, new: ListType): Any? {
+        return null
+    }
 
     /**
      * Load specific page and set corresponding state (show loading, load completed, offline notice if data is came
@@ -130,6 +184,7 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
                     }
                 }
                 .doOnNext {
+                    val diffResult = calculateDiffResult(it)
                     mListEntity = it
                     mIsLoading = false
                     val err = mListEntity.apiError?.message ?: ""
@@ -138,7 +193,7 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
                                 showLoading = false,
                                 showEmptyView = getTotalCount() == 0,
                                 showOfflineNotice = mListEntity.isOfflineData,
-                                loadCompleted = Event.empty(),
+                                loadCompleted = Event(diffResult),
                                 errorMessage = if (err.isEmpty()) null else Event(err)
                         )
                     }
@@ -174,7 +229,7 @@ data class ListState(
         val refresh: Event<Unit>? = null,
         val errorMessage: Event<String>? = null,
         val loadingMore: Event<Unit>? = null,
-        val loadCompleted: Event<Unit>? = null
+        val loadCompleted: Event<DiffUtil.DiffResult>? = null
 )
 
 interface ListIntent {

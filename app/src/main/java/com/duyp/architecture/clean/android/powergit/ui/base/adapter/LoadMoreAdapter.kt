@@ -37,6 +37,17 @@ abstract class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
         }
     }
 
+    fun addProgress() {
+        if (!mIsProgressAdded) {
+            mIsProgressAdded = true
+            notifyItemInserted(itemCount)
+        }
+    }
+
+    fun removeProgress() {
+        mIsProgressAdded = false
+    }
+
     abstract fun getTotalItem(): Int
 
     abstract fun onCreateItemViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder
@@ -49,16 +60,6 @@ abstract class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 
     protected fun onBindProgressViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
-    }
-
-    fun addProgress() {
-        mIsProgressAdded = true
-        notifyItemInserted(itemCount)
-    }
-
-    fun removeProgress() {
-        mIsProgressAdded = false
-        notifyItemRemoved(itemCount - 1)
     }
 
     fun isProgressAdded() = mIsProgressAdded

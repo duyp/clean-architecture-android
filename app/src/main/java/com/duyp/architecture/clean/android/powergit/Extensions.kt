@@ -40,42 +40,6 @@ inline fun consume(f: () -> Unit): Boolean {
     return true
 }
 
-/**
- * Allows calls like
- *
- * `viewGroup.inflate(R.layout.foo)`
- */
-fun ViewGroup.inflate(@LayoutRes layout: Int, attachToRoot: Boolean = false): View {
-    return LayoutInflater.from(context).inflate(layout, this, attachToRoot)
-}
-
-/**
- * Allows calls like
- *
- * `supportFragmentManager.inTransaction { add(...) }`
- */
-inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> FragmentTransaction) {
-    beginTransaction().func().commit()
-}
-
-/**
- * Create a [Fragment] instance with bundle consumer
- */
-fun <F: Fragment> fragmentInstance(fragment: () -> F, bundle: Bundle.() -> Unit): F {
-    val f = fragment()
-    val b = Bundle()
-    bundle(b)
-    f.arguments = b
-    return f
-}
-
-inline fun <reified T: Fragment> Fragment.withArguments(bundle: Bundle.() -> Unit): T {
-    val b = Bundle()
-    bundle(b)
-    this.arguments = b
-    return this as T
-}
-
 // region ViewModels
 
 /**
@@ -230,6 +194,42 @@ fun exceptionInDebug(t: Throwable) {
 // =====================================================================================================================
 // Activity, fragment, view...
 //
+
+/**
+ * Allows calls like
+ *
+ * `viewGroup.inflate(R.layout.foo)`
+ */
+fun ViewGroup.inflate(@LayoutRes layout: Int, attachToRoot: Boolean = false): View {
+    return LayoutInflater.from(context).inflate(layout, this, attachToRoot)
+}
+
+/**
+ * Allows calls like
+ *
+ * `supportFragmentManager.inTransaction { add(...) }`
+ */
+inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> FragmentTransaction) {
+    beginTransaction().func().commit()
+}
+
+/**
+ * Create a [Fragment] instance with bundle consumer
+ */
+fun <F: Fragment> fragmentInstance(fragment: () -> F, bundle: Bundle.() -> Unit): F {
+    val f = fragment()
+    val b = Bundle()
+    bundle(b)
+    f.arguments = b
+    return f
+}
+
+inline fun <reified T: Fragment> Fragment.withArguments(bundle: Bundle.() -> Unit): T {
+    val b = Bundle()
+    bundle(b)
+    this.arguments = b
+    return this as T
+}
 
 fun Activity.showToastMessage(message: String) {
     if (!message.isEmpty()) {

@@ -2,12 +2,14 @@ package com.duyp.architecture.clean.android.powergit.ui.base
 
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.duyp.architecture.clean.android.powergit.R
 import com.duyp.architecture.clean.android.powergit.event
 import com.duyp.architecture.clean.android.powergit.showToastMessage
 import com.duyp.architecture.clean.android.powergit.ui.base.adapter.AdapterData
+import com.duyp.architecture.clean.android.powergit.ui.base.adapter.BaseAdapter
 import com.duyp.architecture.clean.android.powergit.ui.base.adapter.LoadMoreAdapter
 import com.duyp.architecture.clean.android.powergit.ui.features.login.LoginActivity
 import com.duyp.architecture.clean.android.powergit.ui.widgets.recyclerview.scroll.InfiniteScroller
@@ -24,9 +26,22 @@ import kotlinx.android.synthetic.main.refresh_recycler_view.*
  *
  * Please see [ListViewModel] to understand how data is stored and retrieved to be displayed in adapter, how intent
  * is sent to view model and how the view model manage view state of a list
+ *
+ * @param EntityType type of entity which will be shown in recycler view, is adapter data
+ * @param ListType type of data in the [com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity]
+ * @param A adapter
+ * @param I intent
+ * @param S state
+ * @param VM view model
  */
-abstract class ListFragment<EntityType, ListType, A: LoadMoreAdapter, I: ListIntent, S, VM: ListViewModel<S, I, EntityType, ListType>>:
-        ViewModelFragment<S, I, VM>() {
+abstract class ListFragment<
+        EntityType,
+        ListType,
+        A: BaseAdapter<EntityType>,
+        I: ListIntent,
+        S,
+        VM : ListViewModel<S, I, EntityType, ListType>>
+    : ViewModelFragment<S, I, VM>() {
 
     private lateinit var mAdapter: A
 
@@ -58,7 +73,7 @@ abstract class ListFragment<EntityType, ListType, A: LoadMoreAdapter, I: ListInt
 
         event(s.refresh) { refresh() }
 
-        event(s.loadCompleted) { onLoadCompleted() }
+        event(s.loadCompleted) { onLoadCompleted(this) }
 
         event(s.loadingMore) { onLoadingMore() }
 
@@ -94,9 +109,9 @@ abstract class ListFragment<EntityType, ListType, A: LoadMoreAdapter, I: ListInt
         mInfiniteScroller.reset()
     }
 
-    private fun onLoadCompleted() {
+    private fun onLoadCompleted(diffResult: DiffUtil.DiffResult) {
         mInfiniteScroller.reset()
-        mAdapter.notifyDataSetChanged()
+        mAdapter.update(diffResult)
     }
 
     private fun setUiRefreshing(refreshing: Boolean) {
