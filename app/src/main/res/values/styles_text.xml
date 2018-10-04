@@ -1,10 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="text_description">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">@dimen/text_regular</item>
-        <item name="android:textColor">@android:color/darker_gray</item>
+    <style name="TextAppearanceBody" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:lineSpacingExtra">@dimen/text_line_spacing</item>
     </style>
+
+    <style name="TextAppearanceCaption" parent="TextAppearance.AppCompat.Caption"/>
+
+    <style name="TextAppearanceBadgeLabel" parent="TextAppearance.AppCompat.Body2">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">@dimen/text_small</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="TextAppearanceSubheading" parent="TextAppearance.AppCompat.Subhead">
+        <item name="android:textColor">@color/anthracite</item>
+    </style>
+
+    <style name="TextAppearanceSubtitle" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textSize">@dimen/text_medium</item>
+        <item name="android:textColor">@color/anthracite</item>
+    </style>
+
+    <style name="TextAppearanceTitle" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textColor">@color/anthracite</item>
+    </style>
+
+    <style name="TextAppearanceBaseButton" parent="TextAppearance.AppCompat.Button">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearanceFloatingButton" parent="TextAppearanceBaseButton">
+        <item name="android:textSize">@dimen/text_medium</item>
+    </style>
+
+    <style name="TextAppearanceButtonRegular" parent="TextAppearanceBaseButton">
+        <item name="android:textSize">@dimen/text_regular</item>
+    </style>
+
+    <style name="TextAppearancePrimaryButton" parent="TextAppearanceButtonRegular">
+        <item name="android:textColor">@color/text_color_primary_button</item>
+    </style>
+
+    <style name="TextAppearancePrimaryFloatingButton" parent="TextAppearanceFloatingButton">
+        <item name="android:textColor">@color/text_color_primary_button</item>
+    </style>
+
+    <style name="TextAppearanceSecondaryFloatingButton" parent="TextAppearanceFloatingButton">
+        <item name="android:textColor">@color/text_color_secondary_button</item>
+    </style>
+
+    <style name="TextAppearanceSecondaryButton" parent="TextAppearanceButtonRegular">
+        <item name="android:textColor">@color/text_color_secondary_button</item>
+    </style>
+
+    <style name="TextAppearanceInputLayoutError" parent="TextAppearanceCaption">
+        <item name="android:textColor">@color/red</item>
+    </style>
+
+    <style name="TextAppearanceInputLayoutHint" parent="TextAppearanceCaption">
+        <item name="android:textColor">?colorAccent</item>
+    </style>
+
+    <style name="TextAppearanceInputLayoutCounter" parent="TextAppearanceCaption">
+        <item name="android:textColor">@color/grey</item>
+    </style>
+
 </resources>

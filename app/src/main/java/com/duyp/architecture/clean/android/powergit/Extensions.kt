@@ -13,6 +13,7 @@ import android.support.annotation.LayoutRes
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.ViewPager
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +23,7 @@ import android.widget.EditText
 import android.widget.Toast
 import com.duyp.architecture.clean.android.powergit.ui.Event
 import com.duyp.architecture.clean.android.powergit.ui.base.BaseViewModel
+import it.sephiroth.android.library.bottomnavigation.BottomNavigation
 import timber.log.Timber
 
 /**
@@ -225,6 +227,10 @@ fun exceptionInDebug(t: Throwable) {
     }
 }
 
+// =====================================================================================================================
+// Activity, fragment, view...
+//
+
 fun Activity.showToastMessage(message: String) {
     if (!message.isEmpty()) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
@@ -261,6 +267,33 @@ fun Activity.showKeyboard(yourEditText: EditText) {
         input.showSoftInput(yourEditText, InputMethodManager.SHOW_IMPLICIT)
     } catch (ignored: Exception) { }
 }
+
+fun ViewPager.addOnPageSelectedListener(page: (Int) -> Unit) {
+    this.addOnPageChangeListener(object: ViewPager.OnPageChangeListener {
+        override fun onPageScrollStateChanged(state: Int) {}
+
+        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+        override fun onPageSelected(position: Int) {
+            page(position)
+        }
+    })
+}
+
+fun BottomNavigation.setOnItemClickListener(listener: (id: Int, position: Int, fromUser: Boolean) -> Unit) {
+    this.setOnMenuItemClickListener(object: BottomNavigation.OnMenuItemSelectionListener {
+
+        override fun onMenuItemSelect(id: Int, position: Int, fromUser: Boolean) {
+            listener(id, position, fromUser)
+        }
+
+        override fun onMenuItemReselect(id: Int, position: Int, fromUser: Boolean) {}
+    })
+}
+
+//
+// End Activity, fragment, view...
+// =====================================================================================================================
 
 /**
  * Observes state of a [BaseViewModel] in a [LifecycleOwner] only if the emitted state is not null

@@ -13,7 +13,7 @@
 
     <TextView
         android:id="@+id/title"
-        style="@style/TextAppearance.AppCompat.Subhead"
+        style="@style/TextAppearanceSubheading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
@@ -24,7 +24,7 @@
 
     <TextView
         android:id="@+id/description"
-        style="@style/TextAppearance.AppCompat.Small"
+        style="@style/TextAppearanceBody"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="2"
@@ -35,7 +35,7 @@
 
     <TextView
         android:id="@+id/date"
-        style="@style/TextAppearance.AppCompat.Caption"
+        style="@style/TextAppearanceCaption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawablePadding="@dimen/tiny"

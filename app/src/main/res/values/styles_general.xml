@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="BaseButtonStyle" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:paddingLeft">@dimen/x_regular</item> <!-- 16 + 4 from touch target-->
+        <item name="android:paddingRight">@dimen/x_regular</item>
+        <item name="android:drawablePadding">@dimen/tiny</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="PrimaryButtonStyle" parent="BaseButtonStyle">
+        <item name="android:textAppearance">@style/TextAppearancePrimaryButton</item>
+    </style>
+
+    <style name="SecondaryButtonStyle" parent="BaseButtonStyle">
+        <item name="android:textAppearance">@style/TextAppearanceSecondaryButton</item>
+    </style>
+
+    <style name="PrimaryFloatingButtonStyle" parent="BaseButtonStyle">
+        <item name="android:minWidth">216dp</item>
+        <item name="android:textAppearance">@style/TextAppearancePrimaryFloatingButton</item>
+    </style>
+
+    <style name="SecondaryFloatingButtonStyle" parent="BaseButtonStyle">
+        <item name="android:textAppearance">@style/TextAppearanceSecondaryFloatingButton</item>
+    </style>
+
+    <style name="BaseLinkButtonStyle" parent="Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:paddingLeft">@dimen/tiny</item>
+        <item name="android:paddingRight">@dimen/tiny</item>
+        <item name="android:drawablePadding">@dimen/tiny</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:minWidth">@dimen/tiny</item>
+        <item name="android:gravity">left|center_vertical</item>
+    </style>
+
+    <style name="LinkButtonStyle" parent="BaseLinkButtonStyle">
+        <item name="android:textAppearance">@style/TextAppearanceButtonRegular</item>
+        <item name="android:textColor">@color/text_color_link_button</item>
+    </style>
+
+    <style name="CheckBoxStyle" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:textAppearance">@style/TextAppearanceSubheading</item>
+        <item name="android:paddingLeft">@dimen/regular</item>
+        <item name="android:minHeight">@dimen/x_large</item>
+    </style>
+
+    <style name="RadioButtonStyle" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:textAppearance">@style/TextAppearanceSubheading</item>
+        <item name="android:paddingLeft">@dimen/regular</item>
+        <item name="android:minHeight">@dimen/x_large</item>
+    </style>
+
+    <style name="EditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:textAppearance">@style/TextAppearanceSubheading</item>
+        <item name="android:textColor">@color/text_color_input</item>
+        <item name="android:inputType">textNoSuggestions</item>
+        <item name="android:minHeight">@dimen/x_large</item>
+    </style>
+
+    <style name="TextInputLayoutStyle" parent="Widget.Design.TextInputLayout">
+        <item name="android:textColorHint">@color/grey</item>
+        <item name="errorTextAppearance">@style/TextAppearanceInputLayoutError</item>
+        <item name="hintTextAppearance">@style/TextAppearanceInputLayoutHint</item>
+        <item name="counterTextAppearance">@style/TextAppearanceInputLayoutCounter</item>
+        <item name="counterOverflowTextAppearance">@style/TextAppearanceInputLayoutError</item>
+        <item name="passwordToggleTint">@color/dark_grey</item>
+        <item name="android:minHeight">@dimen/xxx_large</item>
+    </style>
+
+    <style name="TabLayoutStyle" parent="Widget.Design.TabLayout">
+        <item name="tabIndicatorColor">@color/white</item>
+        <item name="tabIndicatorHeight">@dimen/xxx_tiny</item>
+        <item name="tabSelectedTextColor">@color/white</item>
+        <item name="tabTextColor">@color/white_opacity</item>
+        <item name="tabMode">fixed</item>
+        <item name="tabGravity">fill</item>
+        <item name="android:background">?colorPrimary</item>
+    </style>
+
+
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/one</item>
+        <item name="android:background">@color/light_grey</item>
+        <item name="android:layout_marginTop">@dimen/zero</item>
+        <item name="android:layout_marginBottom">@dimen/zero</item>
+    </style>
+
+    <style name="DividerRegular" parent="Divider">
+        <item name="android:layout_marginTop">@dimen/regular</item>
+        <item name="android:layout_marginBottom">@dimen/regular</item>
+    </style>
+
+    <style name="ButtonIcon">
+        <item name="android:layout_width">40dp</item> <!-- 24 + 16 of padding (more clickable area) -->
+        <item name="android:layout_height">40dp</item>
+        <item name="android:padding">@dimen/tiny</item>
+        <item name="android:scaleType">fitCenter</item>
+    </style>
+
+    <style name="CircularProgressStyle">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:indeterminate">true</item>
+    </style>
+
+    <style name="CardViewStyle" parent="CardView">
+        <item name="cardCornerRadius">@dimen/card_corner_radius</item>
+        <item name="cardElevation">@dimen/card_shadow</item>
+        <item name="cardMaxElevation">@dimen/card_shadow</item>
+        <item name="cardUseCompatPadding">true</item>
+        <item name="cardBackgroundColor">@color/white</item>
+        <item name="cardPreventCornerOverlap">false</item>
+    </style>
+
+</resources>

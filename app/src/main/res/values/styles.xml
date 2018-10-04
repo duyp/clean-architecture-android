@@ -55,4 +55,6 @@
         <item name="android:paddingLeft">@dimen/x_tiny</item>
         <item name="android:paddingRight">@dimen/x_tiny</item>
     </style>
+
+
 </resources>

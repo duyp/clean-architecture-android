@@ -10,20 +10,11 @@
         <item name="icon_color">@color/darkWindowBackground</item>
         <item name="android:statusBarColor">@color/transparent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
-    </style>
-
-    <style name="AppThemeNoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="icon_color">@color/darkWindowBackground</item>
-        <item name="android:statusBarColor">@color/transparent</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
-    </style>
-
-    <style name="AppThemeTranslucent" parent="AppTheme">
-        <item name="colorPrimaryDark">@color/transparent</item>
+        <item name="editTextStyle">@style/EditTextStyle</item>
+        <item name="android:checkboxStyle">@style/CheckBoxStyle</item>
+        <item name="android:radioButtonStyle">@style/RadioButtonStyle</item>
+        <item name="alertDialogTheme">@style/DialogTheme</item>
+        <item name="dialogTheme">@style/DialogTheme</item>
     </style>
 
     <style name="AppThemeFullScreen" parent="AppTheme">
@@ -31,7 +22,7 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
-    <style name="LoginTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="LoginTheme" parent="AppThemeFullScreen">
         <item name="colorPrimary">@color/material_indigo_700</item>
         <item name="colorPrimaryDark">@color/material_indigo_900</item>
         <item name="colorAccent">@color/material_blue_accent_700</item>
@@ -56,7 +47,7 @@
 
     </style>
 
-    <style name="ThemeTranslucent" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="TranslucentTheme" parent="AppTheme">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
@@ -69,5 +60,66 @@
     <style name="TextAppearance.Design.CollapsingToolbar.Expanded.LightText" parent="TextAppearance.Design.CollapsingToolbar.Expanded">
         <item name="android:textColor">@color/white</item>
     </style>
+
+    <style name="TopLevelActivityTheme" parent="AppTheme">
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+
+    <style name="FullScreenActivityTheme" parent="AppTheme">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <style name="ToolbarTheme" parent="Widget.AppCompat.Light.ActionBar">
+        <item name="android:textColorPrimary">@color/anthracite</item>
+        <item name="actionMenuTextColor">@color/anthracite</item>
+        <item name="colorControlNormal">@color/white</item>
+    </style>
+
+    <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/light_blue</item>
+        <item name="android:textColorPrimary">@color/dark_grey</item>
+        <item name="android:windowTitleStyle">@style/TextAppearanceTitle</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+    </style>
+
+    <style name="ProgressDialogTheme" parent="DialogTheme">
+        <item name="colorAccent">@color/scout_orange</item>
+    </style>
+
+    <style name="PrimaryButton" parent="ThemeOverlay.AppCompat.Light">
+        <item name="colorButtonNormal">@color/grey</item>
+        <item name="buttonStyle">@style/PrimaryButtonStyle</item>
+    </style>
+
+    <style name="SecondaryButton" parent="ThemeOverlay.AppCompat.Light">
+        <item name="colorButtonNormal">@color/grey</item>
+        <item name="colorAccent">@color/white</item>
+        <item name="buttonStyle">@style/SecondaryButtonStyle</item>
+    </style>
+
+    <style name="PrimaryFloatingButton" parent="ThemeOverlay.AppCompat.Light">
+        <item name="colorButtonNormal">@color/grey</item>
+        <item name="buttonStyle">@style/PrimaryFloatingButtonStyle</item>
+    </style>
+
+    <style name="SecondaryFloatingButton" parent="ThemeOverlay.AppCompat.Light">
+        <item name="colorButtonNormal">@color/grey</item>
+        <item name="colorAccent">@color/white</item>
+        <item name="buttonStyle">@style/SecondaryFloatingButtonStyle</item>
+    </style>
+
+    <style name="LinkButton" parent="ThemeOverlay.AppCompat.Light">
+        <item name="colorButtonNormal">@color/grey</item>
+        <item name="colorAccent">@color/white</item>
+        <item name="buttonStyle">@style/LinkButtonStyle</item>
+    </style>
+
+    <style name="SeekBar">
+        <item name="colorControlNormal">@color/grey</item>
+        <item name="colorControlActivated">@color/light_blue</item>
+    </style>
 
 </resources>

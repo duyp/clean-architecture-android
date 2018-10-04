@@ -80,7 +80,7 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
         }
     }
 
-    protected fun hideShowShadow(show: Boolean) {
+    protected fun setToolbarShadow(show: Boolean) {
         if (appBar != null) {
             appBar!!.elevation = if (show) resources.getDimension(R.dimen.xx_tiny) else 0.0f
         }

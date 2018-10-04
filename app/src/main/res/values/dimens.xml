@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <dimen name="zero">0dp</dimen>
     <dimen name="one">1dp</dimen>
     <dimen name="xxx_tiny">2dp</dimen>
     <dimen name="xx_tiny">4dp</dimen>
@@ -32,6 +33,9 @@
     <dimen name="fab_size">55dp</dimen>
     <dimen name="fab_spacing">86dp</dimen> <!-- keyline + fab margin -->
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="card_corner_radius">@dimen/xxx_tiny</dimen>
+    <dimen name="card_shadow">@dimen/xxx_tiny</dimen>
+    <dimen name="card_action_area">52dp</dimen>
     <dimen name="divider_height">@dimen/one</dimen>
 
     <item name="drawable_callback" type="id" />

@@ -16,7 +16,7 @@
 
         <TextView
             android:id="@+id/title"
-            style="@style/TextAppearance.AppCompat.Medium"
+            style="@style/TextAppearanceSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -27,7 +27,9 @@
 
         <TextView
             android:id="@+id/tvDes"
-            style="@style/text_description"
+            style="@style/TextAppearanceBody"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/xx_tiny"
             android:layout_marginBottom="@dimen/xx_tiny"
             android:text="@string/description" />
@@ -41,7 +43,7 @@
 
             <TextView
                 android:id="@+id/stars"
-                style="@style/TextAppearance.AppCompat.Caption"
+                style="@style/TextAppearanceCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -54,7 +56,7 @@
 
             <TextView
                 android:id="@+id/forks"
-                style="@style/TextAppearance.AppCompat.Caption"
+                style="@style/TextAppearanceCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -67,7 +69,7 @@
 
             <TextView
                 android:id="@+id/date"
-                style="@style/TextAppearance.AppCompat.Caption"
+                style="@style/TextAppearanceCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -80,7 +82,7 @@
 
             <TextView
                 android:id="@+id/size"
-                style="@style/TextAppearance.AppCompat.Caption"
+                style="@style/TextAppearanceCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -94,7 +96,7 @@
 
             <TextView
                 android:id="@+id/language"
-                style="@style/TextAppearance.AppCompat.Caption"
+                style="@style/TextAppearanceCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
