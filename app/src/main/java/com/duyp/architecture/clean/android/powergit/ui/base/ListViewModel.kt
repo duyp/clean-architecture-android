@@ -3,7 +3,6 @@ package com.duyp.architecture.clean.android.powergit.ui.base
 import android.support.v7.util.DiffUtil
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.exception.AuthenticationException
-import com.duyp.architecture.clean.android.powergit.printStacktraceIfDebug
 import com.duyp.architecture.clean.android.powergit.ui.Event
 import com.duyp.architecture.clean.android.powergit.ui.base.adapter.AdapterData
 import io.reactivex.Observable
@@ -19,11 +18,13 @@ import io.reactivex.schedulers.Schedulers
  * Adapter we don't have any reference to list of data, all should be controlled by ViewModel to be persisted against
  * screen rotating, and more important: TESTABLE.
  *
+ * [DiffUtil] is used for calculating the changes to update adapter's items
+ *
  * The data is wrapped in [ListEntity] for pagination (and lazy load in some cases), see below explanation:
  *
- * @param [EntityType] is type of data to be shown in adapter
+ * @param [EntityType] type of data to be shown in adapter
  *
- * @param [ListType] is type of data in the list. In common case (see [BasicListViewModel]), [EntityType] is the same
+ * @param [ListType] type of data in the list. In common case (see [BasicListViewModel]), [EntityType] is the same
  * with [ListType] when we store data in memory. But in some other cases, we only save id of items on memory and do
  * lazy load when the item is being bound in adapter, this case the [ListType] is [Int] (id). Therefore the child
  * classes must implement [getItem] which returns [EntityType] based on [ListType]
@@ -126,7 +127,7 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
      *
      * @return [DiffUtil.DiffResult] reflect the changes
      */
-    protected fun calculateDiffResult(newList: ListEntity<ListType>): DiffUtil.DiffResult {
+    open protected fun calculateDiffResult(newList: ListEntity<ListType>): DiffUtil.DiffResult {
         return DiffUtil.calculateDiff(object : DiffUtil.Callback() {
 
             override fun getOldListSize() = mListEntity.items.size
@@ -199,7 +200,6 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
                     }
                 }
                 .doOnError {
-                    it.printStacktraceIfDebug()
                     mIsLoading = false
                     if (it is AuthenticationException) {
                         mListEntity = ListEntity()
@@ -233,6 +233,6 @@ data class ListState(
 )
 
 interface ListIntent {
-    object RefreshIntent: ListIntent
-    object LoadMoreIntent: ListIntent
+    object Refresh: ListIntent
+    object LoadMore: ListIntent
 }

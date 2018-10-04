@@ -8,7 +8,7 @@ import io.reactivex.Single
 import org.junit.Test
 import org.mockito.Mock
 
-class SplashViewModelTest : ViewModelTest<SplashState, SplashIntent, SplashViewModel>() {
+class SplashViewModelTest : ViewModelTest<SplashState, Any, SplashViewModel>() {
 
     @Mock internal lateinit var mCheckUser: CheckUser
 
@@ -16,15 +16,10 @@ class SplashViewModelTest : ViewModelTest<SplashState, SplashIntent, SplashViewM
         return SplashViewModel(mCheckUser)
     }
 
-    override fun setup() {
-        super.setup()
-        processIntents()
-    }
-
     @Test
     fun hasLoggedInUser_shouldNavigateMain() {
         whenever(mCheckUser.hasLoggedInUser()).thenReturn(Single.just(true))
-        intent(SplashIntent())
+        processIntents()
 
         viewState().assertValue { navigation!!.peekContent() == Navigation.MAIN }
     }
@@ -32,7 +27,7 @@ class SplashViewModelTest : ViewModelTest<SplashState, SplashIntent, SplashViewM
     @Test
     fun noLoggedInUser_shouldNavigateLogin() {
         whenever(mCheckUser.hasLoggedInUser()).thenReturn(Single.just(false))
-        intent(SplashIntent())
+        processIntents()
 
         viewState().assertValue { navigation!!.peekContent() == Navigation.LOGIN }
     }
@@ -40,7 +35,7 @@ class SplashViewModelTest : ViewModelTest<SplashState, SplashIntent, SplashViewM
     @Test
     fun checkUserError_shouldNavigateLogin() {
         whenever(mCheckUser.hasLoggedInUser()).thenReturn(Single.error(Exception()))
-        intent(SplashIntent())
+        processIntents()
 
         viewState().assertValue { navigation!!.peekContent() == Navigation.LOGIN }
     }

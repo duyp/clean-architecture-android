@@ -19,7 +19,7 @@ abstract class BasicListViewModel<EntityType, ListType>: ListViewModel<ListState
         withState(s)
     }
 
-    override fun getRefreshIntent() = ListIntent.RefreshIntent
+    override fun getRefreshIntent() = ListIntent.Refresh
 
-    override  fun getLoadMoreIntent() = ListIntent.LoadMoreIntent
+    override  fun getLoadMoreIntent() = ListIntent.LoadMore
 }
