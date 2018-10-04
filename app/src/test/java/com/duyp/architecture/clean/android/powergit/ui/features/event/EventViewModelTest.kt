@@ -8,10 +8,7 @@ import com.duyp.architecture.clean.android.powergit.domain.usecases.GetUserEvent
 import com.duyp.architecture.clean.android.powergit.ui.base.ListIntent
 import com.duyp.architecture.clean.android.powergit.ui.base.ListState
 import com.duyp.architecture.clean.android.powergit.utils.*
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Single
 import io.reactivex.SingleEmitter
 import org.junit.Assert.assertEquals
@@ -180,5 +177,31 @@ class EventViewModelTest: ViewModelTest<ListState, ListIntent, EventViewModel>()
         assertEquals(1, mViewModel.getItemAtPosition(0)!!.id)
         assertEquals(2, mViewModel.getItemAtPosition(1)!!.id)
     }
+
+    @Test
+    fun loadMore_canNotDoWithoutRefreshing() {
+        intent(ListIntent.LoadMore)
+        viewState().assertValue { !showLoading }
+        verifyZeroInteractions(mGetUserEventList)
+    }
+
+    @Test
+    fun loadMore_shouldPassLoadingMoreEvent() {
+        whenever(mGetUserEventList.getMyUserEvents(any(), any()))
+                .thenReturn(Single.just(ListEntity(
+                        next = 2, last = 3, items = listOf(EventEntity(id = 1), EventEntity(id = 2))
+                )))
+        intent(ListIntent.Refresh)
+
+        whenever(mGetUserEventList.getMyUserEvents(any(), any()))
+                .thenReturn(Single.just(ListEntity()))
+        intent(ListIntent.LoadMore)
+
+        viewState()
+                .assertValue { loadCompleted.assertNotNull() }
+                .withPrevious { showLoading }
+                .withPrevious { loadingMore.assertNotNull() }
+    }
+
 
 }

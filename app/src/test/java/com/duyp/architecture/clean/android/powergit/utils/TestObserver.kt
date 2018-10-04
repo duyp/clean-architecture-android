@@ -117,9 +117,15 @@ class TestObserver<T> : Observer<T> {
      */
     private fun fail(message: String): AssertionError {
         val b = message +
-                " (" + "value = " + values + ')'.toString()
+                " (" + "value = \n" + printValues() + ')'.toString()
 
         return AssertionError(b)
+    }
+
+    private fun printValues(): String {
+        val sb = StringBuilder()
+        values.forEach { sb.append(it).append("\n") }
+        return sb.toString()
     }
 
     class OnGoingStub<T> (
