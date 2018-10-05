@@ -21,7 +21,7 @@ class SplashViewModelTest : ViewModelTest<SplashState, Any, SplashViewModel>() {
         whenever(mCheckUser.hasLoggedInUser()).thenReturn(Single.just(true))
         processIntents()
 
-        viewState().assertValue { navigation!!.peekContent() == Navigation.MAIN }
+        viewState().assertLastValue { navigation!!.peekContent() == Navigation.MAIN }
     }
 
     @Test
@@ -29,7 +29,7 @@ class SplashViewModelTest : ViewModelTest<SplashState, Any, SplashViewModel>() {
         whenever(mCheckUser.hasLoggedInUser()).thenReturn(Single.just(false))
         processIntents()
 
-        viewState().assertValue { navigation!!.peekContent() == Navigation.LOGIN }
+        viewState().assertLastValue { navigation!!.peekContent() == Navigation.LOGIN }
     }
 
     @Test
@@ -37,7 +37,7 @@ class SplashViewModelTest : ViewModelTest<SplashState, Any, SplashViewModel>() {
         whenever(mCheckUser.hasLoggedInUser()).thenReturn(Single.error(Exception()))
         processIntents()
 
-        viewState().assertValue { navigation!!.peekContent() == Navigation.LOGIN }
+        viewState().assertLastValue { navigation!!.peekContent() == Navigation.LOGIN }
     }
 
 }

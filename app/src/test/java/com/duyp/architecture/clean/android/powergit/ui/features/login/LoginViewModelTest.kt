@@ -30,7 +30,7 @@ class LoginViewModelTest : ViewModelTest<LoginViewState, LoginIntent, LoginViewM
         processIntents()
 
         viewState()
-                .assertValue {
+                .assertLastValue {
                     lastLoggedInUsername.assertNotNullAndNotHandledYet() && !isLoading && errorMessage == null
                 }
                 .noPrevious()
@@ -41,7 +41,7 @@ class LoginViewModelTest : ViewModelTest<LoginViewState, LoginIntent, LoginViewM
         whenever(mGetUser.getLastLoggedInUsername()).thenReturn("duyp")
         processIntents()
 
-        viewState().assertValue { lastLoggedInUsername.assertContent("duyp") && !isLoading && errorMessage == null }
+        viewState().assertLastValue { lastLoggedInUsername.assertContent("duyp") && !isLoading && errorMessage == null }
                 .noPrevious()
     }
 
@@ -49,7 +49,7 @@ class LoginViewModelTest : ViewModelTest<LoginViewState, LoginIntent, LoginViewM
     fun login_emptyUsername() {
         intent(LoginIntent(null, "abcd"))
 
-        viewState().assertValue {
+        viewState().assertLastValue {
             !isLoading && errorMessage != null
         }
     }
@@ -58,7 +58,7 @@ class LoginViewModelTest : ViewModelTest<LoginViewState, LoginIntent, LoginViewM
     fun login_emptyPassword() {
         intent(LoginIntent("duyp", ""))
 
-        viewState().assertValue {
+        viewState().assertLastValue {
             !isLoading && errorMessage != null
         }
     }
@@ -67,7 +67,7 @@ class LoginViewModelTest : ViewModelTest<LoginViewState, LoginIntent, LoginViewM
     fun login_bothUsernameAndPasswordEmpty() {
         intent(LoginIntent(null, ""))
 
-        viewState().assertValue {
+        viewState().assertLastValue {
             !isLoading && errorMessage!!.peekContent().contains("username")
         }
     }
@@ -77,7 +77,7 @@ class LoginViewModelTest : ViewModelTest<LoginViewState, LoginIntent, LoginViewM
         whenever(mLoginUser.login(any(), any())).thenReturn(Completable.error(Exception("login error")))
         intent(LoginIntent("duyp", "1234"))
 
-        viewState().assertValue { !isLoading && errorMessage.assertContent("login error") }
+        viewState().assertLastValue { !isLoading && errorMessage.assertContent("login error") }
                 .withPrevious { isLoading }
 
         verify(mLoginUser).login("duyp", "1234")
@@ -88,7 +88,7 @@ class LoginViewModelTest : ViewModelTest<LoginViewState, LoginIntent, LoginViewM
         whenever(mLoginUser.login(any(), any())).thenReturn(Completable.complete())
         intent(LoginIntent("duyp1", "12345"))
 
-        viewState().assertValue { errorMessage == null && loginSuccess != null }
+        viewState().assertLastValue { errorMessage == null && loginSuccess != null }
                 .withPrevious { isLoading }
 
         verify(mLoginUser).login("duyp1", "12345")

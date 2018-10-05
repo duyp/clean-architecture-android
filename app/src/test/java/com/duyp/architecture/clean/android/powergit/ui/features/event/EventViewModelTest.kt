@@ -26,19 +26,19 @@ class EventViewModelTest: ViewModelTest<ListState, ListIntent, EventViewModel>()
     @Test
     fun startup_shouldForceRefresh() {
         processIntents()
-        viewState().assertValue { refresh.assertNotNull() }
+        viewState().assertLastValue { refresh.assertNotNull() }
     }
 
     @Test
     fun startup_shouldNotForceRefreshTwiceIfScreenRotated() {
         processIntents()
-        viewState().assertValue {
+        viewState().assertLastValue {
             refresh.assertNotNullAndNotHandledYet()
         }
         mViewModel.state.value?.refresh?.get {  }
 
         processIntents()
-        viewState().assertValue { refresh.assertNotNullAndHandled() }
+        viewState().assertLastValue { refresh.assertNotNullAndHandled() }
     }
 
     @Test
@@ -49,7 +49,7 @@ class EventViewModelTest: ViewModelTest<ListState, ListIntent, EventViewModel>()
                 })
         intent(ListIntent.Refresh)
 
-        viewState().assertValue { showLoading }
+        viewState().assertLastValue { showLoading }
 
         // refresh more 4 times
         intent(ListIntent.Refresh)
@@ -70,17 +70,17 @@ class EventViewModelTest: ViewModelTest<ListState, ListIntent, EventViewModel>()
                 })
         intent(ListIntent.Refresh)
 
-        viewState().assertValue { showLoading }
+        viewState().assertLastValue { showLoading }
 
         // load done with error, should be able to load again
         emitter?.onError(Exception("error"))
 
-        viewState().assertValue { !showLoading && errorMessage.assertContent("error") }
+        viewState().assertLastValue { !showLoading && errorMessage.assertContent("error") }
 
         // refresh again
         intent(ListIntent.Refresh)
 
-        viewState().assertValue { showLoading }
+        viewState().assertLastValue { showLoading }
 
         // verify that we are able to load data for the 2nd refresh, means 2 times load
         verify(mGetUserEventList, times(2)).getMyUserEvents(any(), any())
@@ -92,7 +92,7 @@ class EventViewModelTest: ViewModelTest<ListState, ListIntent, EventViewModel>()
         intent(ListIntent.Refresh)
 
         viewState()
-                .assertValue {
+                .assertLastValue {
                     !showLoading && showEmptyView && !showOfflineNotice
                             && errorMessage.assertContent("error message") && !requireLogin
                 }
@@ -108,7 +108,7 @@ class EventViewModelTest: ViewModelTest<ListState, ListIntent, EventViewModel>()
         intent(ListIntent.Refresh)
 
         viewState()
-                .assertValue {
+                .assertLastValue {
                     !showLoading && !showOfflineNotice && showEmptyView
                             && errorMessage.assertContent("session expired") && requireLogin
                 }
@@ -124,7 +124,7 @@ class EventViewModelTest: ViewModelTest<ListState, ListIntent, EventViewModel>()
         intent(ListIntent.Refresh)
 
         viewState()
-                .assertValue {
+                .assertLastValue {
                     !showLoading && loadCompleted.assertNotNull()
                             && showOfflineNotice && errorMessage.assertContent("error")
                 }
@@ -138,7 +138,7 @@ class EventViewModelTest: ViewModelTest<ListState, ListIntent, EventViewModel>()
         intent(ListIntent.Refresh)
 
         viewState()
-                .assertValue {
+                .assertLastValue {
                     !showLoading && loadCompleted.assertNotNull() && !showOfflineNotice
                 }
                 .withPrevious { showLoading && !showOfflineNotice && !showEmptyView }
@@ -152,7 +152,7 @@ class EventViewModelTest: ViewModelTest<ListState, ListIntent, EventViewModel>()
         intent(ListIntent.Refresh)
 
         viewState()
-                .assertValue {
+                .assertLastValue {
                     !showLoading && loadCompleted.assertNotNull() && showEmptyView
                 }
                 .withPrevious { showLoading && !showOfflineNotice && !showEmptyView }
@@ -168,7 +168,7 @@ class EventViewModelTest: ViewModelTest<ListState, ListIntent, EventViewModel>()
         intent(ListIntent.Refresh)
 
         viewState()
-                .assertValue {
+                .assertLastValue {
                     !showLoading && !showEmptyView && !showOfflineNotice && loadCompleted.assertContentNotNull()
                 }
                 .withPrevious { showLoading && !showOfflineNotice && !showEmptyView }
@@ -181,7 +181,7 @@ class EventViewModelTest: ViewModelTest<ListState, ListIntent, EventViewModel>()
     @Test
     fun loadMore_canNotDoWithoutRefreshing() {
         intent(ListIntent.LoadMore)
-        viewState().assertValue { !showLoading }
+        viewState().assertLastValue { !showLoading }
         verifyZeroInteractions(mGetUserEventList)
     }
 
@@ -198,7 +198,7 @@ class EventViewModelTest: ViewModelTest<ListState, ListIntent, EventViewModel>()
         intent(ListIntent.LoadMore)
 
         viewState()
-                .assertValue { loadCompleted.assertNotNull() }
+                .assertLastValue { loadCompleted.assertNotNull() }
                 .withPrevious { showLoading }
                 .withPrevious { loadingMore.assertNotNull() }
     }
