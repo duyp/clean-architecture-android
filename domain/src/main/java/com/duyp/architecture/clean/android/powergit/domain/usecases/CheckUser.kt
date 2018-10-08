@@ -2,7 +2,6 @@ package com.duyp.architecture.clean.android.powergit.domain.usecases
 
 import com.duyp.architecture.clean.android.powergit.domain.repositories.AuthenticationRepository
 import com.duyp.architecture.clean.android.powergit.domain.repositories.SettingRepository
-import io.reactivex.Maybe
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -14,23 +13,21 @@ class CheckUser @Inject constructor(
     /**
      * Check if an user is logged in
      *
-     * @return Single emitting true if given user is logged in, otherwise false
+     * @return Single emitting true if given user is logged in, otherwise false regardless error
      */
     fun isLoggedIn(username: String): Single<Boolean> =
-            Maybe.fromCallable { mAuthenticationRepository.getAuthentication(username) }
-                    .toSingle("")
+            Single.fromCallable { mAuthenticationRepository.getAuthentication(username) }
                     .map { it.isNotEmpty() }
                     .onErrorReturnItem(false)
 
     /**
      * Check if has current user which is logged in
+     *
+     * @return Single emitting true if has logged in user, otherwise false regardless error
      */
     fun hasLoggedInUser(): Single<Boolean> =
-            Maybe.fromCallable { mSettingRepository.getCurrentUsername() }
-                    .toSingle("")
-                    .flatMap {
-                        if (it.isEmpty()) Single.just(false) else isLoggedIn(it)
-                    }
+            Single.fromCallable { mSettingRepository.getCurrentUsername() }
+                    .flatMap { isLoggedIn(it) }
                     .onErrorReturnItem(false)
 
 }

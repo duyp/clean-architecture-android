@@ -8,12 +8,11 @@ import io.reactivex.Single
 interface UserRepository {
 
     /**
-     * Login an user by given username and password. After logging in successfully, the user will be stored in
-     * Android Account Manager
+     * Login an user by given authentication token.
      *
      * @return Single which emits user entity if successfully
      */
-    fun login(username: String, password: String): Single<UserEntity>
+    fun login(token: String): Single<UserEntity>
 
     /**
      * Logout an user

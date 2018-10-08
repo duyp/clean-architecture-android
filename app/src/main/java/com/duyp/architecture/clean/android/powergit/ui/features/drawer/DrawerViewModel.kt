@@ -23,7 +23,7 @@ class DrawerViewModel @Inject constructor(
             intentSubject.ofType(DrawerIntent.RefreshUser::class.java)
                     .subscribeOn(Schedulers.io())
                     .switchMap {
-                        mGetUser.getCurrentUser()
+                        mGetUser.getCurrentLoggedInUser()
                                 .doOnNext { user ->
                                     setState { copy(user = user) }
                                 }

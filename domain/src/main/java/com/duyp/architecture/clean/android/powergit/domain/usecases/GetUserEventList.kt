@@ -4,7 +4,6 @@ import com.duyp.architecture.clean.android.powergit.domain.entities.EventEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.mergeWithPreviousPage
 import com.duyp.architecture.clean.android.powergit.domain.repositories.EventRepository
-import io.reactivex.Single
 import javax.inject.Inject
 
 class GetUserEventList @Inject constructor(
@@ -15,9 +14,9 @@ class GetUserEventList @Inject constructor(
     /**
      * Get event list of current logged in user, see [getUserEvents]
      */
-    fun getMyUserEvents(list: ListEntity<EventEntity>, receivedEvents: Boolean): Single<ListEntity<EventEntity>> =
+    fun getMyUserEvents(list: ListEntity<EventEntity>, receivedEvents: Boolean) =
             mGetUser.getCurrentLoggedInUsername()
-                    .flatMap { getUserEvents(list, it, receivedEvents) }
+                    .flatMap { getUserEvents(list, it, receivedEvents) }!!
 
     /**
      * Get event list of given user. The next page if current list will be load and appended with previous list.
@@ -27,10 +26,9 @@ class GetUserEventList @Inject constructor(
      *
      * @return new list which contains all items from starting page to current page
      */
-    fun getUserEvents(currentList: ListEntity<EventEntity>, username: String, receivedEvents: Boolean):
-            Single<ListEntity<EventEntity>> =
-            (if (receivedEvents) mEventRepository.getUserReceivedEvents(username, currentList.next)
-            else mEventRepository.getUserEvents(username, currentList.next))
+    fun getUserEvents(currentList: ListEntity<EventEntity>, username: String, receivedEvents: Boolean) =
+            (if (receivedEvents) mEventRepository.getUserReceivedEvents(username, currentList.getNextPage())
+            else mEventRepository.getUserEvents(username, currentList.getNextPage()))
                     .mergeWithPreviousPage(currentList)
 
 }

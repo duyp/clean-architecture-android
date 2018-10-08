@@ -5,7 +5,6 @@ import com.duyp.architecture.clean.android.powergit.domain.repositories.SettingR
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import io.reactivex.Maybe
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
@@ -52,11 +51,11 @@ class CheckUserTest : UseCaseTest<CheckUser>() {
     @Test
     fun hasLoggedInUser_emptyCurrentUser() {
         whenever(mSettingRepository.getCurrentUsername()).thenReturn("")
+        whenever(mAuthenticationRepository.getAuthentication("")).thenReturn(null)
 
         mUsecase.hasLoggedInUser()
                 .test()
                 .assertValue { !it }
-        verify(mAuthenticationRepository, times(0)).getAuthentication(anyString())
     }
 
     @Test

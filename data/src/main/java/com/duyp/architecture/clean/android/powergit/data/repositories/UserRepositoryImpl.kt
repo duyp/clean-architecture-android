@@ -4,9 +4,7 @@ import com.duyp.architecture.clean.android.powergit.data.api.UserService
 import com.duyp.architecture.clean.android.powergit.data.database.UserDao
 import com.duyp.architecture.clean.android.powergit.data.entities.user.UserApiToLocalMapper
 import com.duyp.architecture.clean.android.powergit.data.entities.user.UserLocalToEntityMapper
-import com.duyp.architecture.clean.android.powergit.data.utils.ApiHelper
 import com.duyp.architecture.clean.android.powergit.domain.entities.UserEntity
-import com.duyp.architecture.clean.android.powergit.domain.repositories.AuthenticationRepository
 import com.duyp.architecture.clean.android.powergit.domain.repositories.UserRepository
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -15,28 +13,24 @@ import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
         private val mUserService: UserService,
-        private val mUserDao: UserDao,
-        private val mAuthenticationRepository: AuthenticationRepository,
-        private val mApiHelper: ApiHelper
+        private val mUserDao: UserDao
 ) : UserRepository {
 
     private val mUserApiToLocalMapper = UserApiToLocalMapper()
 
     private val mUserLocalToEntityMapper = UserLocalToEntityMapper()
 
-    override fun login(username: String, password: String): Single<UserEntity> {
-        val token = mApiHelper.getBasicAuth(username, password)
+    override fun login(token: String): Single<UserEntity> {
         return mUserService.login(token)
                 .map { mUserApiToLocalMapper.mapFrom(it) }
-                .doOnSuccess{
+                .doOnSuccess {
                     mUserDao.insert(it)
-                    mAuthenticationRepository.addOrUpdateUser(username, password, token)
                 }
                 .map { mUserLocalToEntityMapper.mapFrom(it) }
     }
 
     override fun logout(username: String): Completable {
-        return Completable.fromAction { mAuthenticationRepository.logout(username) }
+        return Completable.complete() // don't have logout api supported yet
     }
 
     override fun getUser(username: String): Flowable<UserEntity> {

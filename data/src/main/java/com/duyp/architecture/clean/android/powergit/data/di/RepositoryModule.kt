@@ -8,6 +8,8 @@ import dagger.Module
 @Module
 abstract class RepositoryModule {
 
+    @Binds abstract fun androidInteractor(androidInteractorImpl: AndroidInteractorImpl): AndroidInteractor
+
     @Binds abstract fun userRepository(userRepositoryImpl: UserRepositoryImpl): UserRepository
 
     @Binds abstract fun authenticationRepository(authenticationRepositoryImpl: AuthenticationRepositoryImpl): AuthenticationRepository

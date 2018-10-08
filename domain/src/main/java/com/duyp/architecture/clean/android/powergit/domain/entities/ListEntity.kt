@@ -1,6 +1,5 @@
 package com.duyp.architecture.clean.android.powergit.domain.entities
 
-import io.reactivex.Observable
 import io.reactivex.Single
 
 /**
@@ -8,13 +7,13 @@ import io.reactivex.Single
  */
 data class ListEntity<T> (
 
-        val first: Int = 0,
+        private val first: Int? = null,
 
-        val next: Int = STARTING_PAGE,
+        private val next: Int? = null,
 
-        val prev: Int = 0,
+        private val prev: Int? = null,
 
-        val last: Int = 0,
+        private val last: Int? = null,
 
         val totalCount: Int = 0,
 
@@ -30,7 +29,7 @@ data class ListEntity<T> (
     /**
      * @return true if we can load more for this list
      */
-    fun canLoadMore() = next in 1..last
+    fun canLoadMore() = next in 1..getLastPage()
 
     /**
      * Merge with previous page. We don't merge if previous page is empty or this page is first page (eg. came from
@@ -40,11 +39,10 @@ data class ListEntity<T> (
      * previous list has page number < current list.
      */
     fun mergeWith(previousList: ListEntity<T>): ListEntity<T> {
-        if (isFirstPage() || previousList.items.isEmpty()) {
+        if (this.isFirstPage() || previousList.items.isEmpty()) {
             return this
         }
-        // next == 0 means last page
-        return if (this.isLastPage() || previousList.next < this.next) {
+        return if (this.isLastPage() || previousList.getNextPage() < this.getNextPage()) {
             copy(items = previousList.items + this.items)
         } else {
             this
@@ -54,7 +52,7 @@ data class ListEntity<T> (
     /**
      * @return true if this page is last page
      */
-    private fun isLastPage() = next == 0 && prev > 0
+    private fun isLastPage() = next == null && prev != null
 
     /**
      * @return true if this page is first page
@@ -64,7 +62,11 @@ data class ListEntity<T> (
     /**
      * Get the first page number, uses [STARTING_PAGE] if [first] is not set
      */
-    private fun getFirstPage() = if (first > 0) first else STARTING_PAGE
+    private fun getFirstPage() = first ?: STARTING_PAGE
+
+    private fun getLastPage() = last ?: 0
+
+    fun getNextPage() = next ?: STARTING_PAGE
 
     companion object {
         const val STARTING_PAGE = 1
@@ -72,9 +74,5 @@ data class ListEntity<T> (
 }
 
 fun <T> Single<ListEntity<T>>.mergeWithPreviousPage(previousList: ListEntity<T>): Single<ListEntity<T>> {
-    return map { it.mergeWith(previousList) }
-}
-
-fun <T> Observable<ListEntity<T>>.mergeWithPreviousPage(previousList: ListEntity<T>): Observable<ListEntity<T>> {
     return map { it.mergeWith(previousList) }
 }

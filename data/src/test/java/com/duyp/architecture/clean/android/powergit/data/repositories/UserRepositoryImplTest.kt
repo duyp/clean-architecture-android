@@ -3,10 +3,10 @@ package com.duyp.architecture.clean.android.powergit.data.repositories
 import com.duyp.architecture.clean.android.powergit.data.api.UserService
 import com.duyp.architecture.clean.android.powergit.data.database.UserDao
 import com.duyp.architecture.clean.android.powergit.data.entities.user.UserApiData
-import com.duyp.architecture.clean.android.powergit.data.utils.ApiHelper
-import com.duyp.architecture.clean.android.powergit.domain.repositories.AuthenticationRepository
+import com.duyp.architecture.clean.android.powergit.data.entities.user.UserLocalData
 import com.duyp.architecture.clean.android.powergit.domain.repositories.UserRepository
 import com.nhaarman.mockitokotlin2.*
+import io.reactivex.Flowable
 import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
@@ -24,20 +24,11 @@ class UserRepositoryImplTest {
     internal lateinit var mUserDao: UserDao
 
     @Mock
-    internal lateinit var mAuthenticationRepository: AuthenticationRepository
-
-    internal lateinit var mApiHelper: ApiHelper
-
     private lateinit var mUserRepository: UserRepository
 
     @Before
     fun setup() {
-        mApiHelper = mock {
-            on { getBasicAuth(any(), any()) }.doAnswer { invocationOnMock ->
-                "Basic " + invocationOnMock.arguments[0] + "," + invocationOnMock.arguments[1]
-            }
-        }
-        mUserRepository = UserRepositoryImpl(mUserService, mUserDao, mAuthenticationRepository, mApiHelper)
+        mUserRepository = UserRepositoryImpl(mUserService, mUserDao)
     }
 
     @Test
@@ -45,37 +36,39 @@ class UserRepositoryImplTest {
         val user = UserApiData(1, "duyp")
         whenever(mUserService.login(any())).thenReturn(Single.just(user))
 
-        mUserRepository.login("duyp", "abcd")
+        mUserRepository.login("Basic abcd")
                 .test()
                 .assertValue { it.id == 1L && it.login == "duyp" }
                 .assertComplete()
         verify(mUserDao).insert(argThat { id == 1L && login == "duyp" })
-        verify(mAuthenticationRepository).addOrUpdateUser(eq("duyp"), eq("abcd"), eq("Basic duyp,abcd"))
     }
 
     @Test
     fun login_error() {
         whenever(mUserService.login(any())).thenReturn(Single.error(Exception()))
 
-        mUserRepository.login("a", "a")
+        mUserRepository.login("12345")
                 .test()
                 .assertNoValues()
                 .assertError(Exception::class.java)
-        verifyZeroInteractions(mAuthenticationRepository)
         verifyZeroInteractions(mUserDao)
     }
 
     @Test
     fun logout() {
-        // just forward call to authentication repository
         mUserRepository.logout("user")
                 .test()
                 .assertComplete()
-        verify(mAuthenticationRepository).logout("user")
     }
 
     @Test
     fun getUser() {
+        whenever(mUserDao.getUser(any())).thenReturn(Flowable.just(UserLocalData(
+                id = 100, login = "duyp", name = "Duy Pham")))
 
+        mUserRepository.getUser("duyp")
+                .test()
+                .assertValue { it.id == 100L && it.login == "duyp" && it.name == "Duy Pham" }
+        verify(mUserDao).getUser("duyp")
     }
 }

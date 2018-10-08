@@ -1,5 +1,6 @@
 package com.duyp.architecture.clean.android.powergit.domain.usecases
 
+import com.duyp.architecture.clean.android.powergit.domain.repositories.AuthenticationRepository
 import com.duyp.architecture.clean.android.powergit.domain.repositories.SettingRepository
 import com.duyp.architecture.clean.android.powergit.domain.repositories.UserRepository
 import io.reactivex.Completable
@@ -8,7 +9,8 @@ import javax.inject.Inject
 
 class LogoutUser @Inject constructor(
         private val mUserRepository: UserRepository,
-        private val mSettingRepository: SettingRepository
+        private val mSettingRepository: SettingRepository,
+        private val mAuthenticationRepository: AuthenticationRepository
 ) {
 
     /**
@@ -16,9 +18,12 @@ class LogoutUser @Inject constructor(
      */
     fun logoutCurrentUser(): Completable =
             Maybe.fromCallable { mSettingRepository.getCurrentUsername() }
-                    .flatMapCompletable {
-                        mUserRepository.logout(it)
+                    .flatMapCompletable { username ->
+                        mUserRepository.logout(username)
                                 .onErrorComplete()
-                                .doOnComplete { mSettingRepository.setCurrentUsername(null) }
+                                .doOnComplete {
+                                    mAuthenticationRepository.logout(username)
+                                    mSettingRepository.setCurrentUsername(null)
+                                }
                     }
 }

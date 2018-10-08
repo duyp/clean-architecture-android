@@ -7,7 +7,6 @@ import com.duyp.architecture.clean.android.powergit.domain.repositories.SettingR
 import com.duyp.architecture.clean.android.powergit.domain.repositories.UserRepository
 import com.duyp.architecture.clean.android.powergit.domain.utils.CommonUtil
 import io.reactivex.Flowable
-import io.reactivex.Maybe
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -18,7 +17,15 @@ class GetUser @Inject constructor(
         private val mUserRepository: UserRepository
 ) {
 
-    fun getCurrentUser(): Flowable<UserEntity> = getCurrentLoggedInUsername()
+    /**
+     * Get current logged in user in a [Flowable] stream which will get updated whenever data changed, but not get
+     * updated if user log out / log in.
+     *
+     * That means this stream can't switch to subscribe on other users once it is
+     * subscribed when the first time [Flowable.subscribe] is called. Therefore if we do log in / log out users,
+     * we should re-subscribe to have correct stream on current logged in user.
+     */
+    fun getCurrentLoggedInUser(): Flowable<UserEntity> = getCurrentLoggedInUsername()
             .flatMapPublisher {
                 mUserRepository.getUser(it)
             }
@@ -29,8 +36,7 @@ class GetUser @Inject constructor(
      * @return Maybe emitting username of current logged in user, complete if no logged in user
      */
     fun getCurrentLoggedInUsername(): Single<String> =
-            Maybe.fromCallable { mSettingRepository.getCurrentUsername() }
-                    .toSingle("")
+            Single.fromCallable { mSettingRepository.getCurrentUsername() }
                     .flatMap { username ->
                         mCheckUser.isLoggedIn(username)
                                 .flatMap {
@@ -40,6 +46,7 @@ class GetUser @Inject constructor(
                                         Single.error(AuthenticationException())
                                 }
                     }
+                    .onErrorResumeNext(Single.error(AuthenticationException()))
 
     /**
      * @return last logged in username
@@ -47,7 +54,10 @@ class GetUser @Inject constructor(
     fun getLastLoggedInUsername() = mSettingRepository.getLastLoggedInUsername()
 
     /**
-     * Get all users in account manager which have authentication saved
+     * Get all users in account manager which have authentication saved. This is used for checking if we have some
+     * users saved in account managers but don't have any indicator in the app about their existing (in case of
+     * user cleared app data)
+     *
      * @return all username
      */
     fun getAuthenticatedUsersInAccountManager(): Single<List<String>> =

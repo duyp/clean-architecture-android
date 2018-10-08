@@ -9,16 +9,16 @@ import com.google.gson.annotations.SerializedName
 data class PageableApiData<M> (
 
         @SerializedName("first")
-        var first: Int = 0,
+        var first: Int? = null,
 
         @SerializedName("next")
-        var next: Int = 0,
+        var next: Int? = null,
 
         @SerializedName("prev")
-        var prev: Int = 0,
+        var prev: Int? = null,
 
         @SerializedName("last")
-        var last: Int = 0,
+        var last: Int? = null,
 
         @SerializedName("totalCount")
         var totalCount: Int = 0,

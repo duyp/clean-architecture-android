@@ -6,7 +6,6 @@ import com.duyp.architecture.clean.android.powergit.domain.entities.mergeWithPre
 import com.duyp.architecture.clean.android.powergit.domain.entities.repo.RepoEntity
 import com.duyp.architecture.clean.android.powergit.domain.repositories.RepoRepository
 import com.duyp.architecture.clean.android.powergit.domain.usecases.GetUser
-import io.reactivex.Single
 import javax.inject.Inject
 
 class GerUserRepoList @Inject constructor(
@@ -23,9 +22,8 @@ class GerUserRepoList @Inject constructor(
      *
      * @return new list appended with previous list, contains all items from starting page to current page
      */
-    fun getRepoList(currentList: ListEntity<RepoEntity>, username: String, filterOptions: FilterOptions):
-            Single<ListEntity<RepoEntity>> =
-            mRepoRepository.getUserRepoList(username, false, filterOptions, currentList.next)
+    fun getRepoList(currentList: ListEntity<RepoEntity>, username: String, filterOptions: FilterOptions) =
+            mRepoRepository.getUserRepoList(username, false, filterOptions, currentList.getNextPage())
                     .mergeWithPreviousPage(currentList)
 
     /**
@@ -38,11 +36,10 @@ class GerUserRepoList @Inject constructor(
      *
      * @return new list appended with previous list, contains all items from starting page to current page
      */
-    fun getCurrentUserRepoList(currentList: ListEntity<RepoEntity>, filterOptions: FilterOptions):
-            Single<ListEntity<RepoEntity>> =
+    fun getCurrentUserRepoList(currentList: ListEntity<RepoEntity>, filterOptions: FilterOptions) =
             mGetUser.getCurrentLoggedInUsername()
                     .flatMap { username ->
-                        mRepoRepository.getUserRepoList(username, true, filterOptions, currentList.next)
+                        mRepoRepository.getUserRepoList(username, true, filterOptions, currentList.getNextPage())
                     }
                     .mergeWithPreviousPage(currentList)
 }
