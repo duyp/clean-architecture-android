@@ -3,14 +3,14 @@ package com.duyp.architecture.clean.android.powergit.ui.features.repo.list
 import com.duyp.architecture.clean.android.powergit.domain.entities.FilterOptions
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.repo.RepoEntity
-import com.duyp.architecture.clean.android.powergit.domain.usecases.repo.GerUserRepoList
+import com.duyp.architecture.clean.android.powergit.domain.usecases.repo.GetUserRepoList
 import com.duyp.architecture.clean.android.powergit.ui.base.BasicListViewModel
 import com.duyp.architecture.clean.android.powergit.ui.base.adapter.AdapterData
 import io.reactivex.Observable
 import javax.inject.Inject
 
 class RepoListViewModel @Inject constructor(
-        private val mGetUserRepoList: GerUserRepoList
+        private val mGetUserRepoList: GetUserRepoList
 ): BasicListViewModel<RepoEntity, RepoEntity>(), AdapterData<RepoEntity> {
 
     private val mFilterOptions = FilterOptions()

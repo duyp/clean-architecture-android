@@ -8,7 +8,7 @@ import com.duyp.architecture.clean.android.powergit.domain.repositories.RepoRepo
 import com.duyp.architecture.clean.android.powergit.domain.usecases.GetUser
 import javax.inject.Inject
 
-class GerUserRepoList @Inject constructor(
+class GetUserRepoList @Inject constructor(
         private val mRepoRepository: RepoRepository,
         private val mGetUser: GetUser
 ) {
@@ -23,7 +23,7 @@ class GerUserRepoList @Inject constructor(
      * @return new list appended with previous list, contains all items from starting page to current page
      */
     fun getRepoList(currentList: ListEntity<RepoEntity>, username: String, filterOptions: FilterOptions) =
-            mRepoRepository.getUserRepoList(username, false, filterOptions, currentList.getNextPage())
+            mRepoRepository.getUserRepoList(username, filterOptions, currentList.getNextPage())
                     .mergeWithPreviousPage(currentList)
 
     /**
@@ -39,7 +39,7 @@ class GerUserRepoList @Inject constructor(
     fun getCurrentUserRepoList(currentList: ListEntity<RepoEntity>, filterOptions: FilterOptions) =
             mGetUser.getCurrentLoggedInUsername()
                     .flatMap { username ->
-                        mRepoRepository.getUserRepoList(username, true, filterOptions, currentList.getNextPage())
+                        mRepoRepository.getMyUserRepoList(username, filterOptions, currentList.getNextPage())
                     }
                     .mergeWithPreviousPage(currentList)
 }

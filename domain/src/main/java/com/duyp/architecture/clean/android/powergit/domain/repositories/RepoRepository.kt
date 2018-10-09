@@ -7,6 +7,25 @@ import io.reactivex.Single
 
 interface RepoRepository {
 
-    fun getUserRepoList(username: String, isMyUser: Boolean, filterOptions: FilterOptions, page: Int):
+    /**
+     * Get pubic repo list of an user with given filter option and page. If network problem occurs when attempting to
+     * load the first page, offline data (cache in database) will be returned
+     *
+     * @param username user
+     * @param filterOptions option for filtering and sorting
+     * @param page page number to load
+     */
+    fun getUserRepoList(username: String, filterOptions: FilterOptions, page: Int):
             Single<ListEntity<RepoEntity>>
+
+    /**
+     * Get repo list of current user (both public and private since we have credentials) with given filter option
+     * and page. If network problem occurs when attempting to load the first page, offline data (cache in database)
+     * will be returned
+     *
+     * @param username user
+     * @param filterOptions option for filtering and sorting
+     * @param page page number to load
+     */
+    fun getMyUserRepoList(username: String, filterOptions: FilterOptions, page: Int): Single<ListEntity<RepoEntity>>
 }

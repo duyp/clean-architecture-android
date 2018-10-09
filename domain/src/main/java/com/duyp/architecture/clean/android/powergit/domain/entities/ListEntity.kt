@@ -29,7 +29,7 @@ data class ListEntity<T> (
     /**
      * @return true if we can load more for this list
      */
-    fun canLoadMore() = next in 1..getLastPage()
+    fun canLoadMore() = next in getFirstPage()..getLastPage()
 
     /**
      * Merge with previous page. We don't merge if previous page is empty or this page is first page (eg. came from
@@ -62,9 +62,9 @@ data class ListEntity<T> (
     /**
      * Get the first page number, uses [STARTING_PAGE] if [first] is not set
      */
-    private fun getFirstPage() = first ?: STARTING_PAGE
+    internal fun getFirstPage() = first ?: STARTING_PAGE
 
-    private fun getLastPage() = last ?: 0
+    internal fun getLastPage() = last ?: 0
 
     fun getNextPage() = next ?: STARTING_PAGE
 
