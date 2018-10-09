@@ -1,6 +1,7 @@
 package com.duyp.architecture.clean.android.powergit.ui.base.adapter
 
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import com.duyp.architecture.clean.android.powergit.R
@@ -9,7 +10,7 @@ import com.duyp.architecture.clean.android.powergit.inflate
 abstract class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
-        private const val TYPE_PROGRESS = 0
+        private const val TYPE_PROGRESS = 333
         private const val TYPE_ITEM = 10
     }
 
@@ -27,7 +28,8 @@ abstract class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (mIsProgressAdded && position == itemCount - 1) TYPE_PROGRESS else TYPE_ITEM
+        return if (mIsProgressAdded && position == itemCount - 1) TYPE_PROGRESS
+        else getItemViewTypeAtPosition(position)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -38,6 +40,7 @@ abstract class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
     }
 
     fun addProgress() {
+        Log.d("ProgressAdapter", "Adding progress (mIsProgressAdded = $mIsProgressAdded)")
         if (!mIsProgressAdded) {
             mIsProgressAdded = true
             notifyItemInserted(itemCount)
@@ -49,6 +52,8 @@ abstract class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
     }
 
     abstract fun getTotalItem(): Int
+
+    abstract fun getItemViewTypeAtPosition(position: Int): Int
 
     abstract fun onCreateItemViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder
 

@@ -11,6 +11,7 @@ import com.duyp.architecture.clean.android.powergit.domain.entities.FilterOption
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.repo.RepoEntity
 import com.duyp.architecture.clean.android.powergit.domain.repositories.RepoRepository
+import io.reactivex.Maybe
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -34,6 +35,11 @@ class RepoRepositoryImpl @Inject constructor(
     override fun getMyUserRepoList(username: String, filterOptions: FilterOptions, page: Int): Single<ListEntity<RepoEntity>> {
         return mUserService.getMyRepos(filterOptions.getQueryMap(), page)
                 .processApiRepoList(username, page == ListEntity.STARTING_PAGE)
+    }
+
+    override fun getById(id: Long): Maybe<RepoEntity> {
+        return mRepoDao.getById(id)
+                .map { mRepoLocalToEntityMapper.mapFrom(it) }
     }
 
     /**

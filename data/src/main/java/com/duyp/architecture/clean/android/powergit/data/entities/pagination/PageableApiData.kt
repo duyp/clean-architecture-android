@@ -20,12 +20,6 @@ data class PageableApiData<M> (
         @SerializedName("last")
         var last: Int? = null,
 
-        @SerializedName("totalCount")
-        var totalCount: Int = 0,
-
-        @SerializedName("incompleteResults")
-        var incompleteResults: Boolean = false,
-
         @SerializedName("items")
         var items: List<M>
 )

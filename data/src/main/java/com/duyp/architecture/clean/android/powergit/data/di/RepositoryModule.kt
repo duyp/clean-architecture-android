@@ -19,4 +19,8 @@ abstract class RepositoryModule {
     @Binds abstract fun repoRepository(repositoryImpl: RepoRepositoryImpl): RepoRepository
 
     @Binds abstract fun eventRepository(eventRepositoryImpl: EventRepositoryImpl): EventRepository
+
+    @Binds abstract fun searchRepository(searchRepositoryImpl: SearchRepositoryImpl): SearchRepository
+
+    @Binds abstract fun recentRepoRepository(recentRepoRepositoryImpl: RecentRepoRepositoryImpl): RecentRepoRepository
 }

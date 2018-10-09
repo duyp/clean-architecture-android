@@ -8,6 +8,7 @@ import io.reactivex.Single
 @Dao
 abstract class RecentRepoDao: BaseDao<RecentRepoLocalData>() {
 
-    @Query("SELECT repoId FROM RecentRepository INNER JOIN Repository ON RecentRepository.repoId = Repository.id WHERE Repository.fullName LIKE :searchTerm ORDER BY RecentRepository.date DESC")
+//    @Query("SELECT repoId FROM RecentRepository INNER JOIN Repository ON RecentRepository.repoId = Repository.id WHERE Repository.fullName LIKE :searchTerm ORDER BY RecentRepository.date DESC")
+    @Query("SELECT id FROM Repository WHERE fullName LIKE :searchTerm")
     abstract fun getRecentRepos(searchTerm: String): Single<List<Long>>
 }

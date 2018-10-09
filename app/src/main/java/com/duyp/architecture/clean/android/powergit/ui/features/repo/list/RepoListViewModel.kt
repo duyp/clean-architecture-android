@@ -17,6 +17,8 @@ class RepoListViewModel @Inject constructor(
 
     internal var mUsername: String? = null
 
+    override fun refreshAtStartup() = true
+
     override fun getItem(listItem: RepoEntity) = listItem
 
     override fun loadList(currentList: ListEntity<RepoEntity>): Observable<ListEntity<RepoEntity>> {

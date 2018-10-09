@@ -4,7 +4,7 @@ import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 
 abstract class BaseAdapter<T>(
-        private val mData: AdapterData<T>
+        protected val mData: AdapterData<T>
 ): LoadMoreAdapter() {
 
     init {
@@ -14,6 +14,8 @@ abstract class BaseAdapter<T>(
     override fun getItemId(position: Int) = position.toLong()
 
     override fun getTotalItem() = mData.getTotalCount()
+
+    override fun getItemViewTypeAtPosition(position: Int) = mData.getItemTypeAtPosition(position)
 
     override fun onBindItemViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is BaseViewHolder<*>) {

@@ -15,6 +15,8 @@ class EventViewModel @Inject constructor(
 
     var type: EventType? = EventType.SELF
 
+    override fun refreshAtStartup() = true
+
     override fun getItem(listItem: EventEntity) = listItem
 
     override fun loadList(currentList: ListEntity<EventEntity>): Observable<ListEntity<EventEntity>> {

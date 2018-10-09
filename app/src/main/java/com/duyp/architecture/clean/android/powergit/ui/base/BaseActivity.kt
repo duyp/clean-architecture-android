@@ -86,6 +86,10 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
         }
     }
 
+    protected fun setToolbarTitle(title: String) {
+        supportActionBar?.title = title
+    }
+
     private fun setupLayoutStableFullscreen() {
         if (shouldUseLayoutStableFullscreen()) {
             val decorView = window.decorView

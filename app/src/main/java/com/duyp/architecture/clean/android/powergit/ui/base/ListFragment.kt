@@ -71,6 +71,8 @@ abstract class ListFragment<
 
         updateEmptyView(s.showEmptyView)
 
+        refreshLayout.isEnabled = s.refreshable
+
         event(s.refresh) { refresh() }
 
         event(s.loadCompleted) { onLoadCompleted(this) }
@@ -87,12 +89,10 @@ abstract class ListFragment<
             stateLayout.setOnReloadListener {
                 LoginActivity.start(requireContext())
             }
-            refreshLayout.isEnabled = false
         } else {
             stateLayout.setEmptyText("No Data")
             stateLayout.setReloadText("Reload")
             stateLayout.setOnReloadListener { refresh() }
-            refreshLayout.isEnabled = true
         }
     }
 

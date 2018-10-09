@@ -10,6 +10,9 @@ import com.duyp.architecture.clean.android.powergit.ui.features.main.MainActivit
 import com.duyp.architecture.clean.android.powergit.ui.features.main.MainActivityModule
 import com.duyp.architecture.clean.android.powergit.ui.features.main.MainModule
 import com.duyp.architecture.clean.android.powergit.ui.features.repo.list.RepoListModule
+import com.duyp.architecture.clean.android.powergit.ui.features.search.SearchRepoActivity
+import com.duyp.architecture.clean.android.powergit.ui.features.search.SearchRepoActivityModule
+import com.duyp.architecture.clean.android.powergit.ui.features.search.SearchRepoModule
 import com.duyp.architecture.clean.android.powergit.ui.features.splash.SplashActivity
 import com.duyp.architecture.clean.android.powergit.ui.features.splash.SplashModule
 import dagger.Module
@@ -44,5 +47,12 @@ abstract class ActivityBindingModules {
         EventModule::class
     ])
     internal abstract fun mainActivity(): MainActivity
+
+    @ActivityScoped
+    @ContributesAndroidInjector(modules = [
+        SearchRepoModule::class,
+        SearchRepoActivityModule::class
+    ])
+    internal abstract fun searchRepoActivity(): SearchRepoActivity
 
 }

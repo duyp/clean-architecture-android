@@ -3,6 +3,7 @@ package com.duyp.architecture.clean.android.powergit.ui.base
 import android.support.v7.util.DiffUtil
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.exception.AuthenticationException
+import com.duyp.architecture.clean.android.powergit.printStacktraceIfDebug
 import com.duyp.architecture.clean.android.powergit.ui.Event
 import com.duyp.architecture.clean.android.powergit.ui.base.adapter.AdapterData
 import io.reactivex.Observable
@@ -44,19 +45,22 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
 
     override fun composeIntent(intentSubject: Observable<I>) {
         // force view to refresh
-        withListState {
-            // only refresh one time (no refresh if UI get rotated)
-            if (refresh == null) {
-                setListState { copy(refresh = Event.empty()) }
+        if (refreshAtStartup()) {
+            withListState {
+                // only refresh one time (no refresh if UI get rotated)
+                if (refresh == null) {
+                    setListState { copy(refresh = Event.empty()) }
+                }
             }
         }
 
         // refresh intent
         addDisposable {
             intentSubject.ofType(getRefreshIntent()::class.java)
-                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
                     // do nothing if loading is in progress
                     .filter { !mIsLoading }
+                    .observeOn(Schedulers.io())
                     .switchMap { loadData(true) }
                     .subscribe()
         }
@@ -64,12 +68,13 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
         // load more intent
         addDisposable {
             intentSubject.ofType(getLoadMoreIntent()::class.java)
-                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
                     // do nothing if loading is in progress and can't load more with current list
                     .filter { !mIsLoading && mListEntity.canLoadMore() }
                     .doOnNext {
                         setListState { copy(loadingMore = Event.empty()) }
                     }
+                    .observeOn(Schedulers.io())
                     .switchMap { loadData(false) }
                     .subscribe()
         }
@@ -92,6 +97,8 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
     protected abstract fun getItem(listItem: ListType): EntityType
 
     open protected fun getItemType(listItem: ListType): Int = 0
+
+    protected abstract fun refreshAtStartup(): Boolean
 
     /**
      * Set new list state based on current state.
@@ -175,11 +182,15 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
         return null
     }
 
+    open protected fun checkRefreshable(): Boolean {
+        return true
+    }
+
     /**
      * Load specific page and set corresponding state (show loading, load completed, offline notice if data is came
      * from offline storage...)
      */
-    private fun loadData(refresh: Boolean): Observable<ListEntity<ListType>> {
+    protected fun loadData(refresh: Boolean): Observable<ListEntity<ListType>> {
         return loadList(if (refresh) ListEntity() else mListEntity)
                 .doOnSubscribe {
                     mIsLoading = true
@@ -188,7 +199,8 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
                                 showEmptyView = false,
                                 showOfflineNotice = false,
                                 showLoading = refresh,
-                                requireLogin = false
+                                requireLogin = false,
+                                refreshable = false
                         )
                     }
                 }
@@ -202,14 +214,17 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
                                 showLoading = false,
                                 showEmptyView = getTotalCount() == 0,
                                 showOfflineNotice = mListEntity.isOfflineData,
+                                refreshable = checkRefreshable(),
                                 loadCompleted = Event(diffResult),
                                 errorMessage = if (err.isEmpty()) null else Event(err)
                         )
                     }
                 }
                 .doOnError {
+                    it.printStacktraceIfDebug()
                     mIsLoading = false
-                    if (it is AuthenticationException) {
+                    val isAuthError = it is AuthenticationException
+                    if (isAuthError) {
                         mListEntity = ListEntity()
                     }
                     setListState {
@@ -218,7 +233,8 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
                                 showEmptyView = getTotalCount() == 0,
                                 showOfflineNotice = false,
                                 errorMessage = Event(it.message ?: ""),
-                                requireLogin = it is AuthenticationException
+                                requireLogin = isAuthError,
+                                refreshable = !isAuthError && checkRefreshable()
                         )
                     }
                 }
@@ -234,6 +250,8 @@ data class ListState(
         val showOfflineNotice: Boolean = false,
         val showEmptyView: Boolean = false,
         val requireLogin: Boolean = false,
+        // todo write unit test for refreshable state
+        val refreshable: Boolean = true,
         val refresh: Event<Unit>? = null,
         val errorMessage: Event<String>? = null,
         val loadingMore: Event<Unit>? = null,

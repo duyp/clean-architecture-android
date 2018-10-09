@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/white">
+
+    <EditText
+        android:id="@+id/edtSearch"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center_vertical"
+        android:hint="Repository name"
+        android:background="@drawable/bg_corner_gray_thin"
+        android:padding="@dimen/small"
+        android:layout_margin="@dimen/small"
+        app:layout_scrollFlags="scroll|enterAlways"/>
+
+    <include layout="@layout/refresh_recycler_view" />
+
+</LinearLayout>

@@ -3,6 +3,7 @@ package com.duyp.architecture.clean.android.powergit.domain.repositories
 import com.duyp.architecture.clean.android.powergit.domain.entities.FilterOptions
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.repo.RepoEntity
+import io.reactivex.Maybe
 import io.reactivex.Single
 
 interface RepoRepository {
@@ -28,4 +29,6 @@ interface RepoRepository {
      * @param page page number to load
      */
     fun getMyUserRepoList(username: String, filterOptions: FilterOptions, page: Int): Single<ListEntity<RepoEntity>>
+
+    fun getById(id: Long): Maybe<RepoEntity>
 }

@@ -15,6 +15,7 @@ class SearchRepo @Inject constructor(
 
     fun search(previousResult: RepoSearchResult?, term: String):
             Single<RepoSearchResult> {
+        // if is first page, we also load recent repos
         return if (previousResult == null || previousResult.searchResultList.getNextPage() == ListEntity.STARTING_PAGE) {
             mRecentRepoRepository.getRecentRepoIds(term)
                     .flatMap { recentList ->

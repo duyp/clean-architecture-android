@@ -16,10 +16,6 @@ data class ListEntity<T> (
 
         private val last: Int? = null,
 
-        val totalCount: Int = 0,
-
-        val incompleteResults: Boolean = false,
-
         val items: List<T> = emptyList(),
 
         val isOfflineData: Boolean = false,
@@ -53,12 +49,14 @@ data class ListEntity<T> (
     /**
      * @return true if this page is last page
      */
-    private fun isLastPage() = next == null && prev != null
+    private fun isLastPage() = isOnlyOnePage() || (next == null && prev != null)
 
     /**
      * @return true if this page is first page
      */
-    private fun isFirstPage() = next == getFirstPage() + 1
+    private fun isFirstPage() = isOnlyOnePage() || (next == getFirstPage() + 1)
+
+    private fun isOnlyOnePage() = next == null && prev == null && last == null
 
     /**
      * Get the first page number, uses [STARTING_PAGE] if [first] is not set
@@ -69,14 +67,24 @@ data class ListEntity<T> (
 
     fun getNextPage() = next ?: STARTING_PAGE
 
+    fun getPageCount(): Int {
+        return if (isLastPage()) {
+            if (prev == null) {
+                1
+            } else {
+                prev + 1
+            }
+        } else {
+            getLastPage() - getFirstPage() + 1
+        }
+    }
+
     fun <E> copyWith(newItems: List<E>): ListEntity<E> {
         return ListEntity(
                 first = this.first,
                 next = this.next,
                 prev = this.prev,
                 last = this.last,
-                totalCount = this.totalCount,
-                incompleteResults = this.incompleteResults,
                 isOfflineData = this.isOfflineData,
                 apiError = this.apiError,
                 items = newItems
