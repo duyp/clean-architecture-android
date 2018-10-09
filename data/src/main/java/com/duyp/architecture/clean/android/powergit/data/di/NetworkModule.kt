@@ -3,6 +3,7 @@ package com.duyp.architecture.clean.android.powergit.data.di
 import android.content.Context
 import com.duyp.architecture.clean.android.powergit.data.BuildConfig
 import com.duyp.architecture.clean.android.powergit.data.api.ApiConstants.TIME_OUT_API
+import com.duyp.architecture.clean.android.powergit.data.api.SearchService
 import com.duyp.architecture.clean.android.powergit.data.api.UserService
 import com.duyp.architecture.clean.android.powergit.data.api.annotations.AnnotationWrapCallAdapterFactory
 import com.duyp.architecture.clean.android.powergit.data.api.annotations.OwnerType
@@ -94,4 +95,8 @@ class NetworkModule {
     @Provides
     @Singleton
     internal fun provideUserService(retrofit: Retrofit) = retrofit.create(UserService::class.java)!!
+
+    @Provides
+    @Singleton
+    internal fun provideSearchService(retrofit: Retrofit) = retrofit.create(SearchService::class.java)!!
 }

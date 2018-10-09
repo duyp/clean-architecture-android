@@ -1,5 +1,6 @@
 package com.duyp.architecture.clean.android.powergit.domain.entities
 
+import io.reactivex.Observable
 import io.reactivex.Single
 
 /**
@@ -68,11 +69,29 @@ data class ListEntity<T> (
 
     fun getNextPage() = next ?: STARTING_PAGE
 
+    fun <E> copyWith(newItems: List<E>): ListEntity<E> {
+        return ListEntity(
+                first = this.first,
+                next = this.next,
+                prev = this.prev,
+                last = this.last,
+                totalCount = this.totalCount,
+                incompleteResults = this.incompleteResults,
+                isOfflineData = this.isOfflineData,
+                apiError = this.apiError,
+                items = newItems
+        )
+    }
+
     companion object {
         const val STARTING_PAGE = 1
     }
 }
 
 fun <T> Single<ListEntity<T>>.mergeWithPreviousPage(previousList: ListEntity<T>): Single<ListEntity<T>> {
+    return map { it.mergeWith(previousList) }
+}
+
+fun <T> Observable<ListEntity<T>>.mergeWithPreviousPage(previousList: ListEntity<T>): Observable<ListEntity<T>> {
     return map { it.mergeWith(previousList) }
 }

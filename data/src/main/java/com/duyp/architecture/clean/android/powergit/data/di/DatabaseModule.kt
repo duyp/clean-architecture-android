@@ -16,4 +16,6 @@ import javax.inject.Singleton
 
     @Provides @Singleton fun provideRepoDao(appDatabase: AppDatabase) = appDatabase.repoDao()
 
+    @Provides @Singleton fun provideRecentRepoDao(appDatabase: AppDatabase) = appDatabase.recentRepoDao()
+
 }

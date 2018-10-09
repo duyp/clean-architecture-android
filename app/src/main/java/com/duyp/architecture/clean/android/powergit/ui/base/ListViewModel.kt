@@ -77,6 +77,12 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
 
     override fun getTotalCount(): Int = mListEntity.items.size
 
+    override fun getItemTypeAtPosition(position: Int): Int {
+        if (mListEntity.items.isEmpty() || position < 0 || position >= getTotalCount())
+            return -1
+        return getItemType(mListEntity.items[position])
+    }
+
     override fun getItemAtPosition(position: Int): EntityType? {
         if (mListEntity.items.isEmpty() || position < 0 || position >= getTotalCount())
             return null
@@ -84,6 +90,8 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
     }
 
     protected abstract fun getItem(listItem: ListType): EntityType
+
+    open protected fun getItemType(listItem: ListType): Int = 0
 
     /**
      * Set new list state based on current state.
