@@ -1,5 +1,6 @@
 package com.duyp.architecture.clean.android.powergit.ui.base
 
+import android.support.annotation.MainThread
 import android.support.v7.util.DiffUtil
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.exception.AuthenticationException
@@ -7,6 +8,8 @@ import com.duyp.architecture.clean.android.powergit.printStacktraceIfDebug
 import com.duyp.architecture.clean.android.powergit.ui.Event
 import com.duyp.architecture.clean.android.powergit.ui.base.adapter.AdapterData
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
 /**
@@ -43,6 +46,8 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
 
     private var mIsLoading: Boolean = false
 
+    private var mLoadDisposable: Disposable? = null
+
     override fun composeIntent(intentSubject: Observable<I>) {
         // force view to refresh
         if (refreshAtStartup()) {
@@ -57,10 +62,8 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
         // refresh intent
         addDisposable {
             intentSubject.ofType(getRefreshIntent()::class.java)
-                    .observeOn(Schedulers.io())
                     // do nothing if loading is in progress
                     .filter { !mIsLoading }
-                    .observeOn(Schedulers.io())
                     .switchMap { loadData(true) }
                     .subscribe()
         }
@@ -68,13 +71,12 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
         // load more intent
         addDisposable {
             intentSubject.ofType(getLoadMoreIntent()::class.java)
-                    .observeOn(Schedulers.io())
                     // do nothing if loading is in progress and can't load more with current list
                     .filter { !mIsLoading && mListEntity.canLoadMore() }
+                    .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext {
                         setListState { copy(loadingMore = Event.empty()) }
                     }
-                    .observeOn(Schedulers.io())
                     .switchMap { loadData(false) }
                     .subscribe()
         }
@@ -137,6 +139,15 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
      */
     abstract fun getLoadMoreIntent(): I
 
+    @MainThread
+    protected fun clearResults() {
+        setListState {
+            copy(refreshable = checkRefreshable(), dataUpdated = Event(calculateDiffResult(ListEntity())))
+        }
+        mLoadDisposable?.dispose()
+        mListEntity = ListEntity()
+    }
+
     /**
      * Calculate differences between current list and new list
      *
@@ -190,9 +201,12 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
      * Load specific page and set corresponding state (show loading, load completed, offline notice if data is came
      * from offline storage...)
      */
+    @MainThread
     protected fun loadData(refresh: Boolean): Observable<ListEntity<ListType>> {
         return loadList(if (refresh) ListEntity() else mListEntity)
+                .subscribeOn(Schedulers.io())
                 .doOnSubscribe {
+                    mLoadDisposable = it
                     mIsLoading = true
                     setListState {
                         copy(
@@ -204,18 +218,15 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
                         )
                     }
                 }
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext {
                     val diffResult = calculateDiffResult(it)
                     mListEntity = it
-                    mIsLoading = false
                     val err = mListEntity.apiError?.message ?: ""
                     setListState {
                         copy(
-                                showLoading = false,
-                                showEmptyView = getTotalCount() == 0,
                                 showOfflineNotice = mListEntity.isOfflineData,
-                                refreshable = checkRefreshable(),
-                                loadCompleted = Event(diffResult),
+                                dataUpdated = Event(diffResult),
                                 errorMessage = if (err.isEmpty()) null else Event(err)
                         )
                     }
@@ -240,6 +251,14 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
                 }
                 .doOnComplete {
                     mIsLoading = false
+                    setListState {
+                        copy(
+                                showLoading = false,
+                                showEmptyView = getTotalCount() == 0,
+                                refreshable = checkRefreshable(),
+                                loadCompleted = Event.empty()
+                        )
+                    }
                 }
                 .onErrorResumeNext { _: Throwable -> Observable.empty() }
     }
@@ -255,7 +274,8 @@ data class ListState(
         val refresh: Event<Unit>? = null,
         val errorMessage: Event<String>? = null,
         val loadingMore: Event<Unit>? = null,
-        val loadCompleted: Event<DiffUtil.DiffResult>? = null
+        val loadCompleted: Event<Unit>? = null,
+        val dataUpdated: Event<DiffUtil.DiffResult>? = null
 )
 
 interface ListIntent {

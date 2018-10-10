@@ -5,7 +5,7 @@
           style="@style/TextAppearanceTitle"
           android:orientation="vertical"
           android:layout_width="match_parent"
-          android:layout_height="@dimen/x_large"
+          android:layout_height="wrap_content"
           android:gravity="center_vertical"
           android:padding="@dimen/small"
           android:textColor="?colorAccent"

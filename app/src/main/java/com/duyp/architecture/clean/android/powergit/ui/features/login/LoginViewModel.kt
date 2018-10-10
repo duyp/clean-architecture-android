@@ -1,11 +1,13 @@
 package com.duyp.architecture.clean.android.powergit.ui.features.login
 
+import android.util.Log
 import com.duyp.architecture.clean.android.powergit.domain.usecases.GetUser
 import com.duyp.architecture.clean.android.powergit.domain.usecases.LoginUser
 import com.duyp.architecture.clean.android.powergit.domain.utils.CommonUtil
 import com.duyp.architecture.clean.android.powergit.ui.Event
 import com.duyp.architecture.clean.android.powergit.ui.base.BaseViewModel
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
@@ -28,18 +30,21 @@ class LoginViewModel @Inject constructor(
             intentSubject.subscribeOn(Schedulers.io())
                     // do nothing if login is in progress
                     .filter { !state().isLoading }
+                    .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext {
-                        if (CommonUtil.isEmpty(it.username, it.password))
+                        if (CommonUtil.isEmpty(it.username, it.password)) {
                             setState {
                                 copy(errorMessage = Event("Please input username and password"))
                             }
+                        } else {
+                            setState { copy(isLoading = true) }
+                        }
                     }
                     .filter { !CommonUtil.isEmpty(it.username, it.password) }
+                    .observeOn(Schedulers.io())
                     .switchMapCompletable { intent ->
                         mLoginUser.login(intent.username!!, intent.password!!)
-                                .doOnSubscribe {
-                                    setState { copy(isLoading = true) }
-                                }
+                                .observeOn(AndroidSchedulers.mainThread())
                                 .doOnError { throwable ->
                                     setState {
                                         copy(isLoading = false, errorMessage = Event(throwable.message ?: ""))

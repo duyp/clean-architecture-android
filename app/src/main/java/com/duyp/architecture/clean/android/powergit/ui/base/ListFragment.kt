@@ -67,15 +67,17 @@ abstract class ListFragment<
      */
     protected fun onListStateUpdated(s: ListState) {
 
+        refreshLayout.isEnabled = s.refreshable
+
         setUiRefreshing(s.showLoading)
 
         updateEmptyView(s.showEmptyView)
 
-        refreshLayout.isEnabled = s.refreshable
-
         event(s.refresh) { refresh() }
 
-        event(s.loadCompleted) { onLoadCompleted(this) }
+        event(s.loadCompleted) { onLoadCompleted() }
+
+        event(s.dataUpdated) { onDataUpdated(this) }
 
         event(s.loadingMore) { onLoadingMore() }
 
@@ -109,9 +111,12 @@ abstract class ListFragment<
         mInfiniteScroller.reset()
     }
 
-    private fun onLoadCompleted(diffResult: DiffUtil.DiffResult) {
-        mInfiniteScroller.reset()
+    private fun onDataUpdated(diffResult: DiffUtil.DiffResult) {
         mAdapter.update(diffResult)
+    }
+
+    private fun onLoadCompleted() {
+        mInfiniteScroller.reset()
     }
 
     private fun setUiRefreshing(refreshing: Boolean) {

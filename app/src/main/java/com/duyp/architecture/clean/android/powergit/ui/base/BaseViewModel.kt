@@ -3,7 +3,9 @@ package com.duyp.architecture.clean.android.powergit.ui.base
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import android.support.annotation.MainThread
 import com.duyp.architecture.clean.android.powergit.postValueIfNew
+import com.duyp.architecture.clean.android.powergit.setValueIfNew
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -76,8 +78,9 @@ abstract class BaseViewModel<S, I> : ViewModel() {
      *
      * @param stateFunc provide new state by applying current state
      */
+    @MainThread
     protected fun setState(stateFunc: S.() -> S) {
-        state.postValueIfNew(stateFunc.invoke(state.value ?: initState()))
+        state.setValueIfNew(stateFunc.invoke(state.value ?: initState()))
     }
 
     /**

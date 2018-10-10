@@ -1,7 +1,6 @@
 package com.duyp.architecture.clean.android.powergit.ui.base.adapter
 
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import com.duyp.architecture.clean.android.powergit.R
@@ -11,7 +10,6 @@ abstract class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 
     companion object {
         private const val TYPE_PROGRESS = 333
-        private const val TYPE_ITEM = 10
     }
 
     private var mIsProgressAdded = false
@@ -40,15 +38,17 @@ abstract class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
     }
 
     fun addProgress() {
-        Log.d("ProgressAdapter", "Adding progress (mIsProgressAdded = $mIsProgressAdded)")
         if (!mIsProgressAdded) {
             mIsProgressAdded = true
-            notifyItemInserted(itemCount)
+            notifyItemInserted(itemCount -1)
         }
     }
 
     fun removeProgress() {
-        mIsProgressAdded = false
+        if (mIsProgressAdded) {
+            mIsProgressAdded = false
+            notifyItemRemoved(itemCount)
+        }
     }
 
     abstract fun getTotalItem(): Int
