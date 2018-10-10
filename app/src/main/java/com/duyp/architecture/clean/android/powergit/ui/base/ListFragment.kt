@@ -76,7 +76,9 @@ abstract class ListFragment<
 
         event(s.refresh) { refresh() }
 
-        event(s.loadCompleted) { onLoadCompleted(this) }
+        event(s.loadCompleted) { onLoadCompleted() }
+
+        event(s.dataUpdated) { onDataUpdated(this) }
 
         event(s.loadingMore) { onLoadingMore() }
 
@@ -110,15 +112,16 @@ abstract class ListFragment<
         mInfiniteScroller.reset()
     }
 
-    private fun onLoadCompleted(diffResult: DiffUtil.DiffResult) {
-        mInfiniteScroller.reset()
+    private fun onDataUpdated(diffResult: DiffUtil.DiffResult) {
         mAdapter.update(diffResult)
     }
 
+    private fun onLoadCompleted() {
+        mInfiniteScroller.reset()
+    }
+
     private fun setUiRefreshing(refreshing: Boolean) {
-//        Log.d("ListViewModel", "set refreshing: " + refreshing)
         refreshLayout?.post {
-//            Log.d("ListViewModel", "set refreshing done")
             refreshLayout?.isRefreshing = refreshing
         }
     }

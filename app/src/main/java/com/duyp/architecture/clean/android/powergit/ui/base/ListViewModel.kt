@@ -76,7 +76,7 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
                     .filter { !mIsLoading && mListEntity.canLoadMore() }
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext {
-                        Log.d("ListViewModel", "Loading more on " + Thread.currentThread())
+                        Log.d("LoadMoreTest", "Loading more on " + Thread.currentThread())
                         setListState { copy(loadingMore = Event.empty()) }
                     }
                     .switchMap { loadData(false) }
@@ -144,7 +144,7 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
     @MainThread
     protected fun clearResults() {
         setListState {
-            copy(refreshable = checkRefreshable(), loadCompleted = Event(calculateDiffResult(ListEntity())))
+            copy(refreshable = checkRefreshable(), dataUpdated = Event(calculateDiffResult(ListEntity())))
         }
         mLoadDisposable?.dispose()
         mListEntity = ListEntity()
@@ -229,7 +229,7 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
                     setListState {
                         copy(
                                 showOfflineNotice = mListEntity.isOfflineData,
-                                loadCompleted = Event(diffResult),
+                                dataUpdated = Event(diffResult),
                                 errorMessage = if (err.isEmpty()) null else Event(err)
                         )
                     }
@@ -259,7 +259,8 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
                         copy(
                                 showLoading = false,
                                 showEmptyView = getTotalCount() == 0,
-                                refreshable = checkRefreshable()
+                                refreshable = checkRefreshable(),
+                                loadCompleted = Event.empty()
                         )
                     }
                 }
@@ -277,7 +278,8 @@ data class ListState(
         val refresh: Event<Unit>? = null,
         val errorMessage: Event<String>? = null,
         val loadingMore: Event<Unit>? = null,
-        val loadCompleted: Event<DiffUtil.DiffResult>? = null
+        val loadCompleted: Event<Unit>? = null,
+        val dataUpdated: Event<DiffUtil.DiffResult>? = null
 )
 
 interface ListIntent {
