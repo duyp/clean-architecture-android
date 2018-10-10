@@ -28,6 +28,7 @@ class LoginActivity : ViewModelActivity<LoginViewState, LoginIntent, LoginViewMo
             setLoading(isLoading)
             event(errorMessage) {
                 showToastMessage(this)
+                showKeyboard(edtPassword)
             }
             event(loginSuccess) {
                 showToastMessage("login success!")
@@ -55,6 +56,9 @@ class LoginActivity : ViewModelActivity<LoginViewState, LoginIntent, LoginViewMo
     private fun setLoading(isLoading: Boolean) {
         btnLogin.visibility = if (!isLoading) View.VISIBLE else View.GONE
         progress.visibility = if (isLoading) View.VISIBLE else View.GONE
+        if (isLoading) {
+            hideKeyboard()
+        }
     }
 
     private fun navigateMain() {

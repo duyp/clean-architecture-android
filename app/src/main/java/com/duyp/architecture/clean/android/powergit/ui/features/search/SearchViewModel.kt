@@ -3,22 +3,29 @@ package com.duyp.architecture.clean.android.powergit.ui.features.search
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.RepoSearchResult
 import com.duyp.architecture.clean.android.powergit.domain.entities.repo.RepoEntity
+import com.duyp.architecture.clean.android.powergit.domain.usecases.repo.GetRecentRepos
 import com.duyp.architecture.clean.android.powergit.domain.usecases.repo.GetRepo
-import com.duyp.architecture.clean.android.powergit.domain.usecases.repo.SearchRepo
+import com.duyp.architecture.clean.android.powergit.domain.usecases.repo.SearchPublicRepo
 import com.duyp.architecture.clean.android.powergit.ui.base.ListIntent
 import com.duyp.architecture.clean.android.powergit.ui.base.ListState
 import com.duyp.architecture.clean.android.powergit.ui.base.ListViewModel
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class SearchViewModel @Inject constructor(
-        private val mSearchRepo: SearchRepo,
-        private val mGetRepo: GetRepo
+        private val mGetRepo: GetRepo,
+        private val mGetRecentRepos: GetRecentRepos,
+        private val mSearchPublicRepo: SearchPublicRepo
 ): ListViewModel<ListState, SearchRepoIntent, SearchItem, SearchItem>() {
 
     private var mSearchTerm: String = ""
+
+    private var mRecentRepoIds: List<Long> = emptyList()
+
+    private var mResultList: ListEntity<RepoEntity> = ListEntity()
 
     override fun refreshAtStartup() = false
 
@@ -47,14 +54,15 @@ class SearchViewModel @Inject constructor(
 
         addDisposable {
             intentSubject.ofType(SearchRepoIntent.Search::class.java)
-                    .subscribeOn(Schedulers.io())
                     .debounce(300L, TimeUnit.MILLISECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext {
-                        setState { copy(refreshable = !it.term.isEmpty()) }
+                        mSearchTerm = it.term
+                        if (mSearchTerm.isEmpty()) {
+                            clearResults()
+                        }
                     }
-                    .filter { !it.term.isEmpty() }
-                    .doOnNext { mSearchTerm = it.term }
-                    .observeOn(Schedulers.io())
+                    .filter { !mSearchTerm.isEmpty() }
                     .switchMap { loadData(true) }
                     .subscribe()
         }
@@ -65,21 +73,23 @@ class SearchViewModel @Inject constructor(
     }
 
     override fun loadList(currentList: ListEntity<SearchItem>): Observable<ListEntity<SearchItem>> {
-
-        // revert recent list
-        val recentList = currentList.items.asSequence()
-                .filter { it is SearchItem.RecentRepo }
-                .map { (it as SearchItem.RecentRepo).repoId }
-                .toList()
-
-        // revert result list
-        val currentResultList = currentList.copyWith(
-                currentList.items.asSequence()
-                        .filter { it is SearchItem.SearchResultRepo }
-                        .map { (it as SearchItem.SearchResultRepo).repo }
-                        .toList()
+        return Observable.concatArrayEager(
+                mGetRecentRepos.search(mSearchTerm)
+                        .subscribeOn(Schedulers.io())
+                        .doOnSuccess { mRecentRepoIds = it }
+                        .map {
+                            RepoSearchResult(
+                                    recentRepoIds = it,
+                                    searchResultList = if (currentList.getNextPage() == ListEntity.STARTING_PAGE)
+                                        ListEntity() else currentList.copyWith(mResultList.items))
+                        }
+                        .toObservable(),
+                mSearchPublicRepo.search(currentList.copyWith(mResultList.items), mSearchTerm)
+                        .subscribeOn(Schedulers.io())
+                        .doOnSuccess { mResultList = it }
+                        .map { RepoSearchResult(recentRepoIds = mRecentRepoIds, searchResultList = it) }
+                        .toObservable()
         )
-        return mSearchRepo.search(RepoSearchResult(recentList, currentResultList), mSearchTerm)
                 .map { result ->
                     val list = ArrayList<SearchItem>()
                     if (!result.recentRepoIds.isEmpty()) {
@@ -94,7 +104,6 @@ class SearchViewModel @Inject constructor(
                     }
                     return@map result.searchResultList.copyWith(list)
                 }
-                .toObservable()
     }
 
     override fun areItemEquals(old: SearchItem, new: SearchItem): Boolean {

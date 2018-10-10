@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.View
 import com.duyp.architecture.clean.android.powergit.R
 import com.duyp.architecture.clean.android.powergit.event
@@ -67,11 +68,11 @@ abstract class ListFragment<
      */
     protected fun onListStateUpdated(s: ListState) {
 
+        refreshLayout.isEnabled = s.refreshable
+
         setUiRefreshing(s.showLoading)
 
         updateEmptyView(s.showEmptyView)
-
-        refreshLayout.isEnabled = s.refreshable
 
         event(s.refresh) { refresh() }
 
@@ -115,7 +116,9 @@ abstract class ListFragment<
     }
 
     private fun setUiRefreshing(refreshing: Boolean) {
+//        Log.d("ListViewModel", "set refreshing: " + refreshing)
         refreshLayout?.post {
+//            Log.d("ListViewModel", "set refreshing done")
             refreshLayout?.isRefreshing = refreshing
         }
     }

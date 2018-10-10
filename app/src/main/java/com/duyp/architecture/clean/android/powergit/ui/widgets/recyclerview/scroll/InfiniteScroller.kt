@@ -19,7 +19,10 @@ class InfiniteScroller(
 
     private var mIsNewlyAdded = true
 
+    private var mRecyclerView: RecyclerView? = null
+
     override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+        mRecyclerView = recyclerView
         if (mIsNewlyAdded) {
             mIsNewlyAdded = false
             return
@@ -52,12 +55,16 @@ class InfiniteScroller(
 
     fun reset() {
         mLoading = false
-        mAdapter.removeProgress()
+        mRecyclerView?.post {
+            mAdapter.removeProgress()
+        }
     }
 
     fun setLoading() {
         mLoading = true
-        mAdapter.addProgress()
+        mRecyclerView?.post {
+            mAdapter.addProgress()
+        }
     }
 
     private fun initLayoutManager(layoutManager: RecyclerView.LayoutManager) {
