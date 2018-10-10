@@ -2,7 +2,6 @@ package com.duyp.architecture.clean.android.powergit.ui.base
 
 import android.support.annotation.MainThread
 import android.support.v7.util.DiffUtil
-import android.util.Log
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.exception.AuthenticationException
 import com.duyp.architecture.clean.android.powergit.printStacktraceIfDebug
@@ -76,7 +75,6 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
                     .filter { !mIsLoading && mListEntity.canLoadMore() }
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext {
-                        Log.d("LoadMoreTest", "Loading more on " + Thread.currentThread())
                         setListState { copy(loadingMore = Event.empty()) }
                     }
                     .switchMap { loadData(false) }
@@ -225,7 +223,6 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
                     val diffResult = calculateDiffResult(it)
                     mListEntity = it
                     val err = mListEntity.apiError?.message ?: ""
-                    Log.d("ListViewModel", "OnNext on " + Thread.currentThread())
                     setListState {
                         copy(
                                 showOfflineNotice = mListEntity.isOfflineData,
@@ -253,7 +250,6 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
                     }
                 }
                 .doOnComplete {
-                    Log.d("ListViewModel", "Load completed! on " + Thread.currentThread())
                     mIsLoading = false
                     setListState {
                         copy(

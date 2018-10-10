@@ -41,7 +41,7 @@ class SearchViewModel @Inject constructor(
 
     override fun getLoadMoreIntent() = SearchRepoIntent.LoadMore
 
-    override fun initState() = ListState(refreshable = false)
+    override fun initState() = ListState()
 
     override fun getItem(listItem: SearchItem) = listItem
 
@@ -50,7 +50,7 @@ class SearchViewModel @Inject constructor(
     override fun composeIntent(intentSubject: Observable<SearchRepoIntent>) {
         super.composeIntent(intentSubject)
 
-        setState { this }
+        setState { copy(refreshable = false) }
 
         addDisposable {
             intentSubject.ofType(SearchRepoIntent.Search::class.java)
@@ -69,7 +69,8 @@ class SearchViewModel @Inject constructor(
     }
 
     override fun checkRefreshable(): Boolean {
-        return !mSearchTerm.isEmpty()
+        //return !mSearchTerm.isEmpty()
+        return false
     }
 
     override fun loadList(currentList: ListEntity<SearchItem>): Observable<ListEntity<SearchItem>> {
