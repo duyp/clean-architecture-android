@@ -40,13 +40,15 @@ abstract class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
     fun addProgress() {
         if (!mIsProgressAdded) {
             mIsProgressAdded = true
-//            notifyItemInserted(itemCount -1)
-            notifyDataSetChanged()
+            notifyItemInserted(itemCount -1)
         }
     }
 
     fun removeProgress() {
-        mIsProgressAdded = false
+        if (mIsProgressAdded) {
+            mIsProgressAdded = false
+            notifyItemRemoved(itemCount)
+        }
     }
 
     abstract fun getTotalItem(): Int
