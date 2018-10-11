@@ -1,16 +1,21 @@
 package com.duyp.architecture.clean.android.powergit.ui.features.search
 
+import android.support.annotation.MainThread
+import android.support.v7.util.DiffUtil
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.RepoSearchResult
 import com.duyp.architecture.clean.android.powergit.domain.entities.repo.RepoEntity
 import com.duyp.architecture.clean.android.powergit.domain.usecases.repo.GetRecentRepos
 import com.duyp.architecture.clean.android.powergit.domain.usecases.repo.GetRepo
 import com.duyp.architecture.clean.android.powergit.domain.usecases.repo.SearchPublicRepo
-import com.duyp.architecture.clean.android.powergit.ui.base.ListIntent
-import com.duyp.architecture.clean.android.powergit.ui.base.ListState
-import com.duyp.architecture.clean.android.powergit.ui.base.ListViewModel
+import com.duyp.architecture.clean.android.powergit.onErrorResumeEmpty
+import com.duyp.architecture.clean.android.powergit.printStacktraceIfDebug
+import com.duyp.architecture.clean.android.powergit.ui.Event
+import com.duyp.architecture.clean.android.powergit.ui.base.BaseViewModel
+import com.duyp.architecture.clean.android.powergit.ui.base.adapter.AdapterData
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -19,7 +24,15 @@ class SearchViewModel @Inject constructor(
         private val mGetRepo: GetRepo,
         private val mGetRecentRepos: GetRecentRepos,
         private val mSearchPublicRepo: SearchPublicRepo
-): ListViewModel<ListState, SearchRepoIntent, SearchItem, SearchItem>() {
+): BaseViewModel<SearchState, SearchRepoIntent>(), AdapterData<SearchItem> {
+
+    companion object {
+        private const val MIN_SEARCH_TERM_LENGTH = 3
+    }
+
+    private var mLoadDisposable: Disposable? = null
+
+    private var mIsLoading = false
 
     private var mSearchTerm: String = ""
 
@@ -27,55 +40,56 @@ class SearchViewModel @Inject constructor(
 
     private var mResultList: ListEntity<RepoEntity> = ListEntity()
 
-    override fun refreshAtStartup() = false
+    private var mDataList: ListEntity<SearchItem> = ListEntity()
 
-    override fun setListState(s: ListState.() -> ListState) {
-        setState(s)
+    override fun initState() = SearchState()
+
+    override fun getItemAtPosition(position: Int): SearchItem? {
+        if (mDataList.items.isEmpty() || position < 0 || position >= getTotalCount())
+            return null
+        return mDataList.items[position]
     }
 
-    override fun withListState(s: ListState.() -> Unit) {
-        withState(s)
+    override fun getItemTypeAtPosition(position: Int): Int {
+        return getItemAtPosition(position)?.viewType() ?: 0
     }
 
-    override fun getRefreshIntent() = SearchRepoIntent.Refresh
-
-    override fun getLoadMoreIntent() = SearchRepoIntent.LoadMore
-
-    override fun initState() = ListState()
-
-    override fun getItem(listItem: SearchItem) = listItem
-
-    override fun getItemType(listItem: SearchItem) = listItem.viewType()
+    override fun getTotalCount(): Int {
+        return mDataList.items.size
+    }
 
     override fun composeIntent(intentSubject: Observable<SearchRepoIntent>) {
-        super.composeIntent(intentSubject)
-
-        setState { copy(refreshable = false) }
 
         addDisposable {
             intentSubject.ofType(SearchRepoIntent.Search::class.java)
-                    .debounce(300L, TimeUnit.MILLISECONDS)
+                    .debounce(500L, TimeUnit.MILLISECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext {
                         mSearchTerm = it.term
-                        if (mSearchTerm.isEmpty()) {
-                            clearResults()
-                        }
+                        clearSearchResults(it.term.isEmpty())
                     }
                     .filter { !mSearchTerm.isEmpty() }
+                    .doOnNext {
+                        setState { copy(loadingMore = Event.empty()) }
+                    }
                     .switchMap { loadData(true) }
+                    .subscribe()
+        }
+
+        addDisposable {
+            intentSubject.ofType(SearchRepoIntent.LoadMore::class.java)
+                    .filter { !mIsLoading }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext { setState { copy(loadingMore = Event.empty()) } }
+                    .switchMap { loadData(false) }
                     .subscribe()
         }
     }
 
-    override fun checkRefreshable(): Boolean {
-        //return !mSearchTerm.isEmpty()
-        return false
-    }
-
-    override fun loadList(currentList: ListEntity<SearchItem>): Observable<ListEntity<SearchItem>> {
+    private fun loadData(refresh: Boolean): Observable<ListEntity<SearchItem>> {
+        val currentList = if (refresh) ListEntity() else mDataList
         return Observable.concatArrayEager(
-                mGetRecentRepos.search(mSearchTerm)
+                if (!refresh) Observable.empty() else mGetRecentRepos.search(mSearchTerm)
                         .subscribeOn(Schedulers.io())
                         .doOnSuccess { mRecentRepoIds = it }
                         .map {
@@ -85,29 +99,87 @@ class SearchViewModel @Inject constructor(
                                         ListEntity() else currentList.copyWith(mResultList.items))
                         }
                         .toObservable(),
-                mSearchPublicRepo.search(currentList.copyWith(mResultList.items), mSearchTerm)
+                if (mSearchTerm.length < MIN_SEARCH_TERM_LENGTH) Observable.empty() else
+                    mSearchPublicRepo.search(currentList.copyWith(mResultList.items), mSearchTerm)
                         .subscribeOn(Schedulers.io())
                         .doOnSuccess { mResultList = it }
                         .map { RepoSearchResult(recentRepoIds = mRecentRepoIds, searchResultList = it) }
                         .toObservable()
         )
-                .map { result ->
-                    val list = ArrayList<SearchItem>()
-                    if (!result.recentRepoIds.isEmpty()) {
-                        list.add(SearchItem.RecentHeader())
-                        list.addAll(result.recentRepoIds.map { SearchItem.RecentRepo(it, mGetRepo) })
-                    }
-                    if (!result.searchResultList.items.isEmpty()) {
-                        list.add(SearchItem.ResultHeader(
-                                result.searchResultList.getPageCount(), result.searchResultList.items.size)
-                        )
-                        list.addAll(result.searchResultList.items.map { SearchItem.SearchResultRepo(it) })
-                    }
-                    return@map result.searchResultList.copyWith(list)
+                .doOnSubscribe {
+                    mLoadDisposable = it
+                    mIsLoading = true
                 }
+                .map { createAdapterData(it) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext {
+                    setState {
+                        copy(dataUpdated = Event(calculateDiffResult(it)))
+                    }
+                    mDataList = it
+                }
+                .doOnError {
+                    it.printStacktraceIfDebug()
+                    mIsLoading = false
+                    setState { copy(errorMessage = Event(it.message ?: ""), loadCompleted = Event.empty()) }
+                }
+                .doOnComplete {
+                    mIsLoading = false
+                    setState {
+                        copy(loadCompleted = Event.empty())
+                    }
+                }
+                .onErrorResumeEmpty()
     }
 
-    override fun areItemEquals(old: SearchItem, new: SearchItem): Boolean {
+    @MainThread
+    private fun clearSearchResults(clearRecentList: Boolean) {
+        val newList = if (clearRecentList) ListEntity()
+        else createAdapterData(RepoSearchResult(recentRepoIds = mRecentRepoIds, searchResultList = ListEntity()))
+        setState {
+            copy(dataUpdated = Event(calculateDiffResult(newList)))
+        }
+        mLoadDisposable?.dispose()
+        mDataList = newList
+    }
+
+    private fun createAdapterData(result: RepoSearchResult): ListEntity<SearchItem> {
+        val list = ArrayList<SearchItem>()
+        if (!result.recentRepoIds.isEmpty()) {
+            list.add(SearchItem.RecentHeader())
+            list.addAll(result.recentRepoIds.map { SearchItem.RecentRepo(it, mGetRepo) })
+        }
+        if (!result.searchResultList.items.isEmpty()) {
+            list.add(SearchItem.ResultHeader(
+                    result.searchResultList.getPageCount(), result.searchResultList.items.size)
+            )
+            list.addAll(result.searchResultList.items.map { SearchItem.SearchResultRepo(it) })
+        }
+        return result.searchResultList.copyWith(list)
+    }
+
+    private fun calculateDiffResult(newList: ListEntity<SearchItem>): DiffUtil.DiffResult {
+        return DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+
+            override fun getOldListSize() = mDataList.items.size
+
+            override fun getNewListSize() = newList.items.size
+
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return areItemEquals(mDataList.items[oldItemPosition], newList.items[newItemPosition])
+            }
+
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return areContentsEquals(mDataList.items[oldItemPosition], newList.items[newItemPosition])
+            }
+
+            override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+                return null
+            }
+        }, false)
+    }
+
+    private fun areItemEquals(old: SearchItem, new: SearchItem): Boolean {
         if (old.viewType() != new.viewType()) {
             return false
         }
@@ -123,7 +195,7 @@ class SearchViewModel @Inject constructor(
         return false
     }
 
-    override fun areContentsEquals(old: SearchItem, new: SearchItem): Boolean {
+    private fun areContentsEquals(old: SearchItem, new: SearchItem): Boolean {
         if (old.viewType() != new.viewType()) {
             return false
         }
@@ -146,30 +218,23 @@ class SearchViewModel @Inject constructor(
 
 interface SearchItem {
 
-    companion object {
-        const val TYPE_SECTION_RECENT = 0
-        const val TYPE_SECTION_SEARCH_RESULT = 1
-        const val TYPE_ITEM_RECENT = 2
-        const val TYPE_ITEM_SEARCH_RESULT = 3
-    }
-
     fun viewType(): Int
 
     class RecentHeader: SearchItem {
 
         override fun viewType() = SearchItem.TYPE_SECTION_RECENT
+
+        override fun toString(): String {
+            return "RecentHeader"
+        }
     }
 
-    data class ResultHeader(
-            val pageCount: Int,
-            val loadedCount: Int
-    ): SearchItem {
+    data class ResultHeader(val pageCount: Int, val loadedCount: Int): SearchItem {
 
         override fun viewType() = SearchItem.TYPE_SECTION_SEARCH_RESULT
     }
 
-    data class RecentRepo(internal val repoId: Long,
-                          private val mGetRepo: GetRepo): SearchItem {
+    data class RecentRepo(internal val repoId: Long, private val mGetRepo: GetRepo): SearchItem {
 
         override fun viewType() = SearchItem.TYPE_ITEM_RECENT
 
@@ -183,11 +248,23 @@ interface SearchItem {
 
         override fun viewType() = SearchItem.TYPE_ITEM_SEARCH_RESULT
     }
+
+    companion object {
+        const val TYPE_SECTION_RECENT = 0
+        const val TYPE_SECTION_SEARCH_RESULT = 1
+        const val TYPE_ITEM_RECENT = 2
+        const val TYPE_ITEM_SEARCH_RESULT = 3
+    }
 }
 
-interface SearchRepoIntent: ListIntent {
-    object LoadMore: SearchRepoIntent
-    object Refresh: SearchRepoIntent
+interface SearchRepoIntent {
     data class Search(val term: String): SearchRepoIntent
+    object LoadMore: SearchRepoIntent
 }
 
+data class SearchState(
+        val errorMessage: Event<String>? = null,
+        val loadingMore: Event<Unit>? = null,
+        val loadCompleted: Event<Unit>? = null,
+        val dataUpdated: Event<DiffUtil.DiffResult>? = null
+)

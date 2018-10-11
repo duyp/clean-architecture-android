@@ -4,30 +4,38 @@ import android.os.Bundle
 import android.view.View
 import com.duyp.architecture.clean.android.powergit.R
 import com.duyp.architecture.clean.android.powergit.addSimpleTextChangedListener
-import com.duyp.architecture.clean.android.powergit.ui.base.ListFragment
-import com.duyp.architecture.clean.android.powergit.ui.base.ListState
-import com.duyp.architecture.clean.android.powergit.ui.base.adapter.AdapterData
+import com.duyp.architecture.clean.android.powergit.event
+import com.duyp.architecture.clean.android.powergit.showToastMessage
+import com.duyp.architecture.clean.android.powergit.ui.base.ViewModelFragment
 import com.duyp.architecture.clean.android.powergit.ui.utils.AvatarLoader
+import com.duyp.architecture.clean.android.powergit.ui.widgets.recyclerview.scroll.InfiniteScroller
 import kotlinx.android.synthetic.main.fragment_search_repo.*
 import javax.inject.Inject
 
-class SearchRepoFragment: ListFragment<SearchItem, SearchItem, SearchRepoAdapter, SearchRepoIntent, ListState,
-        SearchViewModel>() {
+class SearchRepoFragment: ViewModelFragment<SearchState, SearchRepoIntent, SearchViewModel>() {
 
     @Inject lateinit var mAvatarLoader: AvatarLoader
 
-    override fun createAdapter(data: AdapterData<SearchItem>): SearchRepoAdapter {
-        return SearchRepoAdapter(data, mAvatarLoader)
-    }
+    private lateinit var mAdapter: SearchRepoAdapter
+
+    private lateinit var mInfiniteScroller: InfiniteScroller
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        edtSearch.addSimpleTextChangedListener {
-            onIntent(SearchRepoIntent.Search(it))
-        }
+
+        mAdapter = SearchRepoAdapter(mViewModel, mAvatarLoader)
+        mInfiniteScroller = InfiniteScroller(mAdapter) { onIntent(SearchRepoIntent.LoadMore) }
+        recyclerView.adapter = mAdapter
+        recyclerView.addOnScrollListener(mInfiniteScroller)
+        fastScroller.attachRecyclerView(recyclerView)
+
+        edtSearch.addSimpleTextChangedListener { onIntent(SearchRepoIntent.Search(it)) }
 
         withState {
-            onListStateUpdated(this)
+            event(errorMessage) { showToastMessage(this) }
+            event(loadingMore) { mInfiniteScroller.setLoading() }
+            event(dataUpdated) { mAdapter.update(this) }
+            event(loadCompleted) { mInfiniteScroller.reset() }
         }
     }
 

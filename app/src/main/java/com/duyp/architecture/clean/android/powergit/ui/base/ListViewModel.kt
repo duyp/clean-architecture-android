@@ -4,6 +4,7 @@ import android.support.annotation.MainThread
 import android.support.v7.util.DiffUtil
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.exception.AuthenticationException
+import com.duyp.architecture.clean.android.powergit.onErrorResumeEmpty
 import com.duyp.architecture.clean.android.powergit.printStacktraceIfDebug
 import com.duyp.architecture.clean.android.powergit.ui.Event
 import com.duyp.architecture.clean.android.powergit.ui.base.adapter.AdapterData
@@ -260,7 +261,7 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
                         )
                     }
                 }
-                .onErrorResumeNext { _: Throwable -> Observable.empty() }
+                .onErrorResumeEmpty()
     }
 }
 

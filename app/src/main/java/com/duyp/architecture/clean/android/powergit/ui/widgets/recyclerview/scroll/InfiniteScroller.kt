@@ -55,16 +55,12 @@ class InfiniteScroller(
 
     fun reset() {
         mLoading = false
-        mRecyclerView?.post {
-            mAdapter.removeProgress()
-        }
+        mAdapter.removeProgress()
     }
 
     fun setLoading() {
         mLoading = true
-        mRecyclerView?.post {
-            mAdapter.addProgress()
-        }
+        mAdapter.addProgress()
     }
 
     private fun initLayoutManager(layoutManager: RecyclerView.LayoutManager) {

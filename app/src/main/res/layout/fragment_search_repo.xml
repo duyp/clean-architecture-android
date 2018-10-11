@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
               android:layout_width="match_parent"
@@ -11,12 +11,27 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:gravity="center_vertical"
+        android:layout_alignParentTop="true"
         android:hint="Repository name"
+        android:inputType="text"
         android:background="@drawable/bg_corner_gray_thin"
         android:padding="@dimen/small"
         android:layout_margin="@dimen/small"
         app:layout_scrollFlags="scroll|enterAlways"/>
 
-    <include layout="@layout/refresh_recycler_view" />
+    <com.duyp.architecture.clean.android.powergit.ui.widgets.recyclerview.DynamicRecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutManager="@string/linear_layout_manager"
+        android:layout_below="@id/edtSearch"
+        android:id="@+id/recyclerView"/>
 
-</LinearLayout>
+    <com.duyp.architecture.clean.android.powergit.ui.widgets.recyclerview.scroll.RecyclerViewFastScroller
+        android:id="@+id/fastScroller"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/recyclerView"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/recyclerView"/>
+
+</RelativeLayout>

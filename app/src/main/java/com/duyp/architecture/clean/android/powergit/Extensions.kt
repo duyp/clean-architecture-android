@@ -25,6 +25,7 @@ import android.widget.EditText
 import android.widget.Toast
 import com.duyp.architecture.clean.android.powergit.ui.Event
 import com.duyp.architecture.clean.android.powergit.ui.base.BaseViewModel
+import io.reactivex.Observable
 import it.sephiroth.android.library.bottomnavigation.BottomNavigation
 import timber.log.Timber
 
@@ -326,6 +327,10 @@ fun <T> event(event: Event<T>?, onEventUnhandledContent: T.() -> Unit) {
 
 fun Throwable.printStacktraceIfDebug() {
     if (BuildConfig.DEBUG) this.printStackTrace()
+}
+
+fun <T> Observable<T>.onErrorResumeEmpty(): Observable<T> {
+    return this.onErrorResumeNext { _: Throwable -> Observable.empty() }
 }
 
 fun String?.or(elseString: String): String = this ?: elseString
