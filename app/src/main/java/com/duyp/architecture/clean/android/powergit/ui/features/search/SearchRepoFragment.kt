@@ -3,7 +3,6 @@ package com.duyp.architecture.clean.android.powergit.ui.features.search
 import android.os.Bundle
 import android.view.View
 import com.duyp.architecture.clean.android.powergit.R
-import com.duyp.architecture.clean.android.powergit.addSimpleTextChangedListener
 import com.duyp.architecture.clean.android.powergit.event
 import com.duyp.architecture.clean.android.powergit.showToastMessage
 import com.duyp.architecture.clean.android.powergit.ui.base.ViewModelFragment
@@ -14,7 +13,7 @@ import javax.inject.Inject
 
 class SearchRepoFragment: ViewModelFragment<SearchState, SearchRepoIntent, SearchViewModel>() {
 
-    @Inject lateinit var mAvatarLoader: AvatarLoader
+    @Inject internal lateinit var mAvatarLoader: AvatarLoader
 
     private lateinit var mAdapter: SearchRepoAdapter
 
@@ -29,14 +28,16 @@ class SearchRepoFragment: ViewModelFragment<SearchState, SearchRepoIntent, Searc
         recyclerView.addOnScrollListener(mInfiniteScroller)
         fastScroller.attachRecyclerView(recyclerView)
 
-        edtSearch.addSimpleTextChangedListener { onIntent(SearchRepoIntent.Search(it)) }
-
         withState {
             event(errorMessage) { showToastMessage(this) }
             event(loadingMore) { mInfiniteScroller.setLoading() }
             event(dataUpdated) { mAdapter.update(this) }
             event(loadCompleted) { mInfiniteScroller.reset() }
         }
+    }
+
+    fun onSearch(text: String) {
+        onIntent(SearchRepoIntent.Search(text))
     }
 
     override fun getLayoutResource() = R.layout.fragment_search_repo

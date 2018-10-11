@@ -6,24 +6,10 @@
               android:layout_height="match_parent"
               android:background="@color/white">
 
-    <EditText
-        android:id="@+id/edtSearch"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:gravity="center_vertical"
-        android:layout_alignParentTop="true"
-        android:hint="Repository name"
-        android:inputType="text"
-        android:background="@drawable/bg_corner_gray_thin"
-        android:padding="@dimen/small"
-        android:layout_margin="@dimen/small"
-        app:layout_scrollFlags="scroll|enterAlways"/>
-
     <com.duyp.architecture.clean.android.powergit.ui.widgets.recyclerview.DynamicRecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="@string/linear_layout_manager"
-        android:layout_below="@id/edtSearch"
         android:id="@+id/recyclerView"/>
 
     <com.duyp.architecture.clean.android.powergit.ui.widgets.recyclerview.scroll.RecyclerViewFastScroller
