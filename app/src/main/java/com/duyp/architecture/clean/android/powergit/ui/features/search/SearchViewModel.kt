@@ -35,7 +35,9 @@ class SearchViewModel @Inject constructor(
 
     private var mSearchTerm: String = ""
 
-    private var mResult: RepoSearchResult = RepoSearchResult()
+    private var mRecentRepoIds: List<Long> = emptyList()
+
+    private var mSearchResult: RepoSearchResult = RepoSearchResult()
 
     private var mDataList: ListEntity<SearchItem> = ListEntity()
 
@@ -72,7 +74,7 @@ class SearchViewModel @Inject constructor(
 
         addDisposable {
             intentSubject.ofType(SearchRepoIntent.LoadMore::class.java)
-                    .filter { !mIsLoading && mResult.searchResultList.canLoadMore() }
+                    .filter { !mIsLoading && mSearchResult.searchResultList.canLoadMore() }
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext { setState { copy(loadingMore = Event.empty()) } }
                     .switchMap { loadData(false) }
@@ -87,36 +89,35 @@ class SearchViewModel @Inject constructor(
                 if (!refresh) Observable.empty()
                 else mGetRecentRepos.search(mSearchTerm)
                         .subscribeOn(Schedulers.io())
-                        .map {
-                            mResult.copy(
-                                    recentRepoIds = it,
-                                    searchResultList = if (refresh) ListEntity()
-                                    else currentList.copyWith(mResult.searchResultList)
-                            )
-                        }
+                        .doOnSuccess { mRecentRepoIds = it }
+                        .map { Any() }
                         .toObservable()
 
         val searchObservable =
                 if (mSearchTerm.length < MIN_SEARCH_TERM_LENGTH) Observable.fromCallable {
-                    mResult.copy(isSearching = false, error = null)
+                    mSearchResult.copy(isSearching = false, error = null)
                 }
-                else mSearchPublicRepo.search(currentList.copyWith(mResult.searchResultList), mSearchTerm)
+                else mSearchPublicRepo.search(currentList.copyWith(mSearchResult.searchResultList), mSearchTerm)
                         .subscribeOn(Schedulers.io())
-                        .map { mResult.copy(searchResultList = it, isSearching = false) }
+                        .map { mSearchResult.copy(searchResultList = it, isSearching = false) }
                         .toObservable()
                         .startWith {
-                            it.onNext(mResult.copy(isSearching = true))
+                            it.onNext(mSearchResult.copy(isSearching = true))
                             it.onComplete()
                         }
+                        .onErrorResumeNext { throwable: Throwable ->
+                            Observable.fromCallable { mSearchResult.copy(isSearching = false, error = throwable) }
+                        }
+                        .doOnNext { mSearchResult = it }
+                        .map { Any() }
 
-        return Observable.concatArray(recentObservable, searchObservable)
+        return Observable.concatArrayEager(recentObservable, searchObservable)
                 .doOnSubscribe {
                     mLoadDisposable = it
                     mIsLoading = true
                 }
-                .doOnNext { mResult = it }
                 .observeOn(Schedulers.computation())
-                .map { createAdapterData(it) }
+                .map { createAdapterData() }
                 .map {
                     val diffResult = calculateDiffResult(it)
                     mDataList = it
@@ -144,42 +145,40 @@ class SearchViewModel @Inject constructor(
 
     @MainThread
     private fun clearSearchResults(clearRecentList: Boolean) {
-        val recentList = if (clearRecentList) emptyList() else mResult.recentRepoIds
-        mResult = RepoSearchResult(
-                recentRepoIds = recentList,
+        if (clearRecentList) mRecentRepoIds = emptyList()
+        mSearchResult = RepoSearchResult(
                 searchResultList = ListEntity(),
                 isSearching = false,
                 error = null
         )
-        val newList = createAdapterData(mResult)
+        val newList = createAdapterData()
         setState { copy(dataUpdated = Event(calculateDiffResult(newList))) }
         mLoadDisposable?.dispose()
         mDataList = newList
     }
 
-    private fun createAdapterData(result: RepoSearchResult): ListEntity<SearchItem> {
+    private fun createAdapterData(): ListEntity<SearchItem> {
         val list = ArrayList<SearchItem>()
-        if (!result.recentRepoIds.isEmpty()) {
+        if (!mRecentRepoIds.isEmpty()) {
             list.add(SearchItem.RecentHeader())
-            list.addAll(result.recentRepoIds.map { SearchItem.RecentRepo(it, mGetRepo) })
+            list.addAll(mRecentRepoIds.map { SearchItem.RecentRepo(it, mGetRepo) })
         }
-        // todo check here
-        val emptyResult = result.searchResultList.items.isEmpty()
-        if (result.isSearching || result.error != null || !emptyResult) {
+        val emptyResult = mSearchResult.searchResultList.items.isEmpty()
+        if (mSearchResult.isSearching || mSearchResult.error != null || !emptyResult) {
             list.add(
                     SearchItem.ResultHeader(
-                            pageCount = result.searchResultList.getPageCount(),
-                            loadedCount = result.searchResultList.items.size,
+                            pageCount = mSearchResult.searchResultList.getPageCount(),
+                            loadedCount = mSearchResult.searchResultList.items.size,
                             currentSearchTerm = mSearchTerm,
-                            loading = result.isSearching,
-                            errorMessage = result.error?.message
+                            loading = mSearchResult.isSearching,
+                            errorMessage = mSearchResult.error?.message
                     )
             )
         }
         if (!emptyResult) {
-            list.addAll(result.searchResultList.items.map { SearchItem.SearchResultRepo(it) })
+            list.addAll(mSearchResult.searchResultList.items.map { SearchItem.SearchResultRepo(it) })
         }
-        return result.searchResultList.copyWith(list)
+        return mSearchResult.searchResultList.copyWith(list)
     }
 
     private fun calculateDiffResult(newList: ListEntity<SearchItem>): DiffUtil.DiffResult {
@@ -300,7 +299,6 @@ data class SearchState(
 )
 
 data class RepoSearchResult(
-        val recentRepoIds: List<Long> = emptyList(),
         val searchResultList: ListEntity<RepoEntity> = ListEntity(),
         val isSearching: Boolean = false,
         val error: Throwable? = null
