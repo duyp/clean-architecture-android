@@ -6,6 +6,7 @@ import android.support.design.widget.AppBarLayout
 import android.support.v4.app.ActivityCompat
 import android.support.v7.widget.Toolbar
 import android.text.TextUtils
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewTreeObserver
 import com.duyp.architecture.clean.android.powergit.R
@@ -44,6 +45,16 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         StateSaver.saveInstanceState(this, outState)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (canBack()) {
+            if (item?.itemId == android.R.id.home) {
+                onBackPressed()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     abstract fun getLayoutResource(): Int

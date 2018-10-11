@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
+import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.TypedValue
@@ -304,6 +305,15 @@ fun EditText.addSimpleTextChangedListener(listener: (String) -> Unit) {
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { }
 
+    })
+}
+
+fun RecyclerView.addSimpleOnScrollListener(listener: () -> Unit) {
+    this.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+
+        override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            listener()
+        }
     })
 }
 
