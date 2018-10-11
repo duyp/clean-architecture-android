@@ -18,7 +18,9 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            app:layout_scrollFlags="scroll|enterAlways" >
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:contentInsetStartWithNavigation="0dp"
+            app:contentInsetStart="0dp">
 
             <EditText
                 android:id="@+id/edtSearch"
@@ -29,6 +31,7 @@
                 android:hint="Repository name"
                 android:inputType="text"
                 android:padding="@dimen/small"
+                android:background="@color/transparent"
                 app:layout_scrollFlags="scroll|enterAlways"/>
 
         </android.support.v7.widget.Toolbar>

@@ -16,6 +16,7 @@ class SearchRepoActivity: BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setToolbarShadow(true)
         edtSearch.addSimpleTextChangedListener {
             getSearchFragment()?.onSearch(it)
         }

@@ -59,68 +59,87 @@ class SearchViewModel @Inject constructor(
 
     override fun composeIntent(intentSubject: Observable<SearchRepoIntent>) {
 
+        // load recent repo for any on going search intent
         addDisposable {
             intentSubject.ofType(SearchRepoIntent.Search::class.java)
-                    .debounce(500L, TimeUnit.MILLISECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext {
                         mSearchTerm = it.term
                         clearSearchResults(it.term.isEmpty())
                     }
                     .filter { !mSearchTerm.isEmpty() }
-                    .switchMap { loadData(true) }
+                    .switchMap { loadRecentRepos() }
                     .subscribe()
         }
 
+        // search public repos for on going search intent debounced with 500ms and only if search term length equal
+        // or greater than [MIN_SEARCH_TERM_LENGTH]
+        addDisposable {
+            intentSubject.ofType(SearchRepoIntent.Search::class.java)
+                    .debounce(500L, TimeUnit.MILLISECONDS)
+                    .doOnNext { mSearchTerm = it.term }
+                    .filter { mSearchTerm.length >= MIN_SEARCH_TERM_LENGTH }
+                    .switchMap { loadSearchResults(true) }
+                    .subscribe()
+        }
+
+        // load more search result, only for public repos, not for recent repos
         addDisposable {
             intentSubject.ofType(SearchRepoIntent.LoadMore::class.java)
                     .filter { !mIsLoading && mSearchResult.searchResultList.canLoadMore() }
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext { setState { copy(loadingMore = Event.empty()) } }
-                    .switchMap { loadData(false) }
+                    .switchMap { loadSearchResults(false) }
                     .subscribe()
         }
     }
 
-    private fun loadData(refresh: Boolean): Observable<out Any> {
+    /**
+     * Load recent properties which match current search term
+     */
+    private fun loadRecentRepos(): Observable<out Any> {
+        return mGetRecentRepos.search(mSearchTerm)
+                .subscribeOn(Schedulers.io())
+                .doOnSuccess { mRecentRepoIds = it }
+                .toObservable()
+                .process()
+    }
+
+    /**
+     * Load search result of public properties which match current search term
+     */
+    private fun loadSearchResults(refresh: Boolean): Observable<out Any> {
         val currentList = if (refresh) ListEntity() else mDataList
-
-        val recentObservable =
-                if (!refresh) Observable.empty()
-                else mGetRecentRepos.search(mSearchTerm)
-                        .subscribeOn(Schedulers.io())
-                        .doOnSuccess { mRecentRepoIds = it }
-                        .map { Any() }
-                        .toObservable()
-
-        val searchObservable =
-                if (mSearchTerm.length < MIN_SEARCH_TERM_LENGTH) Observable.fromCallable {
-                    mSearchResult.copy(isSearching = false, error = null)
+        return mSearchPublicRepo.search(currentList.copyWith(mSearchResult.searchResultList), mSearchTerm)
+                .subscribeOn(Schedulers.io())
+                .map { mSearchResult.copy(searchResultList = it, isSearching = false) }
+                .toObservable()
+                .startWith {
+                    it.onNext(mSearchResult.copy(isSearching = true))
+                    it.onComplete()
                 }
-                else mSearchPublicRepo.search(currentList.copyWith(mSearchResult.searchResultList), mSearchTerm)
-                        .subscribeOn(Schedulers.io())
-                        .map { mSearchResult.copy(searchResultList = it, isSearching = false) }
-                        .toObservable()
-                        .startWith {
-                            it.onNext(mSearchResult.copy(isSearching = true))
-                            it.onComplete()
-                        }
-                        .onErrorResumeNext { throwable: Throwable ->
-                            Observable.fromCallable { mSearchResult.copy(isSearching = false, error = throwable) }
-                        }
-                        .doOnNext { mSearchResult = it }
-                        .map { Any() }
-
-        return Observable.concatArrayEager(recentObservable, searchObservable)
-                .doOnSubscribe {
-                    mLoadDisposable = it
-                    mIsLoading = true
+                .onErrorResumeNext { throwable: Throwable ->
+                    Observable.fromCallable { mSearchResult.copy(isSearching = false, error = throwable) }
                 }
+                .doOnNext { mSearchResult = it }
+                .process()
+    }
+
+    /**
+     * Process an observable ([loadRecentRepos] or [loadSearchResults])
+     * Result of both [loadRecentRepos] and [loadSearchResults] will be mixed and process to have adapter data to be
+     * rendered, as well as calculating diff result and updating state accordingly as result of the loaders
+     */
+    private fun Observable<out Any>.process(): Observable<out Any> {
+        return this.doOnSubscribe {
+            mLoadDisposable = it
+            mIsLoading = true
+        }
                 .observeOn(Schedulers.computation())
                 .map { createAdapterData() }
-                .map {
-                    val diffResult = calculateDiffResult(it)
-                    mDataList = it
+                .map { newList ->
+                    val diffResult = calculateDiffResult(mDataList, newList)
+                    mDataList = newList
                     return@map diffResult
                 }
                 .observeOn(AndroidSchedulers.mainThread())
@@ -152,7 +171,7 @@ class SearchViewModel @Inject constructor(
                 error = null
         )
         val newList = createAdapterData()
-        setState { copy(dataUpdated = Event(calculateDiffResult(newList))) }
+        setState { copy(dataUpdated = Event(calculateDiffResult(mDataList, newList))) }
         mLoadDisposable?.dispose()
         mDataList = newList
     }
@@ -181,19 +200,20 @@ class SearchViewModel @Inject constructor(
         return mSearchResult.searchResultList.copyWith(list)
     }
 
-    private fun calculateDiffResult(newList: ListEntity<SearchItem>): DiffUtil.DiffResult {
+    private fun calculateDiffResult(oldList: ListEntity<SearchItem>, newList: ListEntity<SearchItem>):
+            DiffUtil.DiffResult {
         return DiffUtil.calculateDiff(object : DiffUtil.Callback() {
 
-            override fun getOldListSize() = mDataList.items.size
+            override fun getOldListSize() = oldList.items.size
 
             override fun getNewListSize() = newList.items.size
 
             override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return areItemEquals(mDataList.items[oldItemPosition], newList.items[newItemPosition])
+                return areItemEquals(oldList.items[oldItemPosition], newList.items[newItemPosition])
             }
 
             override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return areContentsEquals(mDataList.items[oldItemPosition], newList.items[newItemPosition])
+                return areContentsEquals(oldList.items[oldItemPosition], newList.items[newItemPosition])
             }
 
             override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
