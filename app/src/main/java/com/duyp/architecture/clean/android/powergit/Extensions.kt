@@ -23,6 +23,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import com.duyp.architecture.clean.android.powergit.ui.Event
 import com.duyp.architecture.clean.android.powergit.ui.base.BaseViewModel
@@ -317,6 +318,9 @@ fun RecyclerView.addSimpleOnScrollListener(listener: () -> Unit) {
     })
 }
 
+fun clearText(vararg textViews: TextView) {
+    textViews.iterator().forEach { it.text = "" }
+}
 //
 // End Activity, fragment, view...
 // =====================================================================================================================

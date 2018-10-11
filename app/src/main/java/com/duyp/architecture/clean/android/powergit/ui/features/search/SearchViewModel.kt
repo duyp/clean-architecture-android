@@ -4,9 +4,13 @@ import android.support.annotation.MainThread
 import android.support.v7.util.DiffUtil
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.repo.RepoEntity
+import com.duyp.architecture.clean.android.powergit.domain.usecases.GetUser
+import com.duyp.architecture.clean.android.powergit.domain.usecases.issue.GetIssue
+import com.duyp.architecture.clean.android.powergit.domain.usecases.issue.GetRecentIssue
 import com.duyp.architecture.clean.android.powergit.domain.usecases.repo.GetRecentRepos
 import com.duyp.architecture.clean.android.powergit.domain.usecases.repo.GetRepo
 import com.duyp.architecture.clean.android.powergit.domain.usecases.repo.SearchPublicRepo
+import com.duyp.architecture.clean.android.powergit.domain.usecases.user.GetRecentUser
 import com.duyp.architecture.clean.android.powergit.onErrorResumeEmpty
 import com.duyp.architecture.clean.android.powergit.printStacktraceIfDebug
 import com.duyp.architecture.clean.android.powergit.ui.Event
@@ -21,7 +25,11 @@ import javax.inject.Inject
 
 class SearchViewModel @Inject constructor(
         private val mGetRepo: GetRepo,
+        private val mGetIssue: GetIssue,
+        private val mGetUser: GetUser,
         private val mGetRecentRepos: GetRecentRepos,
+        private val mGetRecentIssue: GetRecentIssue,
+        private val mGetRecentUser: GetRecentUser,
         private val mSearchPublicRepo: SearchPublicRepo
 ): BaseViewModel<SearchState, SearchRepoIntent>(), AdapterData<SearchItem> {
 
@@ -35,7 +43,13 @@ class SearchViewModel @Inject constructor(
 
     private var mSearchTerm: String = ""
 
+    private var mCurrentTab: Int = 0
+
     private var mRecentRepoIds: List<Long> = emptyList()
+
+    private var mRecentIssueIds: List<Long> = emptyList()
+
+    private var mRecentUserIds: List<Long> = emptyList()
 
     private var mSearchResult: RepoSearchResult = RepoSearchResult()
 
@@ -59,7 +73,7 @@ class SearchViewModel @Inject constructor(
 
     override fun composeIntent(intentSubject: Observable<SearchRepoIntent>) {
 
-        // load recent repo for any on going search intent
+        // subscribe this to set current search term and clear data if needed for any on going search intent
         addDisposable {
             intentSubject.ofType(SearchRepoIntent.Search::class.java)
                     .observeOn(AndroidSchedulers.mainThread())
@@ -67,8 +81,41 @@ class SearchViewModel @Inject constructor(
                         mSearchTerm = it.term
                         clearSearchResults(it.term.isEmpty())
                     }
-                    .filter { !mSearchTerm.isEmpty() }
+                    .subscribe()
+        }
+
+        addDisposable {
+            intentSubject.ofType(SearchRepoIntent.SelectTab::class.java)
+                    .doOnNext { mCurrentTab = it.tab}
+                    .process()
+                    .subscribe()
+        }
+
+        // load recent repos for any on going search intent
+        addDisposable {
+            intentSubject.ofType(SearchRepoIntent.Search::class.java)
+                    .filter { !it.term.isEmpty() }
                     .switchMap { loadRecentRepos() }
+                    .subscribe()
+        }
+
+
+        // load recent issues for any on going search intent
+        addDisposable {
+            intentSubject.ofType(SearchRepoIntent.Search::class.java)
+                    .debounce(100L, TimeUnit.MILLISECONDS)
+                    .filter { !it.term.isEmpty() }
+                    .switchMap { loadRecentIssues() }
+                    .subscribe()
+        }
+
+
+        // load recent users for any on going search intent
+        addDisposable {
+            intentSubject.ofType(SearchRepoIntent.Search::class.java)
+                    .debounce(200L, TimeUnit.MILLISECONDS)
+                    .filter { !it.term.isEmpty() }
+                    .switchMap { loadRecentUsers() }
                     .subscribe()
         }
 
@@ -106,6 +153,28 @@ class SearchViewModel @Inject constructor(
     }
 
     /**
+     * Load recent issues which match current search term
+     */
+    private fun loadRecentIssues(): Observable<out Any> {
+        return mGetRecentIssue.getRecentIssueIds(mSearchTerm)
+                .subscribeOn(Schedulers.io())
+                .doOnSuccess { mRecentIssueIds = it }
+                .toObservable()
+                .process()
+    }
+
+    /**
+     * Load recent issues which match current search term
+     */
+    private fun loadRecentUsers(): Observable<out Any> {
+        return mGetRecentUser.getRecentUserIds(mSearchTerm)
+                .subscribeOn(Schedulers.io())
+                .doOnSuccess { mRecentUserIds = it }
+                .toObservable()
+                .process()
+    }
+
+    /**
      * Load search result of public properties which match current search term
      */
     private fun loadSearchResults(refresh: Boolean): Observable<out Any> {
@@ -138,7 +207,7 @@ class SearchViewModel @Inject constructor(
                 .observeOn(Schedulers.computation())
                 .map { createAdapterData() }
                 .map { newList ->
-                    val diffResult = calculateDiffResult(mDataList, newList)
+                    val diffResult = SearchDiffUtils.calculateDiffResult(mDataList, newList)
                     mDataList = newList
                     return@map diffResult
                 }
@@ -164,24 +233,43 @@ class SearchViewModel @Inject constructor(
 
     @MainThread
     private fun clearSearchResults(clearRecentList: Boolean) {
-        if (clearRecentList) mRecentRepoIds = emptyList()
+        if (clearRecentList) {
+            mRecentRepoIds = emptyList()
+            mRecentIssueIds = emptyList()
+            mRecentUserIds = emptyList()
+        }
         mSearchResult = RepoSearchResult(
                 searchResultList = ListEntity(),
                 isSearching = false,
                 error = null
         )
         val newList = createAdapterData()
-        setState { copy(dataUpdated = Event(calculateDiffResult(mDataList, newList))) }
+        setState { copy(dataUpdated = Event(SearchDiffUtils.calculateDiffResult(mDataList, newList))) }
         mLoadDisposable?.dispose()
         mDataList = newList
     }
 
     private fun createAdapterData(): ListEntity<SearchItem> {
         val list = ArrayList<SearchItem>()
-        if (!mRecentRepoIds.isEmpty()) {
-            list.add(SearchItem.RecentHeader())
-            list.addAll(mRecentRepoIds.map { SearchItem.RecentRepo(it, mGetRepo) })
+
+        list.add(SearchItem.RecentHeader(mRecentRepoIds.size, mRecentIssueIds.size, mRecentUserIds.size, mCurrentTab))
+
+        when (mCurrentTab) {
+            0 -> // recent repos
+                if (!mRecentRepoIds.isEmpty()) {
+                    list.addAll(mRecentRepoIds.map { SearchItem.RecentRepo(it, mGetRepo) })
+                }
+            1 -> // recent issues
+                if (!mRecentIssueIds.isEmpty()) {
+                    list.addAll(mRecentIssueIds.map { SearchItem.RecentIssue(it, mGetIssue) })
+                }
+            2 -> // recent users
+                if (!mRecentUserIds.isEmpty()) {
+                    list.addAll(mRecentUserIds.map { SearchItem.RecentUser(it, mGetUser) })
+                }
         }
+
+        // search result
         val emptyResult = mSearchResult.searchResultList.items.isEmpty()
         if (mSearchResult.isSearching || mSearchResult.error != null || !emptyResult) {
             list.add(
@@ -199,115 +287,11 @@ class SearchViewModel @Inject constructor(
         }
         return mSearchResult.searchResultList.copyWith(list)
     }
-
-    private fun calculateDiffResult(oldList: ListEntity<SearchItem>, newList: ListEntity<SearchItem>):
-            DiffUtil.DiffResult {
-        return DiffUtil.calculateDiff(object : DiffUtil.Callback() {
-
-            override fun getOldListSize() = oldList.items.size
-
-            override fun getNewListSize() = newList.items.size
-
-            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return areItemEquals(oldList.items[oldItemPosition], newList.items[newItemPosition])
-            }
-
-            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return areContentsEquals(oldList.items[oldItemPosition], newList.items[newItemPosition])
-            }
-
-            override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
-                return null
-            }
-        }, false)
-    }
-
-    private fun areItemEquals(old: SearchItem, new: SearchItem): Boolean {
-        if (old.viewType() != new.viewType()) {
-            return false
-        }
-        if (old is SearchItem.RecentHeader || old is SearchItem.ResultHeader) {
-            return true
-        }
-        if (old is SearchItem.RecentRepo) {
-            return old.repoId == (new as SearchItem.RecentRepo).repoId
-        }
-        if (old is SearchItem.SearchResultRepo) {
-            return old.repo.id == (new as SearchItem.SearchResultRepo).repo.id
-        }
-        return false
-    }
-
-    private fun areContentsEquals(old: SearchItem, new: SearchItem): Boolean {
-        if (old.viewType() != new.viewType()) {
-            return false
-        }
-        if (old is SearchItem.ResultHeader) {
-            return old.pageCount == (new as SearchItem.ResultHeader).pageCount
-                    && old.loadedCount == new.loadedCount
-        }
-        if (old is SearchItem.RecentHeader) {
-            return true
-        }
-        if (old is SearchItem.RecentRepo) {
-            return old.repoId == (new as SearchItem.RecentRepo).repoId
-        }
-        if (old is SearchItem.SearchResultRepo) {
-            return old.repo == (new as SearchItem.SearchResultRepo).repo
-        }
-        return false
-    }
-}
-
-interface SearchItem {
-
-    fun viewType(): Int
-
-    class RecentHeader: SearchItem {
-
-        override fun viewType() = SearchItem.TYPE_SECTION_RECENT
-
-        override fun toString(): String {
-            return "RecentHeader"
-        }
-    }
-
-    data class ResultHeader(
-            val pageCount: Int,
-            val loadedCount: Int,
-            val loading: Boolean,
-            val currentSearchTerm: String,
-            val errorMessage: String? = null
-    ): SearchItem {
-
-        override fun viewType() = SearchItem.TYPE_SECTION_SEARCH_RESULT
-    }
-
-    data class RecentRepo(internal val repoId: Long, private val mGetRepo: GetRepo): SearchItem {
-
-        override fun viewType() = SearchItem.TYPE_ITEM_RECENT
-
-        fun getRepo(): RepoEntity? = mGetRepo.get(repoId)
-                .subscribeOn(Schedulers.io())
-                .blockingGet()
-                .orElse(null)
-    }
-
-    data class SearchResultRepo(val repo: RepoEntity): SearchItem {
-
-        override fun viewType() = SearchItem.TYPE_ITEM_SEARCH_RESULT
-    }
-
-    companion object {
-        const val TYPE_SECTION_RECENT = 0
-        const val TYPE_SECTION_SEARCH_RESULT = 1
-        const val TYPE_ITEM_RECENT = 2
-        const val TYPE_ITEM_SEARCH_RESULT = 3
-    }
 }
 
 interface SearchRepoIntent {
     data class Search(val term: String): SearchRepoIntent
+    data class SelectTab(val tab: Int): SearchRepoIntent
     object LoadMore: SearchRepoIntent
 }
 

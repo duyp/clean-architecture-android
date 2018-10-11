@@ -1,5 +1,6 @@
 package com.duyp.architecture.clean.android.powergit.domain.usecases
 
+import com.duyp.architecture.clean.android.powergit.domain.entities.Optional
 import com.duyp.architecture.clean.android.powergit.domain.entities.UserEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.exception.AuthenticationException
 import com.duyp.architecture.clean.android.powergit.domain.repositories.AuthenticationRepository
@@ -52,6 +53,8 @@ class GetUser @Inject constructor(
      * @return last logged in username
      */
     fun getLastLoggedInUsername() = mSettingRepository.getLastLoggedInUsername()
+
+    fun getUser(id: Long): Single<Optional<UserEntity>> = Single.just(Optional.empty())
 
     /**
      * Get all users in account manager which have authentication saved. This is used for checking if we have some

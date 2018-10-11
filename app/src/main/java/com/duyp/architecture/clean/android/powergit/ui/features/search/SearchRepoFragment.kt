@@ -22,7 +22,10 @@ class SearchRepoFragment: ViewModelFragment<SearchState, SearchRepoIntent, Searc
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mAdapter = SearchRepoAdapter(mViewModel, mAvatarLoader)
+        mAdapter = SearchRepoAdapter(mViewModel, mAvatarLoader) {
+            onIntent(SearchRepoIntent.SelectTab(it))
+        }
+
         mInfiniteScroller = InfiniteScroller(mAdapter) { onIntent(SearchRepoIntent.LoadMore) }
         recyclerView.adapter = mAdapter
         recyclerView.addOnScrollListener(mInfiniteScroller)
