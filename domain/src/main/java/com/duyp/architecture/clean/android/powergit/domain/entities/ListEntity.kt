@@ -79,7 +79,7 @@ data class ListEntity<T> (
         }
     }
 
-    fun <E> copyWith(newItems: List<E>): ListEntity<E> {
+    fun <T> copyWith(otherList: ListEntity<T>): ListEntity<T> {
         return ListEntity(
                 first = this.first,
                 next = this.next,
@@ -87,7 +87,19 @@ data class ListEntity<T> (
                 last = this.last,
                 isOfflineData = this.isOfflineData,
                 apiError = this.apiError,
-                items = newItems
+                items = otherList.items
+        )
+    }
+
+    fun <T> copyWith(otherItems: List<T>): ListEntity<T> {
+        return ListEntity(
+                first = this.first,
+                next = this.next,
+                prev = this.prev,
+                last = this.last,
+                isOfflineData = this.isOfflineData,
+                apiError = this.apiError,
+                items = otherItems
         )
     }
 

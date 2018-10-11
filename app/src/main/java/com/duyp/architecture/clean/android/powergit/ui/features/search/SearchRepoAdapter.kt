@@ -18,8 +18,10 @@ class SearchRepoAdapter(
 
     override fun onCreateItemViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
-            SearchItem.TYPE_SECTION_RECENT, SearchItem.TYPE_SECTION_SEARCH_RESULT ->
-                SectionHeaderViewHolder(parent.inflate(R.layout.item_section_header))
+            SearchItem.TYPE_SECTION_RECENT ->
+                LocalHeaderViewHolder(parent.inflate(R.layout.item_section_header))
+            SearchItem.TYPE_SECTION_SEARCH_RESULT ->
+                ResultSectionHeader(parent.inflate(R.layout.item_section_header))
             else -> RepoViewHolder.instanceWithAvatar(parent, mAvatarLoader)
         }
     }
@@ -27,11 +29,18 @@ class SearchRepoAdapter(
     override fun onBindItemViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(holder.itemViewType) {
             SearchItem.TYPE_SECTION_RECENT ->
-                (holder as SectionHeaderViewHolder).mTvTitle.text = "Recent repos"
+                (holder as LocalHeaderViewHolder).mTvTitle.text = "Recent repos"
             SearchItem.TYPE_SECTION_SEARCH_RESULT -> {
                 val item = mData.getItemAtPosition(position) as SearchItem.ResultHeader
-                (holder as SectionHeaderViewHolder).mTvTitle.text =
-                        "Public repos (${item.pageCount} pages, ${item.loadedCount} loaded)"
+                holder as ResultSectionHeader
+                if (item.errorMessage != null) {
+                    holder.mTvTitle.text = item.errorMessage
+                } else if (item.loading) {
+                    holder.mTvTitle.text = "Searching public repos for \"${item.currentSearchTerm}\"..."
+                } else {
+                    holder.mTvTitle.text = "Public repos match \"${item.currentSearchTerm}\"" +
+                            " (${item.pageCount} pages, ${item.loadedCount} shown)"
+                }
             }
             SearchItem.TYPE_ITEM_RECENT -> {
                 mData.getItemAtPosition(position)?.let {
@@ -48,8 +57,13 @@ class SearchRepoAdapter(
         }
     }
 
-    class SectionHeaderViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    class LocalHeaderViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
-        val mTvTitle = itemView.findViewById<TextView>(R.id.tvTitle)
+        val mTvTitle = itemView.findViewById<TextView>(R.id.tvTitle)!!
+    }
+
+    class ResultSectionHeader(itemView: View): RecyclerView.ViewHolder(itemView) {
+
+        val mTvTitle = itemView.findViewById<TextView>(R.id.tvTitle)!!
     }
 }
