@@ -21,7 +21,8 @@ interface SearchItem {
             val repoCount: Int = 0,
             val issueCount: Int = 0,
             val userCount: Int = 0,
-            val currentTab: Int
+            val currentTab: Int,
+            val currentSearchTerm: String
     ): SearchItem {
 
         override fun viewType() = SearchItem.TYPE_SECTION_RECENT
@@ -134,6 +135,7 @@ internal object SearchDiffUtils {
         if (old is SearchItem.RecentHeader) {
             return old.repoCount == (new as SearchItem.RecentHeader).repoCount && old.currentTab == new.currentTab
                     && old.issueCount == new.issueCount && old.userCount == new.userCount
+                    && old.currentSearchTerm == new.currentSearchTerm
         }
         if (old is SearchItem.RecentRepo) {
             return old.repoId == (new as SearchItem.RecentRepo).repoId

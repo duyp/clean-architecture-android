@@ -57,6 +57,7 @@ class SearchRepoAdapter(
         private val mTvRepo = itemView.findViewById<TextView>(R.id.tvRepo)!!
         private val mTvIssue = itemView.findViewById<TextView>(R.id.tvIssue)!!
         private val mTvUser = itemView.findViewById<TextView>(R.id.tvUser)!!
+        private val mTvNoData = itemView.findViewById<TextView>(R.id.tvNoData)!!
 
         private val mColorAccent = itemView.context.resources.getColor(R.color.colorAccent)
         private val mColorGrey = itemView.context.resources.getColor(R.color.dark_grey)
@@ -75,22 +76,31 @@ class SearchRepoAdapter(
                 0 -> {
                     mTvRepo.text = "Recent repos"
                     mTvRepo.setTextColor(mColorAccent)
+                    mTvNoData.visibility = if (item.repoCount > 0) View.GONE else View.VISIBLE
+                    setNoDataText("No recent repos", item.currentSearchTerm)
                 }
                 1 -> {
                     mTvIssue.text = "Recent issues"
                     mTvIssue.setTextColor(mColorAccent)
+                    mTvNoData.visibility = if (item.issueCount > 0) View.GONE else View.VISIBLE
+                    setNoDataText("No recent issues", item.currentSearchTerm)
                 }
                 2 -> {
                     mTvUser.text = "Recent users"
                     mTvUser.setTextColor(mColorAccent)
+                    mTvNoData.visibility = if (item.userCount > 0) View.GONE else View.VISIBLE
+                    setNoDataText("No recent users", item.currentSearchTerm)
                 }
             }
         }
 
         private fun setCount(textView: TextView, count: Int) {
             textView.text = if (count > 0) "($count)" else ""
-            textView.isEnabled = count > 0
             textView.setTextColor(mColorGrey)
+        }
+
+        private fun setNoDataText(prefix: String, searchTerm: String) {
+            mTvNoData.text = prefix + " match \"$searchTerm\""
         }
     }
 

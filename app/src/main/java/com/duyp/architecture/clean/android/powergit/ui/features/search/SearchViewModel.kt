@@ -252,7 +252,10 @@ class SearchViewModel @Inject constructor(
     private fun createAdapterData(): ListEntity<SearchItem> {
         val list = ArrayList<SearchItem>()
 
-        list.add(SearchItem.RecentHeader(mRecentRepoIds.size, mRecentIssueIds.size, mRecentUserIds.size, mCurrentTab))
+        if (!mSearchTerm.isEmpty()) {
+            list.add(SearchItem.RecentHeader(mRecentRepoIds.size, mRecentIssueIds.size, mRecentUserIds.size,
+                    mCurrentTab, mSearchTerm))
+        }
 
         when (mCurrentTab) {
             0 -> // recent repos
