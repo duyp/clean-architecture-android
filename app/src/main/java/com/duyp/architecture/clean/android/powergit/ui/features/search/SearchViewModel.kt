@@ -95,35 +95,27 @@ class SearchViewModel @Inject constructor(
         addDisposable {
             intentSubject.ofType(SearchRepoIntent.Search::class.java)
                     .filter { !it.term.isEmpty() }
-                    .switchMap { loadRecentRepos() }
+                    .switchMap {
+                        return@switchMap when (mCurrentTab) {
+                            0 -> {
+                                Observable.concatArray(loadRecentRepos(), loadRecentIssues(), loadRecentUsers())
+                            }
+                            1 -> {
+                                Observable.concatArray(loadRecentIssues(), loadRecentRepos(), loadRecentUsers())
+                            }
+                            else -> {
+                                Observable.concatArray(loadRecentUsers(), loadRecentRepos(), loadRecentIssues())
+                            }
+                        }
+                    }
                     .subscribe()
         }
 
-
-        // load recent issues for any on going search intent
-        addDisposable {
-            intentSubject.ofType(SearchRepoIntent.Search::class.java)
-                    .debounce(100L, TimeUnit.MILLISECONDS)
-                    .filter { !it.term.isEmpty() }
-                    .switchMap { loadRecentIssues() }
-                    .subscribe()
-        }
-
-
-        // load recent users for any on going search intent
-        addDisposable {
-            intentSubject.ofType(SearchRepoIntent.Search::class.java)
-                    .debounce(200L, TimeUnit.MILLISECONDS)
-                    .filter { !it.term.isEmpty() }
-                    .switchMap { loadRecentUsers() }
-                    .subscribe()
-        }
-
-        // search public repos for on going search intent debounced with 500ms and only if search term length equal
+        // search public repos for on going search intent debounced with 1 second and only if search term length equal
         // or greater than [MIN_SEARCH_TERM_LENGTH]
         addDisposable {
             intentSubject.ofType(SearchRepoIntent.Search::class.java)
-                    .debounce(500L, TimeUnit.MILLISECONDS)
+                    .debounce(1, TimeUnit.SECONDS)
                     .doOnNext { mSearchTerm = it.term }
                     .filter { mSearchTerm.length >= MIN_SEARCH_TERM_LENGTH }
                     .switchMap { loadSearchResults(true) }
