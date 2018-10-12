@@ -103,7 +103,7 @@ internal object SearchDiffUtils {
             }
 
             override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
-                return null
+                return getChangePayload(oldList.items[oldItemPosition], newList.items[newItemPosition])
             }
         }, false)
     }
@@ -144,5 +144,12 @@ internal object SearchDiffUtils {
             return old.repo == (new as SearchItem.SearchResultRepo).repo
         }
         return false
+    }
+
+    private fun getChangePayload(old: SearchItem, new: SearchItem): Any? {
+        if (old is SearchItem.RecentHeader && new is SearchItem.RecentHeader) {
+            return old // use old item to decide custom animation
+        }
+        return null
     }
 }

@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.duyp.architecture.clean.android.powergit.R
 import com.duyp.architecture.clean.android.powergit.inflate
+import com.duyp.architecture.clean.android.powergit.startExpandingAnimation
 import com.duyp.architecture.clean.android.powergit.ui.base.adapter.AdapterData
 import com.duyp.architecture.clean.android.powergit.ui.base.adapter.BaseAdapter
 import com.duyp.architecture.clean.android.powergit.ui.features.repo.list.RepoViewHolder
@@ -30,7 +31,8 @@ class SearchRepoAdapter(
     override fun onBindItemViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(holder.itemViewType) {
             SearchItem.TYPE_SECTION_RECENT ->
-                (holder as LocalHeaderViewHolder).bind(mData.getItemAtPosition(position) as SearchItem.RecentHeader)
+                (holder as LocalHeaderViewHolder).bind(null,
+                        mData.getItemAtPosition(position) as SearchItem.RecentHeader)
             SearchItem.TYPE_SECTION_SEARCH_RESULT -> {
                 (holder as ResultSectionHeader).bind(mData.getItemAtPosition(position) as SearchItem.ResultHeader)
             }
@@ -49,59 +51,90 @@ class SearchRepoAdapter(
         }
     }
 
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isEmpty()) {
+            onBindViewHolder(holder, position)
+            return
+        }
+        if (holder is LocalHeaderViewHolder) {
+            val oldItem = payloads[0] as SearchItem.RecentHeader
+            val newItem = mData.getItemAtPosition(position) as SearchItem.RecentHeader
+            holder.bind(oldItem, newItem)
+        } else {
+            onBindViewHolder(holder, position)
+        }
+    }
+
     class LocalHeaderViewHolder(
             itemView: View,
             private val mRecentTabClickListener: (Int) -> Unit
     ): RecyclerView.ViewHolder(itemView) {
 
-        private val mTvRepo = itemView.findViewById<TextView>(R.id.tvRepo)!!
-        private val mTvIssue = itemView.findViewById<TextView>(R.id.tvIssue)!!
-        private val mTvUser = itemView.findViewById<TextView>(R.id.tvUser)!!
         private val mTvNoData = itemView.findViewById<TextView>(R.id.tvNoData)!!
 
-        private val mColorAccent = itemView.context.resources.getColor(R.color.colorAccent)
-        private val mColorGrey = itemView.context.resources.getColor(R.color.dark_grey)
+        private val tvs: List<TextView> = listOf(
+                itemView.findViewById(R.id.tvRepo)!!,
+                itemView.findViewById(R.id.tvIssue)!!,
+                itemView.findViewById(R.id.tvUser)!!
+        )
 
         init {
-            mTvRepo.setOnClickListener { mRecentTabClickListener.invoke(0) }
-            mTvIssue.setOnClickListener { mRecentTabClickListener.invoke(1) }
-            mTvUser.setOnClickListener { mRecentTabClickListener.invoke(2) }
+            tvs.forEachIndexed { index, textView ->
+                textView.setOnClickListener { mRecentTabClickListener.invoke(index) }
+            }
         }
 
-        internal fun bind(item: SearchItem.RecentHeader) {
-            setCount(mTvRepo, item.repoCount)
-            setCount(mTvIssue, item.issueCount)
-            setCount(mTvUser, item.userCount)
-            when(item.currentTab) {
+        internal fun bind(oldItem: SearchItem.RecentHeader?, newItem: SearchItem.RecentHeader) {
+            val newTab = newItem.currentTab
+            val tabChanged = oldItem != null && oldItem.currentTab != newTab
+            if (tabChanged) {
+                val oldTab = oldItem?.currentTab ?: 0
+                tvs[oldTab].text = getCountText(oldTab, newItem)
+                tvs[newTab].startExpandingAnimation(getTitle(newTab), 150)
+            } else {
+                // invalidate tabs
+                tvs.forEachIndexed { index, textView -> textView.text = getCountText(index, newItem) }
+                tvs[newTab].text = getTitle(newTab)
+            }
+
+            // invalidate no data text
+            when (newTab) {
                 0 -> {
-                    mTvRepo.text = "Recent repos"
-                    mTvRepo.setTextColor(mColorAccent)
-                    mTvNoData.visibility = if (item.repoCount > 0) View.GONE else View.VISIBLE
-                    setNoDataText("No recent repos", item.currentSearchTerm)
+                    mTvNoData.visibility = if (newItem.repoCount > 0) View.GONE else View.VISIBLE
+                    setNoDataText("No recent repos", newItem.currentSearchTerm)
                 }
                 1 -> {
-                    mTvIssue.text = "Recent issues"
-                    mTvIssue.setTextColor(mColorAccent)
-                    mTvNoData.visibility = if (item.issueCount > 0) View.GONE else View.VISIBLE
-                    setNoDataText("No recent issues", item.currentSearchTerm)
+                    mTvNoData.visibility = if (newItem.issueCount > 0) View.GONE else View.VISIBLE
+                    setNoDataText("No recent issues", newItem.currentSearchTerm)
                 }
                 2 -> {
-                    mTvUser.text = "Recent users"
-                    mTvUser.setTextColor(mColorAccent)
-                    mTvNoData.visibility = if (item.userCount > 0) View.GONE else View.VISIBLE
-                    setNoDataText("No recent users", item.currentSearchTerm)
+                    mTvNoData.visibility = if (newItem.userCount > 0) View.GONE else View.VISIBLE
+                    setNoDataText("No recent users", newItem.currentSearchTerm)
                 }
             }
         }
 
-        private fun setCount(textView: TextView, count: Int) {
-            textView.text = if (count > 0) "($count)" else ""
-            textView.setTextColor(mColorGrey)
+        private fun getCountText(tab: Int, item: SearchItem.RecentHeader): String {
+            val count = when (tab) {
+                0 -> item.repoCount
+                1 -> item.issueCount
+                2 -> item.userCount
+                else -> 0
+            }
+            return if (count > 0) "($count)" else ""
+        }
+
+        private fun getTitle(tab: Int) = when(tab) {
+            0 -> "Recent repos"
+            1 -> "Recent issues"
+            2 -> "Recent users"
+            else -> ""
         }
 
         private fun setNoDataText(prefix: String, searchTerm: String) {
             mTvNoData.text = prefix + " match \"$searchTerm\""
         }
+
     }
 
     class ResultSectionHeader(itemView: View): RecyclerView.ViewHolder(itemView) {

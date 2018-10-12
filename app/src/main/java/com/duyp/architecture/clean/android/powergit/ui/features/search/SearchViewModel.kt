@@ -37,7 +37,7 @@ class SearchViewModel @Inject constructor(
         private const val MIN_SEARCH_TERM_LENGTH = 3
     }
 
-    private var mLoadDisposable: Disposable? = null
+    private var mSearchDisposable: Disposable? = null
 
     private var mIsLoading = false
 
@@ -73,6 +73,14 @@ class SearchViewModel @Inject constructor(
 
     override fun composeIntent(intentSubject: Observable<SearchRepoIntent>) {
 
+        addDisposable {
+            intentSubject.ofType(SearchRepoIntent.SelectTab::class.java)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext { mCurrentTab = it.tab}
+                    .process()
+                    .subscribe()
+        }
+
         // subscribe this to set current search term and clear data if needed for any on going search intent
         addDisposable {
             intentSubject.ofType(SearchRepoIntent.Search::class.java)
@@ -81,19 +89,7 @@ class SearchViewModel @Inject constructor(
                         mSearchTerm = it.term
                         clearSearchResults(it.term.isEmpty())
                     }
-                    .subscribe()
-        }
-
-        addDisposable {
-            intentSubject.ofType(SearchRepoIntent.SelectTab::class.java)
-                    .doOnNext { mCurrentTab = it.tab}
-                    .process()
-                    .subscribe()
-        }
-
-        // load recent repos for any on going search intent
-        addDisposable {
-            intentSubject.ofType(SearchRepoIntent.Search::class.java)
+                    .observeOn(Schedulers.io())
                     .filter { !it.term.isEmpty() }
                     .switchMap {
                         return@switchMap when (mCurrentTab) {
@@ -173,6 +169,7 @@ class SearchViewModel @Inject constructor(
         val currentList = if (refresh) ListEntity() else mDataList
         return mSearchPublicRepo.search(currentList.copyWith(mSearchResult.searchResultList), mSearchTerm)
                 .subscribeOn(Schedulers.io())
+                .doOnSubscribe { mSearchDisposable = it }
                 .map { mSearchResult.copy(searchResultList = it, isSearching = false) }
                 .toObservable()
                 .startWith {
@@ -193,7 +190,6 @@ class SearchViewModel @Inject constructor(
      */
     private fun Observable<out Any>.process(): Observable<out Any> {
         return this.doOnSubscribe {
-            mLoadDisposable = it
             mIsLoading = true
         }
                 .observeOn(Schedulers.computation())
@@ -237,7 +233,7 @@ class SearchViewModel @Inject constructor(
         )
         val newList = createAdapterData()
         setState { copy(dataUpdated = Event(SearchDiffUtils.calculateDiffResult(mDataList, newList))) }
-        mLoadDisposable?.dispose()
+        mSearchDisposable?.dispose()
         mDataList = newList
     }
 

@@ -9,7 +9,7 @@ import com.duyp.architecture.clean.android.powergit.ui.base.adapter.LoadMoreAdap
 
 class InfiniteScroller(
         private val mAdapter: LoadMoreAdapter,
-        private var mVisibleThreshold: Int = 3,
+        private var mVisibleThreshold: Int = 5,
         private val mOnLoadMore: () -> Unit
 ) : RecyclerView.OnScrollListener() {
 
