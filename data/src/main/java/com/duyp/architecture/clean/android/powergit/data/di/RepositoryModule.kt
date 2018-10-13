@@ -23,4 +23,6 @@ abstract class RepositoryModule {
     @Binds abstract fun searchRepository(searchRepositoryImpl: SearchRepositoryImpl): SearchRepository
 
     @Binds abstract fun recentRepoRepository(recentRepoRepositoryImpl: RecentRepoRepositoryImpl): RecentRepoRepository
+
+    @Binds abstract fun issueRepository(issueRepositoryImpl: IssueRepositoryImpl): IssueRepository
 }
