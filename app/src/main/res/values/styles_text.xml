@@ -26,6 +26,10 @@
         <item name="android:textColor">@color/anthracite</item>
     </style>
 
+    <style name="TextAppearanceError" parent="TextAppearance.Design.Error">
+        <item name="android:textColor">@color/bright_red</item>
+    </style>
+
     <style name="TextAppearanceBaseButton" parent="TextAppearance.AppCompat.Button">
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textStyle">bold</item>

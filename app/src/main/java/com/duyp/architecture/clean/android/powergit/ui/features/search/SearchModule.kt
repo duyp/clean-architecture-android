@@ -10,7 +10,7 @@ import dagger.android.ContributesAndroidInjector
 import dagger.multibindings.IntoMap
 
 @Module
-abstract class SearchRepoModule {
+abstract class SearchModule {
 
     @Binds
     @IntoMap
@@ -19,8 +19,8 @@ abstract class SearchRepoModule {
 
     @FragmentScoped
     @ContributesAndroidInjector
-    abstract fun searchRepoFragment(): SearchRepoFragment
+    abstract fun searchFragment(): SearchFragment
 }
 
 @Module
-class SearchRepoActivityModule: ActivityModule<SearchRepoActivity>()
+class SearchActivityModule: ActivityModule<SearchActivity>()

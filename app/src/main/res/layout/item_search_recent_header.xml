@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:animateLayoutChanges="true">
+
+    <HorizontalScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/small"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvRepo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextAppearanceTitle"
+                android:textColor="?colorAccent"
+                android:drawableStart="@drawable/ic_time"
+                android:drawablePadding="@dimen/tiny"
+                tools:text="Recent Repos"/>
+
+            <TextView
+                android:id="@+id/tvIssue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/regular"
+                style="@style/TextAppearanceTitle"
+                android:textColor="?colorAccent"
+                android:drawableStart="@drawable/ic_issues"
+                android:drawablePadding="@dimen/tiny"/>
+
+            <TextView
+                android:id="@+id/tvUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/regular"
+                style="@style/TextAppearanceTitle"
+                android:textColor="?colorAccent"
+                android:drawableStart="@drawable/ic_following"
+                android:drawablePadding="@dimen/tiny"/>
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <TextView
+        android:id="@+id/tvNoData"
+        style="@style/TextAppearanceSubheading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/medium"
+        android:gravity="center"
+        android:visibility="gone"
+        tools:text="no recent repos"
+        tools:visibility="visible"/>
+
+</LinearLayout>

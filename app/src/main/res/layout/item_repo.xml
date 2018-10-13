@@ -58,6 +58,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/xx_tiny"
                 android:layout_marginBottom="@dimen/xx_tiny"
+                android:maxLines="3"
+                android:ellipsize="end"
                 android:text="@string/description" />
 
             <com.duyp.architecture.clean.android.powergit.ui.widgets.AutoLinearLayout

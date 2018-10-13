@@ -1,4 +1,5 @@
 package com.duyp.architecture.clean.android.powergit
+import android.animation.ValueAnimator
 import android.app.Activity
 import android.app.FragmentManager
 import android.app.FragmentTransaction
@@ -14,6 +15,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
+import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.TypedValue
@@ -22,9 +24,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import com.duyp.architecture.clean.android.powergit.ui.Event
 import com.duyp.architecture.clean.android.powergit.ui.base.BaseViewModel
+import io.reactivex.Observable
 import it.sephiroth.android.library.bottomnavigation.BottomNavigation
 import timber.log.Timber
 
@@ -306,6 +310,79 @@ fun EditText.addSimpleTextChangedListener(listener: (String) -> Unit) {
     })
 }
 
+fun RecyclerView.addSimpleOnScrollListener(listener: () -> Unit) {
+    this.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+
+        override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            listener()
+        }
+    })
+}
+
+fun clearText(vararg textViews: TextView) {
+    textViews.iterator().forEach { it.text = "" }
+}
+
+fun TextView.startCustomAnimation(isCollapsing: Boolean, finalText: String, duration: Long) {
+    cancelAnimation()
+    val mStartText = this.text
+    val animator =
+            if (isCollapsing) ValueAnimator.ofFloat(1.0f, 0.0f)
+            else ValueAnimator.ofFloat(0.0f, 1.0f)
+    animator.addUpdateListener {
+        val currentValue = it.animatedValue as Float
+        val ended = (isCollapsing && currentValue == 0.0f) || (!isCollapsing && currentValue == 1.0f)
+        if (ended) {
+            this.text = finalText
+        } else {
+            val n = (mStartText.length * currentValue).toInt()
+            val text = mStartText.substring(0, n)
+            if (text != this.text) {
+                this.text = text
+            }
+        }
+    }
+    this.tag = animator
+    animator.duration = duration
+    animator.start()
+}
+
+fun TextView.startExpandingAnimation(text: String, duration: Long) {
+    cancelAnimation()
+    val animator = ValueAnimator.ofFloat(0.0f, 1.0f)
+    animator.addUpdateListener {
+        val currentValue = it.animatedValue as Float
+        val ended = currentValue == 1.0f
+        if (ended) {
+            this.text = text
+        } else {
+            val n = (text.length * currentValue).toInt()
+            val currentText = text.substring(0, n)
+            if (currentText != this.text) {
+                this.text = currentText
+            }
+        }
+    }
+    this.tag = animator
+    animator.duration = duration
+    animator.start()
+}
+
+fun TextView.startCollapsingAnimation(finalText: String, duration: Long) {
+    this.startCustomAnimation(true, finalText, duration)
+}
+
+fun TextView.cancelAnimation() {
+    val o = this.tag
+    if (o != null && o is ValueAnimator) {
+        o.cancel()
+    }
+}
+
+fun View.setVisible(visible: Boolean) {
+    this.visibility = if (visible) View.VISIBLE else View.GONE
+}
+
 //
 // End Activity, fragment, view...
 // =====================================================================================================================
@@ -328,4 +405,14 @@ fun Throwable.printStacktraceIfDebug() {
     if (BuildConfig.DEBUG) this.printStackTrace()
 }
 
+fun <T> Observable<T>.onErrorResumeEmpty(): Observable<T> {
+    return this.onErrorResumeNext { _: Throwable -> Observable.empty() }
+}
+
+fun <T> Observable<List<T>>.onErrorReturnEmptyList(): Observable<List<T>> {
+    return this.onErrorReturnItem(emptyList())
+}
+
 fun String?.or(elseString: String): String = this ?: elseString
+
+fun CharSequence?.nullOrEmpty(): Boolean = this == null || this.isEmpty()
