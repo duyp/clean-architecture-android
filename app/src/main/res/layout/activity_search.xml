@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                 android:orientation="vertical"
-                                                 android:layout_width="match_parent"
-                                                 android:layout_height="match_parent">
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -22,16 +24,20 @@
             app:contentInsetStartWithNavigation="0dp"
             app:contentInsetStart="0dp">
 
-            <EditText
+            <com.duyp.architecture.clean.android.powergit.ui.widgets.InputEditText
                 android:id="@+id/edtSearch"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:layout_alignParentTop="true"
-                android:hint="Repository name"
+                app:clearable="true"
+                app:iconTint="?colorAccent"
+                android:hint="@string/search_input_hint"
                 android:inputType="text"
                 android:padding="@dimen/small"
+                android:drawablePadding="@dimen/small"
                 android:background="@color/transparent"
+                tools:text="Search here"
                 app:layout_scrollFlags="scroll|enterAlways"/>
 
         </android.support.v7.widget.Toolbar>

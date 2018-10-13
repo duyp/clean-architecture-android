@@ -93,4 +93,9 @@
         <attr name="lastWeeks" format="integer"/>
     </declare-styleable>
 
+    <declare-styleable name="InputEditText">
+        <attr name="editable" format="boolean"/>
+        <attr name="clearable" format="boolean"/>
+        <attr name="iconTint" format="color"/>
+    </declare-styleable>
 </resources>

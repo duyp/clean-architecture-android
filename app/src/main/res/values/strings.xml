@@ -619,5 +619,6 @@
     <string name="lorem_short">Lorem Ipsum is simply dummy text of the printing and typesetting industry</string>
     <string name="skip_login">Skip Login</string>
     <string name="offline_data">Offline data</string>
+    <string name="search_input_hint">Search repositories, issues, users</string>
 
 </resources>
