@@ -12,6 +12,7 @@ import com.duyp.architecture.clean.android.powergit.domain.usecases.repo.GetRepo
 import com.duyp.architecture.clean.android.powergit.domain.usecases.repo.SearchPublicRepo
 import com.duyp.architecture.clean.android.powergit.domain.usecases.user.GetRecentUser
 import com.duyp.architecture.clean.android.powergit.onErrorResumeEmpty
+import com.duyp.architecture.clean.android.powergit.onErrorReturnEmptyList
 import com.duyp.architecture.clean.android.powergit.printStacktraceIfDebug
 import com.duyp.architecture.clean.android.powergit.ui.Event
 import com.duyp.architecture.clean.android.powergit.ui.base.BaseViewModel
@@ -93,15 +94,9 @@ class SearchViewModel @Inject constructor(
                     .filter { !it.term.isEmpty() }
                     .switchMap {
                         return@switchMap when (mCurrentTab) {
-                            0 -> {
-                                Observable.concatArray(loadRecentRepos(), loadRecentIssues(), loadRecentUsers())
-                            }
-                            1 -> {
-                                Observable.concatArray(loadRecentIssues(), loadRecentRepos(), loadRecentUsers())
-                            }
-                            else -> {
-                                Observable.concatArray(loadRecentUsers(), loadRecentRepos(), loadRecentIssues())
-                            }
+                            0 -> Observable.concatArray(loadRecentRepos(), loadRecentIssues(), loadRecentUsers())
+                            1 -> Observable.concatArray(loadRecentIssues(), loadRecentRepos(), loadRecentUsers())
+                            else -> Observable.concatArray(loadRecentUsers(), loadRecentRepos(), loadRecentIssues())
                         }
                     }
                     .subscribe()
@@ -112,6 +107,7 @@ class SearchViewModel @Inject constructor(
         addDisposable {
             intentSubject.ofType(SearchIntent.Search::class.java)
                     .debounce(1, TimeUnit.SECONDS)
+                    .filter { !mIsLoading }
                     .doOnNext { mSearchTerm = it.term }
                     .filter { mSearchTerm.length >= MIN_SEARCH_TERM_LENGTH }
                     .switchMap { loadSearchResults(true) }
@@ -127,6 +123,14 @@ class SearchViewModel @Inject constructor(
                     .switchMap { loadSearchResults(false) }
                     .subscribe()
         }
+
+        // reload search result
+        addDisposable {
+            intentSubject.ofType(SearchIntent.ReloadResult::class.java)
+                    .filter { !mIsLoading }
+                    .switchMap { loadSearchResults(true) }
+                    .subscribe()
+        }
     }
 
     /**
@@ -137,6 +141,7 @@ class SearchViewModel @Inject constructor(
                 .subscribeOn(Schedulers.io())
                 .doOnSuccess { mRecentRepoIds = it }
                 .toObservable()
+                .onErrorReturnEmptyList()
                 .process()
     }
 
@@ -148,6 +153,7 @@ class SearchViewModel @Inject constructor(
                 .subscribeOn(Schedulers.io())
                 .doOnSuccess { mRecentIssueIds = it }
                 .toObservable()
+                .onErrorReturnEmptyList()
                 .process()
     }
 
@@ -159,6 +165,7 @@ class SearchViewModel @Inject constructor(
                 .subscribeOn(Schedulers.io())
                 .doOnSuccess { mRecentUserIds = it }
                 .toObservable()
+                .onErrorReturnEmptyList()
                 .process()
     }
 
@@ -170,10 +177,10 @@ class SearchViewModel @Inject constructor(
         return mSearchPublicRepo.search(currentList.copyWith(mRepoSearchResult.data), mSearchTerm)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe { mSearchDisposable = it }
-                .map { mRepoSearchResult.copy(data = it, isSearching = false) }
+                .map { mRepoSearchResult.copy(data = it, isSearching = false, error = null) }
                 .toObservable()
                 .startWith {
-                    it.onNext(mRepoSearchResult.copy(isSearching = true))
+                    it.onNext(mRepoSearchResult.copy(isSearching = true, error = null))
                     it.onComplete()
                 }
                 .onErrorResumeNext { throwable: Throwable ->
@@ -283,6 +290,7 @@ class SearchViewModel @Inject constructor(
 interface SearchIntent {
     data class Search(val term: String): SearchIntent
     data class SelectTab(val tab: Int): SearchIntent
+    object ReloadResult: SearchIntent
     object LoadMore: SearchIntent
 }
 

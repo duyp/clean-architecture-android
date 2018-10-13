@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        style="@style/TextAppearanceTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/small"
+        android:textColor="?colorAccent"
+        android:visibility="gone"
+        tools:text="This is header"
+        tools:visibility="gone"/>
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingBottom="@dimen/tiny"
+        android:paddingTop="@dimen/tiny"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <TextView
+        android:id="@+id/tvError"
+        style="@style/TextAppearanceError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/small"
+        android:drawableEnd="@drawable/ic_refresh"
+        android:drawablePadding="@dimen/small"
+        android:visibility="gone"
+        tools:text="Error: No network available No network available available"
+        tools:visibility="visible"/>
+
+</FrameLayout>

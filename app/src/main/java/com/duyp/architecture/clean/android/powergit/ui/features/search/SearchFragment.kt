@@ -22,9 +22,13 @@ class SearchFragment: ViewModelFragment<SearchState, SearchIntent, SearchViewMod
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mAdapter = SearchAdapter(mViewModel, mAvatarLoader) {
+        val tabListener: (Int) -> Unit = {
             onIntent(SearchIntent.SelectTab(it))
         }
+        val reloadResultAction = {
+            onIntent(SearchIntent.ReloadResult)
+        }
+        mAdapter = SearchAdapter(mViewModel, mAvatarLoader, tabListener, reloadResultAction)
 
         mInfiniteScroller = InfiniteScroller(mAdapter) { onIntent(SearchIntent.LoadMore) }
         recyclerView.adapter = mAdapter

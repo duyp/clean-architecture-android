@@ -128,14 +128,15 @@ internal object SearchDiffUtils {
         if (old.viewType() != new.viewType()) {
             return false
         }
-        if (old is SearchItem.ResultHeader) {
-            return old.pageCount == (new as SearchItem.ResultHeader).pageCount
-                    && old.loadedCount == new.loadedCount
-        }
         if (old is SearchItem.RecentHeader) {
             return old.repoCount == (new as SearchItem.RecentHeader).repoCount && old.currentTab == new.currentTab
                     && old.issueCount == new.issueCount && old.userCount == new.userCount
                     && old.currentSearchTerm == new.currentSearchTerm
+        }
+        if (old is SearchItem.ResultHeader) {
+            return old.pageCount == (new as SearchItem.ResultHeader).pageCount
+                    && old.loadedCount == new.loadedCount && old.loading == new.loading
+                    && old.errorMessage == new.errorMessage
         }
         if (old is SearchItem.RecentRepo) {
             return old.repoId == (new as SearchItem.RecentRepo).repoId

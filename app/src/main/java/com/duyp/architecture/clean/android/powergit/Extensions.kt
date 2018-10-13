@@ -379,6 +379,10 @@ fun TextView.cancelAnimation() {
     }
 }
 
+fun View.setVisible(visible: Boolean) {
+    this.visibility = if (visible) View.VISIBLE else View.GONE
+}
+
 //
 // End Activity, fragment, view...
 // =====================================================================================================================
@@ -405,4 +409,10 @@ fun <T> Observable<T>.onErrorResumeEmpty(): Observable<T> {
     return this.onErrorResumeNext { _: Throwable -> Observable.empty() }
 }
 
+fun <T> Observable<List<T>>.onErrorReturnEmptyList(): Observable<List<T>> {
+    return this.onErrorReturnItem(emptyList())
+}
+
 fun String?.or(elseString: String): String = this ?: elseString
+
+fun CharSequence?.nullOrEmpty(): Boolean = this == null || this.isEmpty()

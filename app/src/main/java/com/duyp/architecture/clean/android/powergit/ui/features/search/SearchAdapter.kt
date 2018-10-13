@@ -3,10 +3,9 @@ package com.duyp.architecture.clean.android.powergit.ui.features.search
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
-import com.duyp.architecture.clean.android.powergit.R
-import com.duyp.architecture.clean.android.powergit.inflate
-import com.duyp.architecture.clean.android.powergit.startExpandingAnimation
+import com.duyp.architecture.clean.android.powergit.*
 import com.duyp.architecture.clean.android.powergit.ui.base.adapter.AdapterData
 import com.duyp.architecture.clean.android.powergit.ui.base.adapter.BaseAdapter
 import com.duyp.architecture.clean.android.powergit.ui.features.repo.list.RepoViewHolder
@@ -15,15 +14,16 @@ import com.duyp.architecture.clean.android.powergit.ui.utils.AvatarLoader
 class SearchAdapter(
         adapterData: AdapterData<SearchItem>,
         private val mAvatarLoader: AvatarLoader,
-        private val mRecentTabClickListener: (Int) -> Unit
+        private val mRecentTabClickListener: (Int) -> Unit,
+        private val mReloadResultAction: () -> Unit
 ): BaseAdapter<SearchItem>(adapterData) {
 
     override fun onCreateItemViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
             SearchItem.TYPE_SECTION_RECENT ->
-                LocalHeaderViewHolder(parent.inflate(R.layout.item_search_header), mRecentTabClickListener)
+                LocalHeaderViewHolder(parent.inflate(R.layout.item_search_recent_header), mRecentTabClickListener)
             SearchItem.TYPE_SECTION_SEARCH_RESULT ->
-                ResultSectionHeader(parent.inflate(R.layout.item_section_header))
+                ResultSectionHeader(parent.inflate(R.layout.item_search_result_header), mReloadResultAction)
             else -> RepoViewHolder.instanceWithAvatar(parent, mAvatarLoader)
         }
     }
@@ -80,7 +80,7 @@ class SearchAdapter(
 
         init {
             tvs.forEachIndexed { index, textView ->
-                textView.setOnClickListener { mRecentTabClickListener.invoke(index) }
+                textView.setOnClickListener { mRecentTabClickListener(index) }
             }
         }
 
@@ -137,18 +137,31 @@ class SearchAdapter(
 
     }
 
-    class ResultSectionHeader(itemView: View): RecyclerView.ViewHolder(itemView) {
+    class ResultSectionHeader(
+            itemView: View,
+            private val mReloadAction: () -> Unit
+    ): RecyclerView.ViewHolder(itemView) {
 
         private val mTvTitle = itemView.findViewById<TextView>(R.id.tvTitle)!!
+        private val mTvError = itemView.findViewById<TextView>(R.id.tvError)!!
+        private val mProgressBar = itemView.findViewById<ProgressBar>(R.id.progress)!!
+
+        init {
+            mTvError.setOnClickListener { mReloadAction() }
+        }
 
         internal fun bind(item: SearchItem.ResultHeader) {
+            mProgressBar.setVisible(item.loading)
+            mTvError.setVisible(item.errorMessage != null)
             if (item.errorMessage != null) {
-                mTvTitle.text = item.errorMessage
-            } else if (item.loading) {
-                mTvTitle.text = "Searching public repos for \"${item.currentSearchTerm}\"..."
+                mTvError.text = item.errorMessage
+            }
+            if (!item.loading && item.errorMessage.nullOrEmpty()) {
+                mTvTitle.setVisible(true)
+                mTvTitle.text = "Public repos match \"${item.currentSearchTerm}\"\n" +
+                        "(${item.pageCount} pages, ${item.loadedCount} shown)"
             } else {
-                mTvTitle.text = "Public repos match \"${item.currentSearchTerm}\"" +
-                        " (${item.pageCount} pages, ${item.loadedCount} shown)"
+                mTvTitle.setVisible(false)
             }
         }
     }
