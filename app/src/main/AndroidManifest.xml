@@ -32,7 +32,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.features.main.MainActivity"/>
-        <activity android:name=".ui.features.search.SearchRepoActivity"/>
+        <activity android:name=".ui.features.search.SearchActivity"/>
 
         <service
             android:name=".authentication.PowerGitAuthService"

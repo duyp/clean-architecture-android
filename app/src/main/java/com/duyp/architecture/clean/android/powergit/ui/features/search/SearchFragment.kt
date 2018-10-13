@@ -11,36 +11,36 @@ import com.duyp.architecture.clean.android.powergit.ui.widgets.recyclerview.scro
 import kotlinx.android.synthetic.main.fragment_search_repo.*
 import javax.inject.Inject
 
-class SearchRepoFragment: ViewModelFragment<SearchState, SearchRepoIntent, SearchViewModel>() {
+class SearchFragment: ViewModelFragment<SearchState, SearchIntent, SearchViewModel>() {
 
     @Inject internal lateinit var mAvatarLoader: AvatarLoader
 
-    private lateinit var mAdapter: SearchRepoAdapter
+    private lateinit var mAdapter: SearchAdapter
 
     private lateinit var mInfiniteScroller: InfiniteScroller
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mAdapter = SearchRepoAdapter(mViewModel, mAvatarLoader) {
-            onIntent(SearchRepoIntent.SelectTab(it))
+        mAdapter = SearchAdapter(mViewModel, mAvatarLoader) {
+            onIntent(SearchIntent.SelectTab(it))
         }
 
-        mInfiniteScroller = InfiniteScroller(mAdapter) { onIntent(SearchRepoIntent.LoadMore) }
+        mInfiniteScroller = InfiniteScroller(mAdapter) { onIntent(SearchIntent.LoadMore) }
         recyclerView.adapter = mAdapter
         recyclerView.addOnScrollListener(mInfiniteScroller)
         fastScroller.attachRecyclerView(recyclerView)
 
         withState {
             event(errorMessage) { showToastMessage(this) }
-            event(loadingMore) { mInfiniteScroller.setLoading() }
             event(dataUpdated) { mAdapter.update(this) }
+            event(loadingMore) { mInfiniteScroller.setLoading() }
             event(loadCompleted) { mInfiniteScroller.reset() }
         }
     }
 
     fun onSearch(text: String) {
-        onIntent(SearchRepoIntent.Search(text))
+        onIntent(SearchIntent.Search(text))
     }
 
     override fun getLayoutResource() = R.layout.fragment_search_repo

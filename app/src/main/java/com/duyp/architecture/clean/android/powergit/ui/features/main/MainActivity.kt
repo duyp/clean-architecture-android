@@ -11,7 +11,7 @@ import com.duyp.architecture.clean.android.powergit.setOnItemClickListener
 import com.duyp.architecture.clean.android.powergit.showToastMessage
 import com.duyp.architecture.clean.android.powergit.ui.base.ViewModelActivity
 import com.duyp.architecture.clean.android.powergit.ui.features.drawer.DrawerHolder
-import com.duyp.architecture.clean.android.powergit.ui.features.search.SearchRepoActivity
+import com.duyp.architecture.clean.android.powergit.ui.features.search.SearchActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.main_bottom_navigation.*
 import javax.inject.Inject
@@ -59,7 +59,7 @@ class MainActivity : ViewModelActivity<MainViewState, MainIntent, MainViewModel>
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item?.itemId) {
-            R.id.search -> SearchRepoActivity.start(this)
+            R.id.search -> SearchActivity.start(this)
         }
         return super.onOptionsItemSelected(item)
     }

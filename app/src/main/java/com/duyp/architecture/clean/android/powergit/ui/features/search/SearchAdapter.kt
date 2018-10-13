@@ -12,7 +12,7 @@ import com.duyp.architecture.clean.android.powergit.ui.base.adapter.BaseAdapter
 import com.duyp.architecture.clean.android.powergit.ui.features.repo.list.RepoViewHolder
 import com.duyp.architecture.clean.android.powergit.ui.utils.AvatarLoader
 
-class SearchRepoAdapter(
+class SearchAdapter(
         adapterData: AdapterData<SearchItem>,
         private val mAvatarLoader: AvatarLoader,
         private val mRecentTabClickListener: (Int) -> Unit

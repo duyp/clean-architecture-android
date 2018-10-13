@@ -38,7 +38,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <fragment class="com.duyp.architecture.clean.android.powergit.ui.features.search.SearchRepoFragment"
+    <fragment class="com.duyp.architecture.clean.android.powergit.ui.features.search.SearchFragment"
               android:id="@+id/fragmentSearch"
               android:layout_width="match_parent"
               android:layout_height="match_parent"

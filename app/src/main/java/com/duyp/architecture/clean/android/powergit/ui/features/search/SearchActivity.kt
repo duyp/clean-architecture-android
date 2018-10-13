@@ -8,7 +8,7 @@ import com.duyp.architecture.clean.android.powergit.addSimpleTextChangedListener
 import com.duyp.architecture.clean.android.powergit.ui.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_search.*
 
-class SearchRepoActivity: BaseActivity() {
+class SearchActivity: BaseActivity() {
 
     override fun getLayoutResource() = R.layout.activity_search
 
@@ -22,9 +22,9 @@ class SearchRepoActivity: BaseActivity() {
         }
     }
 
-    private fun getSearchFragment(): SearchRepoFragment? {
+    private fun getSearchFragment(): SearchFragment? {
         val f = supportFragmentManager.findFragmentById(R.id.fragmentSearch)
-        if (f != null && f is SearchRepoFragment && f.isAdded) {
+        if (f != null && f is SearchFragment && f.isAdded) {
             return f
         }
         return null
@@ -32,7 +32,7 @@ class SearchRepoActivity: BaseActivity() {
 
     companion object {
         fun start(context: Context) {
-            context.startActivity(Intent(context, SearchRepoActivity::class.java))
+            context.startActivity(Intent(context, SearchActivity::class.java))
         }
     }
 }
