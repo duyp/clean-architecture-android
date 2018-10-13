@@ -87,6 +87,10 @@ class DrawerHolder @Inject constructor(
         return false
     }
 
+    fun openDrawer() {
+        mDrawer.openDrawer(GravityCompat.START)
+    }
+
     private fun updateUser(user: UserEntity?) {
         if (user != null) {
             mNavHeader.findViewById<TextView>(R.id.navFullName).text = user.displayName
