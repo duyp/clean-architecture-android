@@ -4,7 +4,6 @@ import com.duyp.architecture.clean.android.powergit.data.api.UserService
 import com.duyp.architecture.clean.android.powergit.data.database.RepoDao
 import com.duyp.architecture.clean.android.powergit.data.entities.pagination.PageableApiData
 import com.duyp.architecture.clean.android.powergit.data.entities.repo.RepoApiData
-import com.duyp.architecture.clean.android.powergit.data.entities.repo.RepoLocalData
 import com.duyp.architecture.clean.android.powergit.domain.entities.FilterOptions
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
 import com.nhaarman.mockitokotlin2.*
@@ -33,9 +32,7 @@ class RepoRepositoryImplTest {
     fun getUserRepoList_errorFirstPage_shouldReturnLocalData() {
         whenever(mUserService.getRepos(any(), any(), any()))
                 .thenReturn(Single.error(Exception()))
-        whenever(mRepoDao.getUserRepos(any())).thenReturn(Single.just(listOf(
-                RepoLocalData(1), RepoLocalData(2), RepoLocalData(3)
-        )))
+        whenever(mRepoDao.getUserRepoIds(any())).thenReturn(Single.just(listOf(1L, 2L, 3L)))
 
         mRepoRepository.getUserRepoList("duyp", FilterOptions(), ListEntity.STARTING_PAGE)
                 .test()
@@ -43,7 +40,7 @@ class RepoRepositoryImplTest {
                     it.items.size == 3 && it.isOfflineData && it.apiError is Exception
                 }
         verify(mUserService).getRepos(eq("duyp"), any(), eq(ListEntity.STARTING_PAGE))
-        verify(mRepoDao).getUserRepos("duyp")
+        verify(mRepoDao).getUserRepoIds("duyp")
     }
 
     @Test
@@ -83,9 +80,7 @@ class RepoRepositoryImplTest {
     fun getMyUserRepoList_errorFirstPage_shouldReturnLocalData() {
         whenever(mUserService.getMyRepos(any(), any()))
                 .thenReturn(Single.error(Exception()))
-        whenever(mRepoDao.getUserRepos(any())).thenReturn(Single.just(listOf(
-                RepoLocalData(1), RepoLocalData(2), RepoLocalData(3)
-        )))
+        whenever(mRepoDao.getUserRepoIds(any())).thenReturn(Single.just(listOf(1L, 2L, 3L)))
 
         mRepoRepository.getMyUserRepoList("duyp", FilterOptions(), ListEntity.STARTING_PAGE)
                 .test()
@@ -93,7 +88,7 @@ class RepoRepositoryImplTest {
                     it.items.size == 3 && it.isOfflineData && it.apiError is Exception
                 }
         verify(mUserService).getMyRepos(any(), eq(ListEntity.STARTING_PAGE))
-        verify(mRepoDao).getUserRepos("duyp")
+        verify(mRepoDao).getUserRepoIds("duyp")
     }
 
     @Test

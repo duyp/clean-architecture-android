@@ -36,7 +36,7 @@ import io.reactivex.schedulers.Schedulers
  *
  * See some examples:
  *  - Basic [com.duyp.architecture.clean.android.powergit.ui.features.event.EventViewModel]
- *  - Extended [to be continued]
+ *  - Extended [com.duyp.architecture.clean.android.powergit.ui.features.repo.list.RepoListViewModel]
  *
  * @param [S] View State
  * @param [I] View Intent, must extends [ListIntent]
