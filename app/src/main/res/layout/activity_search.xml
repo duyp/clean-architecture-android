@@ -37,6 +37,7 @@
                 android:padding="@dimen/small"
                 android:drawablePadding="@dimen/small"
                 android:background="@color/transparent"
+                android:imeOptions="actionSearch"
                 tools:text="Search here"
                 app:layout_scrollFlags="scroll|enterAlways"/>
 

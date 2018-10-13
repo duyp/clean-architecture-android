@@ -203,7 +203,7 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
      * from offline storage...)
      */
     @MainThread
-    protected fun loadData(refresh: Boolean): Observable<ListEntity<ListType>> {
+    protected fun loadData(refresh: Boolean): Observable<out Any> {
         return loadList(if (refresh) ListEntity() else mListEntity)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe {
@@ -218,15 +218,19 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
                         )
                     }
                 }
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext {
+                .observeOn(Schedulers.computation())
+                .map {
                     val diffResult = calculateDiffResult(it)
                     mListEntity = it
+                    return@map diffResult
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext {
                     val err = mListEntity.apiError?.message ?: ""
                     setListState {
                         copy(
                                 showOfflineNotice = mListEntity.isOfflineData,
-                                dataUpdated = Event(diffResult),
+                                dataUpdated = Event(it),
                                 errorMessage = if (err.isEmpty()) null else Event(err)
                         )
                     }
