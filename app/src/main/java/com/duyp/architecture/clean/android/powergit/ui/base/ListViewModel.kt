@@ -35,7 +35,7 @@ import io.reactivex.schedulers.Schedulers
  * classes must implement [getItem] which returns [EntityType] based on [ListType]
  *
  * See some examples:
- *  - Basic [com.duyp.architecture.clean.android.powergit.ui.features.repo.list.RepoListViewModel]
+ *  - Basic [com.duyp.architecture.clean.android.powergit.ui.features.event.EventViewModel]
  *  - Extended [to be continued]
  *
  * @param [S] View State
@@ -211,9 +211,8 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
                     mIsLoading = true
                     setListState {
                         copy(
-                                showEmptyView = false,
-                                showOfflineNotice = false,
                                 showLoading = refresh,
+                                showEmptyView = false,
                                 requireLogin = false,
                                 refreshable = false
                         )
@@ -270,7 +269,6 @@ data class ListState(
         val showOfflineNotice: Boolean = false,
         val showEmptyView: Boolean = false,
         val requireLogin: Boolean = false,
-        // todo write unit test for refreshable state
         val refreshable: Boolean = true,
         val refresh: Event<Unit>? = null,
         val errorMessage: Event<String>? = null,

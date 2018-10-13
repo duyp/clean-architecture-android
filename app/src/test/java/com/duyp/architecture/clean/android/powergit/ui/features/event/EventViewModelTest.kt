@@ -75,7 +75,7 @@ class EventViewModelTest: ViewModelTest<ListState, ListIntent, EventViewModel>()
         // load done with error, should be able to load again
         emitter?.onError(Exception("error"))
 
-        viewState().assertLastValue { !showLoading && errorMessage.assertContent("error") }
+        viewState().assertLastValue { !showLoading && errorMessage.assertContent("error") && refreshable }
 
         // refresh again
         intent(ListIntent.Refresh)
@@ -94,7 +94,7 @@ class EventViewModelTest: ViewModelTest<ListState, ListIntent, EventViewModel>()
         viewState()
                 .assertLastValue {
                     !showLoading && showEmptyView && !showOfflineNotice
-                            && errorMessage.assertContent("error message") && !requireLogin
+                            && errorMessage.assertContent("error message") && !requireLogin && refreshable
                 }
                 .withPrevious {
                     showLoading && !showEmptyView && !showOfflineNotice  && !requireLogin
@@ -102,7 +102,7 @@ class EventViewModelTest: ViewModelTest<ListState, ListIntent, EventViewModel>()
     }
 
     @Test
-    fun refresh_authenticationError_shouldRequireLogin() {
+    fun refresh_authenticationError_shouldRequireLoginAndDisableRefresh() {
         whenever(mGetUserEventList.getMyUserEvents(any(), any()))
                 .thenReturn(Single.error(AuthenticationException("session expired")))
         intent(ListIntent.Refresh)
@@ -110,7 +110,7 @@ class EventViewModelTest: ViewModelTest<ListState, ListIntent, EventViewModel>()
         viewState()
                 .assertLastValue {
                     !showLoading && !showOfflineNotice && showEmptyView
-                            && errorMessage.assertContent("session expired") && requireLogin
+                            && errorMessage.assertContent("session expired") && requireLogin && !refreshable
                 }
                 .withPrevious {
                     showLoading && !showOfflineNotice && !showEmptyView && !requireLogin
@@ -128,7 +128,8 @@ class EventViewModelTest: ViewModelTest<ListState, ListIntent, EventViewModel>()
                     !showLoading && loadCompleted.assertNotNull()
                             && showOfflineNotice && errorMessage.assertContent("error")
                 }
-                .withPrevious { showLoading && !showOfflineNotice && !showEmptyView }
+                // still show offline to prevent ui glitch
+                .withPrevious { showLoading && showOfflineNotice && !showEmptyView }
     }
 
     @Test
@@ -139,9 +140,9 @@ class EventViewModelTest: ViewModelTest<ListState, ListIntent, EventViewModel>()
 
         viewState()
                 .assertLastValue {
-                    !showLoading && loadCompleted.assertNotNull() && !showOfflineNotice
+                    !showLoading && loadCompleted.assertNotNull() && !showOfflineNotice && refreshable
                 }
-                .withPrevious { showLoading && !showOfflineNotice && !showEmptyView }
+                .withPrevious { showLoading && !showOfflineNotice && !showEmptyView && !refreshable }
     }
 
 
@@ -153,9 +154,9 @@ class EventViewModelTest: ViewModelTest<ListState, ListIntent, EventViewModel>()
 
         viewState()
                 .assertLastValue {
-                    !showLoading && loadCompleted.assertNotNull() && showEmptyView
+                    !showLoading && loadCompleted.assertNotNull() && showEmptyView && refreshable
                 }
-                .withPrevious { showLoading && !showOfflineNotice && !showEmptyView }
+                .withPrevious { showLoading && !showOfflineNotice && !showEmptyView &&!refreshable }
     }
 
     @Test
@@ -169,7 +170,7 @@ class EventViewModelTest: ViewModelTest<ListState, ListIntent, EventViewModel>()
 
         viewState()
                 .assertLastValue {
-                    !showLoading && !showEmptyView && !showOfflineNotice && loadCompleted.assertContentNotNull()
+                    !showLoading && !showEmptyView && !showOfflineNotice && loadCompleted.assertContentNotNull() && refreshable
                 }
                 .withPrevious { showLoading && !showOfflineNotice && !showEmptyView }
 
@@ -187,21 +188,32 @@ class EventViewModelTest: ViewModelTest<ListState, ListIntent, EventViewModel>()
 
     @Test
     fun loadMore_shouldPassLoadingMoreEvent() {
+        val firstList = ListEntity(
+                next = 2, last = 3, items = listOf(EventEntity(id = 1), EventEntity(id = 2))
+        )
         whenever(mGetUserEventList.getMyUserEvents(any(), any()))
-                .thenReturn(Single.just(ListEntity(
-                        next = 2, last = 3, items = listOf(EventEntity(id = 1), EventEntity(id = 2))
-                )))
+                .thenReturn(Single.just(firstList))
         intent(ListIntent.Refresh)
 
         whenever(mGetUserEventList.getMyUserEvents(any(), any()))
-                .thenReturn(Single.just(ListEntity()))
+                .thenReturn(Single.just(firstList.mergeWith(ListEntity())))
+
         intent(ListIntent.LoadMore)
 
         viewState()
-                .assertLastValue { loadCompleted.assertNotNull() }
-                .withPrevious { showLoading }
+                // load more completed
+                .assertLastValue { loadCompleted.assertNotNull() && !showEmptyView && !showLoading && refreshable }
+                // data updated for load more
+                .withPrevious { dataUpdated.assertNotNull() && !refreshable && errorMessage == null && !showEmptyView}
+                // we don't show loading if is loading more pages
+                .withPrevious { !showLoading }
+                // start loading more
                 .withPrevious { loadingMore.assertNotNull() }
+                // first load completed
+                .withPrevious { loadCompleted.assertNotNull() && !showEmptyView && !showLoading && refreshable }
+                // data updated with first load
+                .withPrevious { dataUpdated.assertNotNull() }
+                // first show loading for refresh
+                .withPrevious { showLoading && !showEmptyView && !requireLogin && !refreshable }
     }
-
-
 }
