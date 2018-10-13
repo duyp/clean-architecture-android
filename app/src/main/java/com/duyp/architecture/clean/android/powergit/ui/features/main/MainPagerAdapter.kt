@@ -8,6 +8,7 @@ import com.duyp.architecture.clean.android.powergit.putEnum
 import com.duyp.architecture.clean.android.powergit.ui.BundleConstants
 import com.duyp.architecture.clean.android.powergit.ui.features.event.EventListFragment
 import com.duyp.architecture.clean.android.powergit.ui.features.event.EventType
+import com.duyp.architecture.clean.android.powergit.ui.features.issue.list.IssueListFragment
 import com.duyp.architecture.clean.android.powergit.ui.features.repo.list.RepoListFragment
 import com.duyp.architecture.clean.android.powergit.withArguments
 import javax.inject.Inject
@@ -18,11 +19,11 @@ class MainPagerAdapter @Inject constructor(@ActivityFragmentManager fm: Fragment
         return when (position) {
             0 -> EventListFragment().withArguments { putEnum(BundleConstants.EXTRA_TYPE, EventType.RECEIVED) }
             1 -> RepoListFragment()
-            2 -> EventListFragment().withArguments {
+            2 -> IssueListFragment()
+            else -> EventListFragment().withArguments {
                 putString(BundleConstants.EXTRA_USERNAME, "hungpn")
                 putEnum(BundleConstants.EXTRA_TYPE, EventType.SELF)
             }
-            else -> RepoListFragment().withArguments { putString(BundleConstants.EXTRA_USERNAME, "hungpn") }
         }
     }
 

@@ -21,7 +21,7 @@ data class IssueEntity(
         var locked: Boolean = false,
 
         @IssueState
-        var state: String? = null, //IssueState2
+        var state: String? = null, //todo IssueState2
 
         var repoUrl: String? = null,
 

@@ -3,24 +3,32 @@ package com.duyp.architecture.clean.android.powergit.domain.usecases.issue
 import com.duyp.architecture.clean.android.powergit.domain.entities.IssueEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.issue.IssueQueryProvider.getQuery
-import com.duyp.architecture.clean.android.powergit.domain.entities.issue.IssueState
 import com.duyp.architecture.clean.android.powergit.domain.entities.issue.IssueType
 import com.duyp.architecture.clean.android.powergit.domain.entities.mergeWithPreviousPage
+import com.duyp.architecture.clean.android.powergit.domain.entities.type.IssueState
 import com.duyp.architecture.clean.android.powergit.domain.repositories.IssueRepository
+import com.duyp.architecture.clean.android.powergit.domain.usecases.GetUser
+import io.reactivex.Maybe
 import javax.inject.Inject
 
 class GetIssueList @Inject constructor(
-        private val mIssueRepository: IssueRepository
+        private val mIssueRepository: IssueRepository,
+        private val mGetUser: GetUser
 ) {
 
     /**
-     * Get issue list of given [username] with specific [type] and [state]
+     * Get issue list of given [username] with specific [type] and [state]. If username is empty, current logged in
+     * username will be used instead
      *
      * @param currentList current issue list which is used to load its next page
      *
      * @return new [ListEntity] which contains all data of [currentList] and new list
      */
-    fun get(currentList: ListEntity<IssueEntity>, username: String, type: IssueType, state: IssueState) =
-            mIssueRepository.getIssueList(getQuery(username, type, state), currentList.getNextPage())
-                    .mergeWithPreviousPage(currentList)
+    fun get(currentList: ListEntity<IssueEntity>, username: String?, type: IssueType, @IssueState state: String) =
+            Maybe.fromCallable { username }
+                    .switchIfEmpty(mGetUser.getCurrentLoggedInUsername())
+                    .flatMap {
+                        mIssueRepository.getIssueList(getQuery(it, type, state), currentList.getNextPage())
+                                .mergeWithPreviousPage(currentList)
+                    }
 }

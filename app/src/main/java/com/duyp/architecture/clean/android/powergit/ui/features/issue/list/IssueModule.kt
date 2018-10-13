@@ -1,4 +1,4 @@
-package com.duyp.architecture.clean.android.powergit.ui.features.event
+package com.duyp.architecture.clean.android.powergit.ui.features.issue.list
 
 import android.arch.lifecycle.ViewModel
 import com.duyp.architecture.clean.android.powergit.di.modules.ViewModelKey
@@ -9,14 +9,14 @@ import dagger.android.ContributesAndroidInjector
 import dagger.multibindings.IntoMap
 
 @Module
-abstract class EventModule {
+abstract class IssueModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(EventViewModel::class)
-    abstract fun eventViewModel(eventViewModel: EventViewModel): ViewModel
+    @ViewModelKey(IssueListViewModel::class)
+    abstract fun issueListViewModel(viewModel: IssueListViewModel): ViewModel
 
     @FragmentScoped
     @ContributesAndroidInjector
-    abstract fun contributeEventListFragment(): EventListFragment
+    abstract fun contributeIssueListFragment(): IssueListFragment
 }

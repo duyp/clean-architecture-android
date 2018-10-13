@@ -1,7 +1,6 @@
 package com.duyp.architecture.clean.android.powergit.ui.features.repo.list
 
 import android.arch.lifecycle.ViewModel
-import com.duyp.architecture.clean.android.powergit.di.modules.FragmentModule
 import com.duyp.architecture.clean.android.powergit.di.modules.ViewModelKey
 import com.duyp.architecture.clean.android.powergit.di.scopes.FragmentScoped
 import dagger.Binds
@@ -18,9 +17,6 @@ abstract class RepoListModule {
     abstract fun repoListViewModel(repoListViewModel: RepoListViewModel): ViewModel
 
     @FragmentScoped
-    @ContributesAndroidInjector(modules = [RepoListFragmentModule::class])
+    @ContributesAndroidInjector
     abstract fun contributeRepoListFragment(): RepoListFragment
 }
-
-@Module
-internal class RepoListFragmentModule: FragmentModule<RepoListFragment>()
