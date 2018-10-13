@@ -2,6 +2,7 @@ package com.duyp.architecture.clean.android.powergit.ui.base
 
 import android.os.Build
 import android.os.Bundle
+import android.support.annotation.DrawableRes
 import android.support.design.widget.AppBarLayout
 import android.support.v4.app.ActivityCompat
 import android.support.v7.widget.Toolbar
@@ -94,6 +95,13 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
     protected fun setToolbarShadow(show: Boolean) {
         if (appBar != null) {
             appBar!!.elevation = if (show) resources.getDimension(R.dimen.xx_tiny) else 0.0f
+        }
+    }
+
+    protected fun setToolbarIcon(@DrawableRes res: Int) {
+        if (supportActionBar != null) {
+            supportActionBar!!.setHomeAsUpIndicator(res)
+            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         }
     }
 

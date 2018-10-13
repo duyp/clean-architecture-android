@@ -1,7 +1,6 @@
 package com.duyp.architecture.clean.android.powergit.ui.features.event
 
 import android.arch.lifecycle.ViewModel
-import com.duyp.architecture.clean.android.powergit.di.modules.FragmentModule
 import com.duyp.architecture.clean.android.powergit.di.modules.ViewModelKey
 import com.duyp.architecture.clean.android.powergit.di.scopes.FragmentScoped
 import dagger.Binds
@@ -18,9 +17,6 @@ abstract class EventModule {
     abstract fun eventViewModel(eventViewModel: EventViewModel): ViewModel
 
     @FragmentScoped
-    @ContributesAndroidInjector(modules = [EventListFragmentModule::class])
+    @ContributesAndroidInjector
     abstract fun contributeEventListFragment(): EventListFragment
 }
-
-@Module
-class EventListFragmentModule: FragmentModule<EventListFragment>()

@@ -25,6 +25,7 @@ class MainActivity : ViewModelActivity<MainViewState, MainIntent, MainViewModel>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setToolbarShadow(true)
+        setToolbarIcon(R.drawable.ic_menu)
         pager.adapter = mPagerAdapter
         pager.addOnPageSelectedListener {
             onIntent(MainIntent.OnPageSelected(it))
@@ -59,6 +60,7 @@ class MainActivity : ViewModelActivity<MainViewState, MainIntent, MainViewModel>
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item?.itemId) {
+            android.R.id.home -> mDrawerHolder.openDrawer()
             R.id.search -> SearchActivity.start(this)
         }
         return super.onOptionsItemSelected(item)
