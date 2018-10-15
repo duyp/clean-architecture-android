@@ -9,13 +9,13 @@ import com.duyp.architecture.clean.android.powergit.ui.utils.AvatarLoader
 
 class IssueAdapter(
         data: AdapterData<IssueEntity>,
-        private val mAvatarLoader: AvatarLoader,
-        private val mWithAvatar: Boolean = true,
-        private val mShowRepoName: Boolean = true,
-        private val mShowIssueState: Boolean = true
+        private val avatarLoader: AvatarLoader,
+        private val withAvatar: Boolean = true,
+        private val showRepoName: Boolean = true,
+        private val showIssueState: Boolean = true
 ): BaseAdapter<IssueEntity>(data) {
 
     override fun onCreateItemViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return IssueViewHolder.newInstance(parent, mAvatarLoader, mWithAvatar, mShowRepoName, mShowIssueState)
+        return IssueViewHolder.newInstance(parent, avatarLoader, withAvatar, showRepoName, showIssueState)
     }
 }

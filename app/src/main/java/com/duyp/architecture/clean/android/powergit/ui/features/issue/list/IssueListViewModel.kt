@@ -2,7 +2,7 @@ package com.duyp.architecture.clean.android.powergit.ui.features.issue.list
 
 import com.duyp.architecture.clean.android.powergit.domain.entities.IssueEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
-import com.duyp.architecture.clean.android.powergit.domain.entities.issue.IssueType
+import com.duyp.architecture.clean.android.powergit.domain.entities.issue.MyIssueType
 import com.duyp.architecture.clean.android.powergit.domain.entities.type.IssueState
 import com.duyp.architecture.clean.android.powergit.domain.usecases.issue.GetIssueList
 import com.duyp.architecture.clean.android.powergit.ui.base.ListIntent
@@ -16,7 +16,15 @@ class IssueListViewModel @Inject constructor(
         private val mGetIssueList: GetIssueList
 ): ListViewModel<IssueListState, IssueListIntent, IssueEntity, IssueEntity>() {
 
-    var username: String? = null
+    internal lateinit var listType: IssueListType
+
+    // for repo's issue list
+    private lateinit var mRepoOwner: String
+
+    private lateinit var mRepoName: String
+
+    // for user's issue list
+    private var mUserName: String? = null
 
     override fun getItem(listItem: IssueEntity) = listItem
 
@@ -27,15 +35,18 @@ class IssueListViewModel @Inject constructor(
     }
 
     override fun withListState(s: ListState.() -> Unit) {
-        withState {
-            s.invoke(this.listState)
-        }
+        withState { s.invoke(this.listState) }
     }
 
     override fun loadList(currentList: ListEntity<IssueEntity>): Observable<ListEntity<IssueEntity>> {
-        return mGetIssueList.get(currentList, username, IssueType.CREATED, IssueState.OPEN)
+        return if (listType == IssueListType.USER_ISSUES)
+            mGetIssueList.getUserIssues(currentList, mUserName, MyIssueType.CREATED, IssueState.OPEN)
                 .subscribeOn(Schedulers.io())
                 .toObservable()
+        else
+            mGetIssueList.getRepoIssues(currentList, mRepoOwner, mRepoName, IssueState.OPEN)
+                    .subscribeOn(Schedulers.io())
+                    .toObservable()
     }
 
     override fun areItemEquals(old: IssueEntity, new: IssueEntity) = old.id == new.id
@@ -44,13 +55,36 @@ class IssueListViewModel @Inject constructor(
 
     override fun getLoadMoreIntent() = IssueListIntent.LoadMore
 
-    override fun initState() = IssueListState()
+    override fun initState() = IssueListState(myIssueType = MyIssueType.CREATED)
 
+    /**
+     * Init this view model with repo issues type
+     */
+    internal fun initWithRepo(owner: String, repoName: String) {
+        mRepoOwner = owner
+        mRepoName = repoName
+        listType = IssueListType.REPO_ISSUES
+    }
+
+    /**
+     * Init this view model with user issues type
+     *
+     * @param username null if is current user
+     */
+    internal fun initWithUser(username: String?) {
+        mUserName = username
+        listType = IssueListType.USER_ISSUES
+    }
 }
 
+enum class IssueListType {
+    USER_ISSUES,
+    REPO_ISSUES
+}
 
 data class IssueListState (
-        val listState: ListState = ListState()
+        val listState: ListState = ListState(),
+        val myIssueType: MyIssueType
 )
 
 

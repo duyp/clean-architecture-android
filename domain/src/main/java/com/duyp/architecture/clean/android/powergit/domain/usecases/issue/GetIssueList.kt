@@ -2,8 +2,9 @@ package com.duyp.architecture.clean.android.powergit.domain.usecases.issue
 
 import com.duyp.architecture.clean.android.powergit.domain.entities.IssueEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
-import com.duyp.architecture.clean.android.powergit.domain.entities.issue.IssueQueryProvider.getQuery
-import com.duyp.architecture.clean.android.powergit.domain.entities.issue.IssueType
+import com.duyp.architecture.clean.android.powergit.domain.entities.issue.IssueQueryProvider.getIssuesQuery
+import com.duyp.architecture.clean.android.powergit.domain.entities.issue.IssueQueryProvider.getMyIssueQuery
+import com.duyp.architecture.clean.android.powergit.domain.entities.issue.MyIssueType
 import com.duyp.architecture.clean.android.powergit.domain.entities.mergeWithPreviousPage
 import com.duyp.architecture.clean.android.powergit.domain.entities.type.IssueState
 import com.duyp.architecture.clean.android.powergit.domain.repositories.IssueRepository
@@ -24,11 +25,23 @@ class GetIssueList @Inject constructor(
      *
      * @return new [ListEntity] which contains all data of [currentList] and new list
      */
-    fun get(currentList: ListEntity<IssueEntity>, username: String?, type: IssueType, @IssueState state: String) =
+    fun getUserIssues(currentList: ListEntity<IssueEntity>, username: String?,
+                      type: MyIssueType, @IssueState state: String) =
             Maybe.fromCallable { username }
                     .switchIfEmpty(mGetUser.getCurrentLoggedInUsername())
                     .flatMap {
-                        mIssueRepository.getIssueList(getQuery(it, type, state), currentList.getNextPage())
+                        mIssueRepository.getIssueList(getMyIssueQuery(it, type, state), currentList.getNextPage())
                                 .mergeWithPreviousPage(currentList)
-                    }
+                    }!!
+
+    /**
+     * Get issue list of given repository with specific [state]
+     *
+     * @param currentList current issue list which is used to load its next page
+     *
+     * @return new [ListEntity] which contains all data of [currentList] and new list
+     */
+    fun getRepoIssues(currentList: ListEntity<IssueEntity>, owner: String, repo: String, @IssueState state: String) =
+            mIssueRepository.getIssueList(getIssuesQuery(owner, repo, state), currentList.getNextPage())
+                    .mergeWithPreviousPage(currentList)
 }
