@@ -4,7 +4,7 @@ import com.duyp.architecture.clean.android.powergit.domain.entities.IssueEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.issue.IssueQueryProvider.getIssuesQuery
 import com.duyp.architecture.clean.android.powergit.domain.entities.issue.IssueQueryProvider.getMyIssueQuery
-import com.duyp.architecture.clean.android.powergit.domain.entities.issue.MyIssueType
+import com.duyp.architecture.clean.android.powergit.domain.entities.issue.MyIssueTypeEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.mergeWithPreviousPage
 import com.duyp.architecture.clean.android.powergit.domain.entities.type.IssueState
 import com.duyp.architecture.clean.android.powergit.domain.repositories.IssueRepository
@@ -26,7 +26,7 @@ class GetIssueList @Inject constructor(
      * @return new [ListEntity] which contains all data of [currentList] and new list
      */
     fun getUserIssues(currentList: ListEntity<IssueEntity>, username: String?,
-                      type: MyIssueType, @IssueState state: String) =
+                      type: MyIssueTypeEntity, @IssueState state: String) =
             Maybe.fromCallable { username }
                     .switchIfEmpty(mGetUser.getCurrentLoggedInUsername())
                     .flatMap {

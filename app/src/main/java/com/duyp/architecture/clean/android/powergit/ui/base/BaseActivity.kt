@@ -11,6 +11,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewTreeObserver
 import com.duyp.architecture.clean.android.powergit.R
+import com.duyp.architecture.clean.android.powergit.setDefaultElevation
 import com.duyp.architecture.clean.android.powergit.ui.features.main.MainActivity
 import com.duyp.architecture.clean.android.powergit.ui.helper.ViewHelper
 import com.evernote.android.state.StateSaver
@@ -94,7 +95,7 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
 
     protected fun setToolbarShadow(show: Boolean) {
         if (appBar != null) {
-            appBar!!.elevation = if (show) resources.getDimension(R.dimen.xx_tiny) else 0.0f
+            appBar!!.setDefaultElevation(show)
         }
     }
 

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tvOpen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/open"
+        android:gravity="center"
+        android:drawablePadding="@dimen/xx_tiny"
+        android:drawableStart="@drawable/ic_issues"
+        android:paddingTop="@dimen/x_tiny"
+        android:paddingBottom="@dimen/x_tiny"
+        android:paddingStart="@dimen/xx_tiny"
+        android:paddingEnd="@dimen/tiny"
+        android:background="?selectableItemBackground"/>
+
+    <TextView
+        android:id="@+id/tvClosed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:drawablePadding="@dimen/xx_tiny"
+        android:paddingTop="@dimen/x_tiny"
+        android:paddingBottom="@dimen/x_tiny"
+        android:paddingStart="@dimen/xx_tiny"
+        android:paddingEnd="@dimen/tiny"
+        android:drawableStart="@drawable/ic_check"
+        android:text="@string/closed"
+        android:background="?selectableItemBackground"/>
+</merge>

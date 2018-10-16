@@ -73,6 +73,7 @@ class MainActivity : ViewModelActivity<MainViewState, MainIntent, MainViewModel>
     }
 
     private fun setCurrentPage(position: Int) {
+        setToolbarShadow(position < 2)
         if (position != pager.currentItem) {
             pager.currentItem = position
         }

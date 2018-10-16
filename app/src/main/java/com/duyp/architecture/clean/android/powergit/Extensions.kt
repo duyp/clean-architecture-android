@@ -23,9 +23,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.duyp.architecture.clean.android.powergit.ui.Event
 import com.duyp.architecture.clean.android.powergit.ui.base.BaseViewModel
 import io.reactivex.Observable
@@ -319,6 +317,16 @@ fun RecyclerView.addSimpleOnScrollListener(listener: () -> Unit) {
     })
 }
 
+fun Spinner.addSimpleOnItemSelectedListener(listener: (parent: AdapterView<*>?, view: View?, position: Int, id: Long) -> Unit) {
+    this.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+        override fun onNothingSelected(parent: AdapterView<*>?) { }
+
+        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            listener(parent, view, position, id)
+        }
+    }
+}
+
 fun clearText(vararg textViews: TextView) {
     textViews.iterator().forEach { it.text = "" }
 }
@@ -381,6 +389,10 @@ fun TextView.cancelAnimation() {
 
 fun View.setVisible(visible: Boolean) {
     this.visibility = if (visible) View.VISIBLE else View.GONE
+}
+
+fun View.setDefaultElevation(show: Boolean) {
+    this.elevation = if (show) resources.getDimension(R.dimen.xx_tiny) else 0.0f
 }
 
 //

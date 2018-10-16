@@ -3,7 +3,7 @@ package com.duyp.architecture.clean.android.powergit.domain.entities.issue
 import com.duyp.architecture.clean.android.powergit.domain.entities.QueryBuilder
 import com.duyp.architecture.clean.android.powergit.domain.entities.type.IssueState
 
-enum class MyIssueType {
+enum class MyIssueTypeEntity {
     CREATED,
     ASSIGNED,
     MENTIONED,
@@ -47,12 +47,12 @@ object IssueQueryProvider {
         }
     }
 
-    fun getMyIssueQuery(username: String, type: MyIssueType, @IssueState state: String): String {
+    fun getMyIssueQuery(username: String, type: MyIssueTypeEntity, @IssueState state: String): String {
         return when(type) {
-            MyIssueType.CREATED -> getMyIssuesQuery(username, state)
-            MyIssueType.ASSIGNED -> getAssignedIssuesQuery(username, state)
-            MyIssueType.MENTIONED -> getMentionedIssuesQuery(username, state)
-            MyIssueType.PARTICIPATED -> getParticipatedIssuesQuery(username, state)
+            MyIssueTypeEntity.CREATED -> getMyIssuesQuery(username, state)
+            MyIssueTypeEntity.ASSIGNED -> getAssignedIssuesQuery(username, state)
+            MyIssueTypeEntity.MENTIONED -> getMentionedIssuesQuery(username, state)
+            MyIssueTypeEntity.PARTICIPATED -> getParticipatedIssuesQuery(username, state)
         }
     }
 }

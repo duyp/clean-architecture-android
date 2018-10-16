@@ -1,5 +1,6 @@
 package com.duyp.architecture.clean.android.powergit.ui.base
 
+import android.support.annotation.CallSuper
 import android.support.annotation.MainThread
 import android.support.v7.util.DiffUtil
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
@@ -49,6 +50,7 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
 
     private var mLoadDisposable: Disposable? = null
 
+    @CallSuper
     override fun composeIntent(intentSubject: Observable<I>) {
         // force view to refresh
         if (refreshAtStartup()) {

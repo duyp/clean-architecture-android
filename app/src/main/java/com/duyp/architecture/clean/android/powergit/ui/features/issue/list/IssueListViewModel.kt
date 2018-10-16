@@ -1,14 +1,16 @@
 package com.duyp.architecture.clean.android.powergit.ui.features.issue.list
 
+import com.duyp.architecture.clean.android.powergit.R
 import com.duyp.architecture.clean.android.powergit.domain.entities.IssueEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
-import com.duyp.architecture.clean.android.powergit.domain.entities.issue.MyIssueType
+import com.duyp.architecture.clean.android.powergit.domain.entities.issue.MyIssueTypeEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.type.IssueState
 import com.duyp.architecture.clean.android.powergit.domain.usecases.issue.GetIssueList
 import com.duyp.architecture.clean.android.powergit.ui.base.ListIntent
 import com.duyp.architecture.clean.android.powergit.ui.base.ListState
 import com.duyp.architecture.clean.android.powergit.ui.base.ListViewModel
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
@@ -38,15 +40,50 @@ class IssueListViewModel @Inject constructor(
         withState { s.invoke(this.listState) }
     }
 
+    override fun composeIntent(intentSubject: Observable<IssueListIntent>) {
+        super.composeIntent(intentSubject)
+
+        addDisposable {
+            intentSubject.ofType(IssueListIntent.MyIssueTypeSelected::class.java)
+                    .filter {
+                        it.type != state().myIssueType
+                    }
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .doOnNext {
+                        clearResults()
+                        setState { copy(myIssueType = it.type) }
+                    }
+                    .switchMap { loadData(true) }
+                    .subscribe()
+        }
+
+        addDisposable {
+            intentSubject.ofType(IssueListIntent.StateSwitch::class.java)
+                    .filter {
+                        it.isOpenIssue != state().isOpenIssue
+                    }
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .doOnNext {
+                        clearResults()
+                        setState { copy(isOpenIssue = it.isOpenIssue) }
+                    }
+                    .switchMap { loadData(true) }
+                    .subscribe()
+        }
+    }
+
     override fun loadList(currentList: ListEntity<IssueEntity>): Observable<ListEntity<IssueEntity>> {
-        return if (listType == IssueListType.USER_ISSUES)
-            mGetIssueList.getUserIssues(currentList, mUserName, MyIssueType.CREATED, IssueState.OPEN)
-                .subscribeOn(Schedulers.io())
-                .toObservable()
-        else
-            mGetIssueList.getRepoIssues(currentList, mRepoOwner, mRepoName, IssueState.OPEN)
-                    .subscribeOn(Schedulers.io())
-                    .toObservable()
+        return withState {
+            val issueState = if (isOpenIssue) IssueState.OPEN else IssueState.CLOSED
+            return@withState if (listType == IssueListType.USER_ISSUES)
+                mGetIssueList.getUserIssues(currentList, mUserName, myIssueType.toEntity(), issueState)
+                        .subscribeOn(Schedulers.io())
+                        .toObservable()
+            else
+                mGetIssueList.getRepoIssues(currentList, mRepoOwner, mRepoName, issueState)
+                        .subscribeOn(Schedulers.io())
+                        .toObservable()
+        }
     }
 
     override fun areItemEquals(old: IssueEntity, new: IssueEntity) = old.id == new.id
@@ -55,7 +92,7 @@ class IssueListViewModel @Inject constructor(
 
     override fun getLoadMoreIntent() = IssueListIntent.LoadMore
 
-    override fun initState() = IssueListState(myIssueType = MyIssueType.CREATED)
+    override fun initState() = IssueListState(myIssueType = MyIssueType.CREATED, isOpenIssue = true)
 
     /**
      * Init this view model with repo issues type
@@ -84,11 +121,59 @@ enum class IssueListType {
 
 data class IssueListState (
         val listState: ListState = ListState(),
-        val myIssueType: MyIssueType
+        val myIssueType: MyIssueType,
+        val isOpenIssue: Boolean
 )
 
 
 interface IssueListIntent: ListIntent {
     object Refresh: IssueListIntent
     object LoadMore: IssueListIntent
+    data class MyIssueTypeSelected(val type: MyIssueType): IssueListIntent
+    data class StateSwitch(val isOpenIssue: Boolean): IssueListIntent
+}
+
+enum class MyIssueType(val stringId: Int) {
+    CREATED(R.string.created),
+    ASSIGNED(R.string.assigned),
+    MENTIONED(R.string.mentioned),
+    PARTICIPATED(R.string.participated);
+
+    fun toEntity(): MyIssueTypeEntity {
+        return when (this) {
+            CREATED -> MyIssueTypeEntity.CREATED
+            ASSIGNED -> MyIssueTypeEntity.ASSIGNED
+            MENTIONED -> MyIssueTypeEntity.MENTIONED
+            PARTICIPATED -> MyIssueTypeEntity.PARTICIPATED
+        }
+    }
+
+    fun getPosition(): Int {
+        return when (this) {
+            CREATED -> 0
+            ASSIGNED -> 1
+            MENTIONED -> 2
+            PARTICIPATED -> 3
+        }
+    }
+
+    companion object {
+
+        /**
+         * Get list string resoure ids
+         */
+        fun listStringIds() = MyIssueType.values().map { it.stringId }
+
+        /**
+         * Get from position (spinner)
+         */
+        fun of(position: Int): MyIssueType {
+            return when (position) {
+                0 -> CREATED
+                1 -> ASSIGNED
+                2 -> MENTIONED
+                else -> PARTICIPATED
+            }
+        }
+    }
 }
