@@ -11,6 +11,7 @@ import com.duyp.architecture.clean.android.powergit.data.api.annotations.OwnerTy
 import com.duyp.architecture.clean.android.powergit.data.api.annotations.RequestAnnotations
 import com.duyp.architecture.clean.android.powergit.data.api.converters.GithubResponseConverter
 import com.duyp.architecture.clean.android.powergit.data.api.interceptors.AuthorizationInterceptor
+import com.duyp.architecture.clean.android.powergit.data.api.interceptors.CacheInterceptor
 import com.duyp.architecture.clean.android.powergit.data.api.interceptors.ContentTypeInterceptor
 import com.duyp.architecture.clean.android.powergit.data.api.interceptors.PaginationInterceptor
 import com.duyp.architecture.clean.android.powergit.domain.usecases.GetAuthentication
@@ -58,6 +59,14 @@ class NetworkModule {
                 .followSslRedirects(true)
                 .retryOnConnectionFailure(true)
 
+        // add logging interceptor
+        if (BuildConfig.DEBUG) {
+            val logging = HttpLoggingInterceptor()
+            logging.level = HttpLoggingInterceptor.Level.BODY
+            // only log network calls (no log for force cache which isn't through network)
+            clientBuilder.addNetworkInterceptor(logging)
+        }
+
         // cache
         var cache: Cache? = null
         try {
@@ -67,14 +76,9 @@ class NetworkModule {
         }
 
         if (cache != null) {
-            clientBuilder.cache(cache)
-        }
-
-        // add logging interceptor
-        if (BuildConfig.DEBUG) {
-            val logging = HttpLoggingInterceptor()
-            logging.level = HttpLoggingInterceptor.Level.BODY
-            clientBuilder.addNetworkInterceptor(logging)
+            clientBuilder
+                    .cache(cache)
+                    .addNetworkInterceptor(CacheInterceptor(requestAnnotations))
         }
 
         return clientBuilder.build()
