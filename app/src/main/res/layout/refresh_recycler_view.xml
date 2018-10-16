@@ -45,7 +45,6 @@
             android:textColor="@color/white"
             android:gravity="center"
             android:visibility="gone"
-            tools:visibility="visible"
             android:layout_alignParentTop="true"/>
     </RelativeLayout>
 

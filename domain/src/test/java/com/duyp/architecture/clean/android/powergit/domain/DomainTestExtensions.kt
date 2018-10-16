@@ -1,5 +1,11 @@
 package com.duyp.architecture.clean.android.powergit.domain
 
+import org.junit.Assert
+
+fun String?.assertEquals(expected: String) {
+    Assert.assertEquals(expected, this)
+}
+
 fun <T> T.assert(predicate: T.() -> Boolean) {
     if (!predicate.invoke(this)) {
         throw fail("Value not present", this)

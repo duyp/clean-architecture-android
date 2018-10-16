@@ -4,7 +4,6 @@ import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.support.annotation.MainThread
-import com.duyp.architecture.clean.android.powergit.postValueIfNew
 import com.duyp.architecture.clean.android.powergit.setValueIfNew
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -64,8 +63,8 @@ abstract class BaseViewModel<S, I> : ViewModel() {
     /**
      * access current state, if current state is null, [initState] will be passed
      */
-    protected fun withState(stateConsumer: S.() -> Unit) {
-        stateConsumer.invoke(this.state.value ?: initState())
+    protected fun <T> withState(stateConsumer: S.() -> T): T {
+        return stateConsumer.invoke(this.state.value ?: initState())
     }
 
     /**

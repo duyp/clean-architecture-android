@@ -60,6 +60,8 @@ dependencies {
     implementation "com.android.support:preference-v14:$supportVersion"
     implementation "com.android.support:customtabs:$supportVersion"
 
+    implementation "com.android.support.constraint:constraint-layout:$constraintLayoutVersion"
+
     implementation "com.github.duyp.android-utils:glide:$androidUtilsVersion"
     implementation "com.github.duyp.android-utils:navigation:$androidUtilsVersion"
 
