@@ -1,6 +1,7 @@
-package com.duyp.architecture.clean.android.powergit.ui.helper
+package com.duyp.architecture.clean.android.powergit.data.utils
 
 import android.net.Uri
+import com.duyp.architecture.clean.android.powergit.domain.utils.CommonUtil
 
 /**
  * Created by Kosh on 17 Dec 2016, 12:17 AM
@@ -42,7 +43,7 @@ class PullsIssuesParser {
                     return null
                 }
             }
-            if (InputHelper.isEmpty(number)) return null
+            if (CommonUtil.isEmpty(number)) return null
             val issueNumber: Int
             try {
                 issueNumber = Integer.parseInt(number)
@@ -78,7 +79,7 @@ class PullsIssuesParser {
                     return null
                 }
             }
-            if (InputHelper.isEmpty(number))
+            if (CommonUtil.isEmpty(number))
                 return null
             val issueNumber: Int
             try {

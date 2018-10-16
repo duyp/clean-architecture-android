@@ -37,7 +37,7 @@ data class IssueEntity(
 
         var repoName: String? = null,
 
-        var login: String? = null,
+        var repoOwner: String? = null,
 
         var user: UserEntity? = null,
 

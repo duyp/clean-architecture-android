@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class LabelApiData(
 
         @SerializedName("id")
-        var id: Long? = null,
+        var id: Long,
 
         @SerializedName("url")
         var url: String? = null,

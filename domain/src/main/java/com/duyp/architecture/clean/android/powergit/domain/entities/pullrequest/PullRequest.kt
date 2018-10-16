@@ -1,6 +1,6 @@
 package com.duyp.architecture.clean.android.powergit.domain.entities.pullrequest
 
-import com.duyp.architecture.clean.android.powergit.domain.entities.QueryBuilder
+import com.duyp.architecture.clean.android.powergit.domain.entities.QueryEntity
 
 enum class PullRequestType {
     CREATED,
@@ -16,43 +16,44 @@ enum class PullRequestState {
 
 object PullRequestQueryProvider {
 
-    fun getPullRequestQuery(owner: String, repoName: String, pullRequestState: PullRequestState): String {
-        return QueryBuilder.pullRequest {
-            repo = "$owner/$repoName"
+    fun getPullRequestQuery(owner: String, repoName: String, pullRequestState: PullRequestState): QueryEntity {
+        return QueryEntity.getPullRequestQuery {
+            repo = repoName
+            repoOwner = owner
             state = pullRequestState.name.toLowerCase()
         }
     }
 
-    fun getMyPullRequestQuery(username: String, pullRequestState: PullRequestState): String {
-        return QueryBuilder.pullRequest {
+    fun getMyPullRequestQuery(username: String, pullRequestState: PullRequestState): QueryEntity {
+        return QueryEntity.getPullRequestQuery {
             author = username
             state = pullRequestState.name.toLowerCase()
         }
     }
 
-    fun getAssignedPullRequestQuery(username: String, pullRequestState: PullRequestState): String {
-        return QueryBuilder.pullRequest {
+    fun getAssignedPullRequestQuery(username: String, pullRequestState: PullRequestState): QueryEntity {
+        return QueryEntity.getPullRequestQuery {
             assignee = username
             state = pullRequestState.name.toLowerCase()
         }
     }
 
-    fun getMentionedPullRequestQuery(username: String, pullRequestState: PullRequestState): String {
-        return QueryBuilder.pullRequest {
+    fun getMentionedPullRequestQuery(username: String, pullRequestState: PullRequestState): QueryEntity {
+        return QueryEntity.getPullRequestQuery {
             mentions = username
             state = pullRequestState.name.toLowerCase()
         }
     }
 
-    fun getReviewRequestedPullRequestQuery(username: String, pullRequestState: PullRequestState): String {
-        return QueryBuilder.pullRequest {
+    fun getReviewRequestedPullRequestQuery(username: String, pullRequestState: PullRequestState): QueryEntity {
+        return QueryEntity.getPullRequestQuery {
             reviewRequested = username
             state = pullRequestState.name.toLowerCase()
         }
     }
 
-    fun getParticipatedPullRequestQuery(username: String, pullRequestState: PullRequestState): String {
-        return QueryBuilder.pullRequest {
+    fun getParticipatedPullRequestQuery(username: String, pullRequestState: PullRequestState): QueryEntity {
+        return QueryEntity.getPullRequestQuery {
             involves = username
             state = pullRequestState.name.toLowerCase()
         }

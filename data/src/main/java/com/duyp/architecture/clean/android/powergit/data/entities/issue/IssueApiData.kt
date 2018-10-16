@@ -38,10 +38,6 @@ data class IssueApiData(
 
         var updatedAt: Date? = null,
 
-        var repoName: String? = null,
-
-        var login: String? = null,
-
         var user: UserApiData? = null,
 
         var assignee: UserApiData? = null,

@@ -17,7 +17,7 @@ import com.duyp.architecture.clean.android.powergit.ui.utils.AvatarLoader
 import kotlinx.android.synthetic.main.fragment_user_issue_list.*
 import javax.inject.Inject
 
-class IssueListFragment: ListFragment<IssueEntity, IssueEntity, IssueAdapter, IssueListIntent, IssueListState,
+class IssueListFragment: ListFragment<IssueEntity, Long, IssueAdapter, IssueListIntent, IssueListState,
         IssueListViewModel>() {
 
     @Inject internal lateinit var mAvatarLoader: AvatarLoader
