@@ -72,7 +72,7 @@ class IssueRepositoryImpl @Inject constructor(
     }
 
     override fun searchLocalIssue(searchTerm: String): Single<List<Long>> {
-        return mIssueDao.searchByTitle(searchTerm)
+        return mIssueDao.searchByTitle("%$searchTerm%")
     }
 
     override fun getById(id: Long): Maybe<IssueEntity> {
