@@ -15,6 +15,7 @@ import com.duyp.architecture.clean.android.powergit.ui.base.adapter.BaseViewHold
 import com.duyp.architecture.clean.android.powergit.ui.helper.PullsIssuesParser
 import com.duyp.architecture.clean.android.powergit.ui.utils.AvatarLoader
 import com.duyp.architecture.clean.android.powergit.ui.utils.ParseDateFormat
+import com.duyp.architecture.clean.android.powergit.ui.utils.UiUtils
 import com.duyp.architecture.clean.android.powergit.ui.widgets.SpannableBuilder
 
 /**
@@ -38,7 +39,9 @@ class IssueViewHolder private constructor(
     private var commentsNo: TextView = itemView.findViewById(R.id.commentsNo)
     private var labelContainer: LinearLayout = itemView.findViewById(R.id.labelContainer)
 
-    private var defaultMargin = 10
+    private var labelMarginVertical = itemView.context.resources.getDimensionPixelOffset(R.dimen.xxx_tiny)
+    private var labelMarginHorizontal = itemView.context.resources.getDimensionPixelOffset(R.dimen.xx_tiny)
+    private var labelSpacing = itemView.context.resources.getDimensionPixelOffset(R.dimen.xxx_tiny)
 
     override fun bindData(data: IssueEntity) {
         title.text = data.title
@@ -109,12 +112,16 @@ class IssueViewHolder private constructor(
             val textView = TextView(context)
             textView.text = name
             textView.setTextColor(Color.WHITE)
-            textView.setBackgroundColor(Color.parseColor("#" + color!!))
-            textView.setPadding(defaultMargin, defaultMargin, defaultMargin, defaultMargin)
+            textView.background = UiUtils.getTintedDrawableFromColor(
+                    context.resources.getDrawable(R.drawable.bg_label),
+                    Color.parseColor("#" + color!!)
+            )
+            textView.setPadding(labelMarginHorizontal, labelMarginVertical, labelMarginHorizontal, labelMarginVertical)
 
             val params = LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
             )
+            params.marginEnd = labelSpacing
 
             labelContainer.addView(textView, params)
         }
