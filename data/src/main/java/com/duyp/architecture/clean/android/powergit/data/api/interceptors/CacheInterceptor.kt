@@ -31,6 +31,7 @@ class CacheInterceptor(private val mRequestAnnotations: RequestAnnotations) : In
 
         // force network request in case request is annotated with @NoCache
         val noCache = mRequestAnnotations.isNoCache(request)
+        val forceCache = mRequestAnnotations.isForceCache(request)
 
         // request
         if (noCache) {
@@ -44,7 +45,7 @@ class CacheInterceptor(private val mRequestAnnotations: RequestAnnotations) : In
             return response.newBuilder()
                     .header(KEY_CACHE_CONTROL, NO_CACHE_CONTROL)
                     .build()
-        } else {
+        } else if (forceCache) {
             // remove unnecessary headers
             return response.newBuilder()
                     .removeHeader("keep-alive")
@@ -59,6 +60,8 @@ class CacheInterceptor(private val mRequestAnnotations: RequestAnnotations) : In
                     // rewrite cache control from network response (MUST ADD TO NETWORK INTERCEPTORS)
                     .header(ApiConstants.Headers.KEY_CACHE_CONTROL, DEFAULT_CACHE_CONTROL)
                     .build()
+        } else {
+            return response
         }
     }
 }

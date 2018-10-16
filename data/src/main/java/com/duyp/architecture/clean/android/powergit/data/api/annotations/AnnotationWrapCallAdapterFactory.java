@@ -11,6 +11,7 @@ import retrofit2.CallAdapter;
 import retrofit2.Retrofit;
 
 import static com.duyp.architecture.clean.android.powergit.data.api.annotations.AnnotationUtils.isAuthenticated;
+import static com.duyp.architecture.clean.android.powergit.data.api.annotations.AnnotationUtils.isForceCache;
 import static com.duyp.architecture.clean.android.powergit.data.api.annotations.AnnotationUtils.isNoCache;
 import static com.duyp.architecture.clean.android.powergit.data.api.annotations.AnnotationUtils.isPlainRequest;
 
@@ -65,6 +66,9 @@ public class AnnotationWrapCallAdapterFactory extends CallAdapter.Factory {
             }
             if (isNoCache(mAnnotations)) {
                 mRequestAnnotations.registerNoCache(request);
+            }
+            if (isForceCache(mAnnotations)) {
+                mRequestAnnotations.registerForceCache(request);
             }
             final Authenticated authenticated = isAuthenticated(mAnnotations);
             if (authenticated != null) {

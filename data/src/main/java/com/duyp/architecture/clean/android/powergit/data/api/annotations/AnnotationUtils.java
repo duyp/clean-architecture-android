@@ -35,6 +35,18 @@ class AnnotationUtils {
         return false;
     }
 
+    static boolean isForceCache(final Annotation[] annotations) {
+        if(annotations == null)
+            return false;
+
+        for(final Annotation annotation : annotations) {
+            if(annotation.annotationType().equals(ForceCache.class))
+                return true;
+        }
+
+        return false;
+    }
+
     static boolean isPlainRequest(final Annotation[] annotations) {
         if(annotations == null)
             return false;
