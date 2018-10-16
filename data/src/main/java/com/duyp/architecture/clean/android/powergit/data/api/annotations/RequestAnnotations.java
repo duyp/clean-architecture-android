@@ -13,7 +13,8 @@ public class RequestAnnotations {
 
     private final static int KEY_AUTH = 0;
     private final static int KEY_NO_CACHE = 1;
-    private final static int KEY_PLAIN_REQUEST = 2;
+    private final static int KEY_FORCE_CACHE = 2;
+    private final static int KEY_PLAIN_REQUEST = 3;
 
     private final SparseArray<SparseArray<Object>> mMap = new SparseArray<>();
 
@@ -58,6 +59,27 @@ public class RequestAnnotations {
      */
     public boolean isNoCache(final Request request) {
         return getRequestValues(request, false).get(KEY_NO_CACHE) != null;
+    }
+
+    // =================================================================================================================
+    // FORCE CACHE
+    // =================================================================================================================
+
+    /**
+     * Mark a given request as no cache, see {@link ForceCache}
+     * @param request request
+     */
+    void registerForceCache(final Request request) {
+        getRequestValues(request, true).put(KEY_FORCE_CACHE, Boolean.TRUE);
+    }
+
+    /**
+     * Check if the given request was marked as no cache
+     * @param request request to be checked
+     * @return true if is no cache request, otherwise fail
+     */
+    public boolean isForceCache(final Request request) {
+        return getRequestValues(request, false).get(KEY_FORCE_CACHE) != null;
     }
 
     // =================================================================================================================
