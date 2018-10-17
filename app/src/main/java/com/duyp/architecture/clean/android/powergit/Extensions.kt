@@ -5,6 +5,7 @@ import android.app.FragmentManager
 import android.app.FragmentTransaction
 import android.arch.lifecycle.*
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Parcel
 import android.support.annotation.AttrRes
@@ -96,6 +97,8 @@ inline fun <reified T : Enum<T>> Parcel.readEnum(): T = enumValueOf(readString()
 
 /** Write an enum value to a Bundle */
 fun <T : Enum<T>> Bundle.putEnum(key: String, value: T) = putString(key, value.name)
+
+fun <T: Enum<T>> Intent.putEnum(key: String, value: T) = this.putExtra(key, value.name)!!
 
 /** Read an enum value from a Bundle */
 inline fun <reified T : Enum<T>> Bundle.getEnum(key: String): T = enumValueOf(getString(key))

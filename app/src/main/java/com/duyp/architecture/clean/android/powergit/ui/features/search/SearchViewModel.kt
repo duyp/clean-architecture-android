@@ -139,8 +139,8 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun initCurrentTab(tab: SearchTab) {
-        mCurrentTab = tab
+    fun initCurrentTab(tab: SearchTab?) {
+        mCurrentTab = tab ?: SearchTab.REPO
     }
 
     /**

@@ -12,6 +12,7 @@ import com.duyp.architecture.clean.android.powergit.showToastMessage
 import com.duyp.architecture.clean.android.powergit.ui.base.ViewModelActivity
 import com.duyp.architecture.clean.android.powergit.ui.features.drawer.DrawerHolder
 import com.duyp.architecture.clean.android.powergit.ui.features.search.SearchActivity
+import com.duyp.architecture.clean.android.powergit.ui.features.search.SearchTab
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.main_bottom_navigation.*
 import javax.inject.Inject
@@ -61,7 +62,13 @@ class MainActivity : ViewModelActivity<MainViewState, MainIntent, MainViewModel>
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item?.itemId) {
             android.R.id.home -> mDrawerHolder.openDrawer()
-            R.id.search -> SearchActivity.start(this)
+            R.id.search -> {
+                val tab = when (mViewModel.state.value?.currentPage) {
+                    2 -> SearchTab.ISSUE
+                    else -> SearchTab.REPO
+                }
+                SearchActivity.start(this, tab)
+            }
         }
         return super.onOptionsItemSelected(item)
     }
