@@ -78,7 +78,7 @@
                 tools:text="1000"/>
         </LinearLayout>
 
-        <LinearLayout
+        <com.duyp.architecture.clean.android.powergit.ui.widgets.AutoLinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/tiny"
