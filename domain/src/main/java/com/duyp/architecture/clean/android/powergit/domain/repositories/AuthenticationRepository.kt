@@ -1,5 +1,6 @@
 package com.duyp.architecture.clean.android.powergit.domain.repositories
 
+import com.duyp.architecture.clean.android.powergit.domain.entities.AuthenticationEntity
 import io.reactivex.Single
 
 interface AuthenticationRepository {
@@ -9,6 +10,8 @@ interface AuthenticationRepository {
      * @return list of account's username
      */
     fun getAllAccounts() : Single<List<String>>
+
+    fun getAuthenticatedAccounts(): Single<List<AuthenticationEntity>>
 
     /**
      * Get authentication token of given username
