@@ -123,7 +123,7 @@ class SearchViewModel @Inject constructor(
         // load more search result, only for public repos, not for recent repos
         addDisposable {
             intentSubject.ofType(SearchIntent.LoadMore::class.java)
-                    .filter { !mIsLoading && mRepoSearchResult.data.canLoadMore() }
+                    .filter { !mIsLoading && getCurrentResultList().data.canLoadMore() }
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext { setState { copy(loadingMore = Event.empty()) } }
                     .switchMap { loadSearchResults(false) }
@@ -290,11 +290,7 @@ class SearchViewModel @Inject constructor(
                 }
         }
 
-        val result = when (mCurrentTab) {
-            0 -> mRepoSearchResult
-            else -> mIssueSearchResult
-        }
-
+        val result = getCurrentResultList()
         if (addResultHeaderIfNeeded(list, result)) {
             list.addAll(result.data.items.map {
                 if (it is RepoEntity) {
@@ -304,7 +300,7 @@ class SearchViewModel @Inject constructor(
             })
         }
 
-        return mRepoSearchResult.data.copyWith(list)
+        return result.data.copyWith(list)
     }
 
     /**
@@ -326,6 +322,11 @@ class SearchViewModel @Inject constructor(
             )
         }
         return !emptyResult
+    }
+
+    private fun getCurrentResultList() = when (mCurrentTab) {
+        0 -> mRepoSearchResult
+        else -> mIssueSearchResult
     }
 }
 

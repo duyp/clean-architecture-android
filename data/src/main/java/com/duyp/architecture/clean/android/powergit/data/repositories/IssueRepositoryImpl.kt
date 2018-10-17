@@ -81,7 +81,7 @@ class IssueRepositoryImpl @Inject constructor(
                 .map { mIssueListApiToEntityMapper.mapFrom(it) }
     }
 
-    override fun searchLocalIssue(searchTerm: String): Single<List<Long>> {
+    override fun searchLocalIssues(searchTerm: String): Single<List<Long>> {
         return mIssueDao.searchByTitle("%$searchTerm%")
     }
 

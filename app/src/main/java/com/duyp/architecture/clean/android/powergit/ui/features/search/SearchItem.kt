@@ -126,6 +126,9 @@ internal object SearchDiffUtils {
         if (old is SearchItem.SearchResultRepo) {
             return old.repo.id == (new as SearchItem.SearchResultRepo).repo.id
         }
+        if (old is SearchItem.SearchResultIssue) {
+            return old.issue.id == (new as SearchItem.SearchResultIssue).issue.id
+        }
         return false
     }
 
@@ -147,6 +150,9 @@ internal object SearchDiffUtils {
         }
         if (old is SearchItem.SearchResultRepo) {
             return old.repo == (new as SearchItem.SearchResultRepo).repo
+        }
+        if (old is SearchItem.SearchResultIssue) {
+            return old.issue == (new as SearchItem.SearchResultIssue).issue
         }
         return false
     }

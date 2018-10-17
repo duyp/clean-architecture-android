@@ -23,7 +23,7 @@ interface IssueRepository {
     /**
      * Search issue stored locally in database
      */
-    fun searchLocalIssue(searchTerm: String): Single<List<Long>>
+    fun searchLocalIssues(searchTerm: String): Single<List<Long>>
 
     /**
      * Get issue by given id
