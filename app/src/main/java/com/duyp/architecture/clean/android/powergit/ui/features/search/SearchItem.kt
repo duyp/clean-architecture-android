@@ -21,7 +21,7 @@ interface SearchItem {
             val repoCount: Int = 0,
             val issueCount: Int = 0,
             val userCount: Int = 0,
-            val currentTab: Int,
+            val currentTab: SearchTab,
             val currentSearchTerm: String
     ): SearchItem {
 

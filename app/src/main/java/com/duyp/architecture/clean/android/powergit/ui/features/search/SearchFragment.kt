@@ -22,7 +22,7 @@ class SearchFragment: ViewModelFragment<SearchState, SearchIntent, SearchViewMod
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val tabListener: (Int) -> Unit = {
+        val tabListener: (SearchTab) -> Unit = {
             onIntent(SearchIntent.SelectTab(it))
         }
         val reloadResultAction = {
