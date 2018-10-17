@@ -70,16 +70,22 @@ interface SearchItem {
     
     data class SearchResultRepo(val repo: RepoEntity): SearchItem {
 
-        override fun viewType() = SearchItem.TYPE_ITEM_SEARCH_RESULT
+        override fun viewType() = SearchItem.TYPE_ITEM_SEARCH_RESULT_REPO
+    }
+
+    data class SearchResultIssue(val issue: IssueEntity): SearchItem {
+
+        override fun viewType() = SearchItem.TYPE_ITEM_SEARCH_RESULT_ISSUE
     }
 
     companion object {
         const val TYPE_SECTION_RECENT = 0
         const val TYPE_SECTION_SEARCH_RESULT = 1
         const val TYPE_ITEM_RECENT_REPO = 2
-        const val TYPE_ITEM_RECENT_ISSUE = 4
-        const val TYPE_ITEM_RECENT_USER = 5
-        const val TYPE_ITEM_SEARCH_RESULT = 3
+        const val TYPE_ITEM_RECENT_ISSUE = 3
+        const val TYPE_ITEM_RECENT_USER = 4
+        const val TYPE_ITEM_SEARCH_RESULT_REPO = 5
+        const val TYPE_ITEM_SEARCH_RESULT_ISSUE = 6
     }
 }
 

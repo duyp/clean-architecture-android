@@ -25,7 +25,8 @@ class SearchAdapter(
                 LocalHeaderViewHolder(parent.inflate(R.layout.item_search_recent_header), mRecentTabClickListener)
             SearchItem.TYPE_SECTION_SEARCH_RESULT ->
                 ResultSectionHeader(parent.inflate(R.layout.item_search_result_header), mReloadResultAction)
-            SearchItem.TYPE_ITEM_RECENT_ISSUE -> IssueViewHolder.newInstance(parent, mAvatarLoader, true, true, true)
+            SearchItem.TYPE_ITEM_RECENT_ISSUE, SearchItem.TYPE_ITEM_SEARCH_RESULT_ISSUE ->
+                IssueViewHolder.newInstance(parent, mAvatarLoader, true, true, true)
             else -> RepoViewHolder.instanceWithAvatar(parent, mAvatarLoader)
         }
     }
@@ -52,9 +53,14 @@ class SearchAdapter(
                     }
                 }
             }
-            SearchItem.TYPE_ITEM_SEARCH_RESULT -> {
+            SearchItem.TYPE_ITEM_SEARCH_RESULT_REPO -> {
                 mData.getItemAtPosition(position)?.let {
                     (holder as RepoViewHolder).bindData((it as SearchItem.SearchResultRepo).repo)
+                }
+            }
+            SearchItem.TYPE_ITEM_SEARCH_RESULT_ISSUE -> {
+                mData.getItemAtPosition(position)?.let {
+                    (holder as IssueViewHolder).bindData((it as SearchItem.SearchResultIssue).issue)
                 }
             }
         }
