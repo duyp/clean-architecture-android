@@ -167,8 +167,7 @@ class SearchAdapter(
             }
             if (!item.loading && item.errorMessage.nullOrEmpty()) {
                 mTvTitle.setVisible(true)
-                mTvTitle.text = "Public repos match \"${item.currentSearchTerm}\"\n" +
-                        "(${item.pageCount} pages, ${item.loadedCount} shown)"
+                mTvTitle.text = "Public repos match \"${item.currentSearchTerm}\" (${item.totalCount})"
             } else {
                 mTvTitle.setVisible(false)
             }

@@ -272,8 +272,7 @@ class SearchViewModel @Inject constructor(
         if (mRepoSearchResult.isSearching || mRepoSearchResult.error != null || !emptyResult) {
             list.add(
                     SearchItem.ResultHeader(
-                            pageCount = mRepoSearchResult.data.getPageCount(),
-                            loadedCount = mRepoSearchResult.data.items.size,
+                            totalCount = mRepoSearchResult.data.totalCount ?: 0,
                             currentSearchTerm = mSearchTerm,
                             loading = mRepoSearchResult.isSearching,
                             errorMessage = mRepoSearchResult.error?.message

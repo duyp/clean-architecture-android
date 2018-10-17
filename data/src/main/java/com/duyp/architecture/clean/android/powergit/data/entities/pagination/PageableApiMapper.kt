@@ -12,6 +12,8 @@ abstract class PageableApiMapper<ApiType, ToType>: Mapper<PageableApiData<ApiTyp
                 prev = e.prev,
                 last = e.last,
                 items = mapItemFrom(e.items),
+                totalCount = e.totalCount,
+                incompleteResults = e.incompleteResults,
                 isOfflineData = false
         )
     }

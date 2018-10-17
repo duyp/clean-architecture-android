@@ -29,8 +29,7 @@ interface SearchItem {
     }
 
     data class ResultHeader(
-            val pageCount: Int,
-            val loadedCount: Int,
+            val totalCount: Long,
             val loading: Boolean,
             val currentSearchTerm: String,
             val errorMessage: String? = null
@@ -134,9 +133,8 @@ internal object SearchDiffUtils {
                     && old.currentSearchTerm == new.currentSearchTerm
         }
         if (old is SearchItem.ResultHeader) {
-            return old.pageCount == (new as SearchItem.ResultHeader).pageCount
-                    && old.loadedCount == new.loadedCount && old.loading == new.loading
-                    && old.errorMessage == new.errorMessage
+            return old.totalCount == (new as SearchItem.ResultHeader).totalCount
+                    && old.loading == new.loading && old.errorMessage == new.errorMessage
         }
         if (old is SearchItem.RecentRepo) {
             return old.repoId == (new as SearchItem.RecentRepo).repoId

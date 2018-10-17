@@ -8,6 +8,12 @@ import com.google.gson.annotations.SerializedName
  */
 data class PageableApiData<M> (
 
+        @SerializedName("total_count")
+        var totalCount: Long? = null,
+
+        @SerializedName("incomplete_results")
+        var incompleteResults: Boolean? = null,
+
         @SerializedName("first")
         var first: Int? = null,
 
