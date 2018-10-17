@@ -171,10 +171,16 @@ class SearchAdapter(
             }
             if (!item.loading && item.errorMessage.nullOrEmpty()) {
                 mTvTitle.setVisible(true)
-                mTvTitle.text = "Public repos match \"${item.currentSearchTerm}\" (${item.totalCount})"
+                mTvTitle.text = "Public ${getTabText(item.currentTab)} match \"${item.currentSearchTerm}\" (${item.totalCount})"
             } else {
                 mTvTitle.setVisible(false)
             }
+        }
+
+        private fun getTabText(tab: SearchTab) = when (tab) {
+            SearchTab.REPO -> "repos"
+            SearchTab.ISSUE -> "issues"
+            SearchTab.USER -> "users"
         }
     }
 }

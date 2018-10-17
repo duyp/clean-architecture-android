@@ -85,6 +85,13 @@ class SearchViewModel @Inject constructor(
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext { mCurrentTab = it.tab }
                     .processDataUpdate()
+                    .switchMap {
+                        val shouldRefresh = when (mCurrentTab) {
+                            SearchTab.REPO -> mRepoSearchResult.data.items.isEmpty()
+                            else -> mIssueSearchResult.data.items.isEmpty()
+                        }
+                        return@switchMap if (shouldRefresh) loadSearchResults(true) else Observable.empty()
+                    }
                     .subscribe()
         }
 
@@ -321,7 +328,8 @@ class SearchViewModel @Inject constructor(
                             totalCount = result.data.totalCount ?: 0,
                             currentSearchTerm = mSearchTerm,
                             loading = result.isSearching,
-                            errorMessage = result.error?.message
+                            errorMessage = result.error?.message,
+                            currentTab = mCurrentTab
                     )
             )
         }

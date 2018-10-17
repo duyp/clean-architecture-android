@@ -32,7 +32,8 @@ interface SearchItem {
             val totalCount: Long,
             val loading: Boolean,
             val currentSearchTerm: String,
-            val errorMessage: String? = null
+            val errorMessage: String? = null,
+            val currentTab: SearchTab
     ): SearchItem {
 
         override fun viewType() = SearchItem.TYPE_SECTION_SEARCH_RESULT
@@ -144,6 +145,7 @@ internal object SearchDiffUtils {
         if (old is SearchItem.ResultHeader) {
             return old.totalCount == (new as SearchItem.ResultHeader).totalCount
                     && old.loading == new.loading && old.errorMessage == new.errorMessage
+                    && old.currentTab == new.currentTab
         }
         if (old is SearchItem.RecentRepo) {
             return old.repoId == (new as SearchItem.RecentRepo).repoId
