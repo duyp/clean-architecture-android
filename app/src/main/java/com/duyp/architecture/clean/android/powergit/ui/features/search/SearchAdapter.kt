@@ -8,6 +8,7 @@ import android.widget.TextView
 import com.duyp.architecture.clean.android.powergit.*
 import com.duyp.architecture.clean.android.powergit.ui.base.adapter.AdapterData
 import com.duyp.architecture.clean.android.powergit.ui.base.adapter.BaseAdapter
+import com.duyp.architecture.clean.android.powergit.ui.features.issue.list.IssueViewHolder
 import com.duyp.architecture.clean.android.powergit.ui.features.repo.list.RepoViewHolder
 import com.duyp.architecture.clean.android.powergit.ui.utils.AvatarLoader
 
@@ -24,6 +25,7 @@ class SearchAdapter(
                 LocalHeaderViewHolder(parent.inflate(R.layout.item_search_recent_header), mRecentTabClickListener)
             SearchItem.TYPE_SECTION_SEARCH_RESULT ->
                 ResultSectionHeader(parent.inflate(R.layout.item_search_result_header), mReloadResultAction)
+            SearchItem.TYPE_ITEM_RECENT_ISSUE -> IssueViewHolder.newInstance(parent, mAvatarLoader, true, true, true)
             else -> RepoViewHolder.instanceWithAvatar(parent, mAvatarLoader)
         }
     }
@@ -40,6 +42,13 @@ class SearchAdapter(
                 mData.getItemAtPosition(position)?.let {
                     (it as SearchItem.RecentRepo).getRepo()?.let { repo ->
                         (holder as RepoViewHolder).bindData(repo)
+                    }
+                }
+            }
+            SearchItem.TYPE_ITEM_RECENT_ISSUE -> {
+                mData.getItemAtPosition(position)?.let {
+                    (it as SearchItem.RecentIssue).getIssue()?.let { issue ->
+                        (holder as IssueViewHolder).bindData(issue)
                     }
                 }
             }

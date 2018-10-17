@@ -228,6 +228,7 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext {
+                    mListEntity.apiError?.printStacktraceIfDebug()
                     val err = mListEntity.apiError?.message ?: ""
                     setListState {
                         copy(

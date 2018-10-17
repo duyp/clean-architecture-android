@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "43a19049ff224e999ecb8793226df1d4",
+    "identityHash": "e03c56e1a236c3b7e3b9e90542e84ea0",
     "entities": [
       {
         "tableName": "User",
@@ -666,11 +666,646 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "Issue",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `url` TEXT, `body` TEXT, `title` TEXT, `comments` INTEGER NOT NULL, `number` INTEGER NOT NULL, `locked` INTEGER NOT NULL, `state` TEXT, `repoUrl` TEXT, `bodyHtml` TEXT, `htmlUrl` TEXT, `closedAt` INTEGER, `createdAt` INTEGER, `updatedAt` INTEGER, `repoOwner` TEXT, `repoName` TEXT, `user_id` INTEGER, `user_login` TEXT, `user_avatarUrl` TEXT, `user_gravatarId` TEXT, `user_url` TEXT, `user_htmlUrl` TEXT, `user_followersUrl` TEXT, `user_followingUrl` TEXT, `user_gistsUrl` TEXT, `user_starredUrl` TEXT, `user_subscriptionsUrl` TEXT, `user_organizationsUrl` TEXT, `user_reposUrl` TEXT, `user_eventsUrl` TEXT, `user_receivedEventsUrl` TEXT, `user_type` TEXT, `user_siteAdmin` INTEGER, `user_name` TEXT, `user_company` TEXT, `user_blog` TEXT, `user_location` TEXT, `user_email` TEXT, `user_hireable` INTEGER, `user_bio` TEXT, `user_publicRepos` INTEGER, `user_publicGists` INTEGER, `user_followers` INTEGER, `user_following` INTEGER, `user_createdAt` INTEGER, `user_updatedAt` INTEGER, `user_privateGists` INTEGER, `user_totalPrivateRepos` INTEGER, `user_ownedPrivateRepos` INTEGER, `user_diskUsage` INTEGER, `user_collaborators` INTEGER, `user_twoFactorAuthentication` INTEGER, `user_contributions` INTEGER, `assignee_id` INTEGER, `assignee_login` TEXT, `assignee_avatarUrl` TEXT, `assignee_gravatarId` TEXT, `assignee_url` TEXT, `assignee_htmlUrl` TEXT, `assignee_followersUrl` TEXT, `assignee_followingUrl` TEXT, `assignee_gistsUrl` TEXT, `assignee_starredUrl` TEXT, `assignee_subscriptionsUrl` TEXT, `assignee_organizationsUrl` TEXT, `assignee_reposUrl` TEXT, `assignee_eventsUrl` TEXT, `assignee_receivedEventsUrl` TEXT, `assignee_type` TEXT, `assignee_siteAdmin` INTEGER, `assignee_name` TEXT, `assignee_company` TEXT, `assignee_blog` TEXT, `assignee_location` TEXT, `assignee_email` TEXT, `assignee_hireable` INTEGER, `assignee_bio` TEXT, `assignee_publicRepos` INTEGER, `assignee_publicGists` INTEGER, `assignee_followers` INTEGER, `assignee_following` INTEGER, `assignee_createdAt` INTEGER, `assignee_updatedAt` INTEGER, `assignee_privateGists` INTEGER, `assignee_totalPrivateRepos` INTEGER, `assignee_ownedPrivateRepos` INTEGER, `assignee_diskUsage` INTEGER, `assignee_collaborators` INTEGER, `assignee_twoFactorAuthentication` INTEGER, `assignee_contributions` INTEGER, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "body",
+            "columnName": "body",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "comments",
+            "columnName": "comments",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "number",
+            "columnName": "number",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "locked",
+            "columnName": "locked",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "state",
+            "columnName": "state",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "repoUrl",
+            "columnName": "repoUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "bodyHtml",
+            "columnName": "bodyHtml",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "htmlUrl",
+            "columnName": "htmlUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "closedAt",
+            "columnName": "closedAt",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updatedAt",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "repoOwner",
+            "columnName": "repoOwner",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "repoName",
+            "columnName": "repoName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.id",
+            "columnName": "user_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.login",
+            "columnName": "user_login",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.avatarUrl",
+            "columnName": "user_avatarUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.gravatarId",
+            "columnName": "user_gravatarId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.url",
+            "columnName": "user_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.htmlUrl",
+            "columnName": "user_htmlUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.followersUrl",
+            "columnName": "user_followersUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.followingUrl",
+            "columnName": "user_followingUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.gistsUrl",
+            "columnName": "user_gistsUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.starredUrl",
+            "columnName": "user_starredUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.subscriptionsUrl",
+            "columnName": "user_subscriptionsUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.organizationsUrl",
+            "columnName": "user_organizationsUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.reposUrl",
+            "columnName": "user_reposUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.eventsUrl",
+            "columnName": "user_eventsUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.receivedEventsUrl",
+            "columnName": "user_receivedEventsUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.type",
+            "columnName": "user_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.siteAdmin",
+            "columnName": "user_siteAdmin",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.name",
+            "columnName": "user_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.company",
+            "columnName": "user_company",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.blog",
+            "columnName": "user_blog",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.location",
+            "columnName": "user_location",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.email",
+            "columnName": "user_email",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.hireable",
+            "columnName": "user_hireable",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.bio",
+            "columnName": "user_bio",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.publicRepos",
+            "columnName": "user_publicRepos",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.publicGists",
+            "columnName": "user_publicGists",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.followers",
+            "columnName": "user_followers",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.following",
+            "columnName": "user_following",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.createdAt",
+            "columnName": "user_createdAt",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.updatedAt",
+            "columnName": "user_updatedAt",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.privateGists",
+            "columnName": "user_privateGists",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.totalPrivateRepos",
+            "columnName": "user_totalPrivateRepos",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.ownedPrivateRepos",
+            "columnName": "user_ownedPrivateRepos",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.diskUsage",
+            "columnName": "user_diskUsage",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.collaborators",
+            "columnName": "user_collaborators",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.twoFactorAuthentication",
+            "columnName": "user_twoFactorAuthentication",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.contributions",
+            "columnName": "user_contributions",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.id",
+            "columnName": "assignee_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.login",
+            "columnName": "assignee_login",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.avatarUrl",
+            "columnName": "assignee_avatarUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.gravatarId",
+            "columnName": "assignee_gravatarId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.url",
+            "columnName": "assignee_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.htmlUrl",
+            "columnName": "assignee_htmlUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.followersUrl",
+            "columnName": "assignee_followersUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.followingUrl",
+            "columnName": "assignee_followingUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.gistsUrl",
+            "columnName": "assignee_gistsUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.starredUrl",
+            "columnName": "assignee_starredUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.subscriptionsUrl",
+            "columnName": "assignee_subscriptionsUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.organizationsUrl",
+            "columnName": "assignee_organizationsUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.reposUrl",
+            "columnName": "assignee_reposUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.eventsUrl",
+            "columnName": "assignee_eventsUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.receivedEventsUrl",
+            "columnName": "assignee_receivedEventsUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.type",
+            "columnName": "assignee_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.siteAdmin",
+            "columnName": "assignee_siteAdmin",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.name",
+            "columnName": "assignee_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.company",
+            "columnName": "assignee_company",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.blog",
+            "columnName": "assignee_blog",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.location",
+            "columnName": "assignee_location",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.email",
+            "columnName": "assignee_email",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.hireable",
+            "columnName": "assignee_hireable",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.bio",
+            "columnName": "assignee_bio",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.publicRepos",
+            "columnName": "assignee_publicRepos",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.publicGists",
+            "columnName": "assignee_publicGists",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.followers",
+            "columnName": "assignee_followers",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.following",
+            "columnName": "assignee_following",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.createdAt",
+            "columnName": "assignee_createdAt",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.updatedAt",
+            "columnName": "assignee_updatedAt",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.privateGists",
+            "columnName": "assignee_privateGists",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.totalPrivateRepos",
+            "columnName": "assignee_totalPrivateRepos",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.ownedPrivateRepos",
+            "columnName": "assignee_ownedPrivateRepos",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.diskUsage",
+            "columnName": "assignee_diskUsage",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.collaborators",
+            "columnName": "assignee_collaborators",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.twoFactorAuthentication",
+            "columnName": "assignee_twoFactorAuthentication",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "assignee.contributions",
+            "columnName": "assignee_contributions",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_Issue_title_user_login",
+            "unique": false,
+            "columnNames": [
+              "title",
+              "user_login"
+            ],
+            "createSql": "CREATE  INDEX `index_Issue_title_user_login` ON `${TABLE_NAME}` (`title`, `user_login`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Label",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `url` TEXT, `name` TEXT, `color` TEXT, `_default` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "color",
+            "columnName": "color",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "_default",
+            "columnName": "_default",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "IssueLabels",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `issueId` INTEGER NOT NULL, PRIMARY KEY(`id`, `issueId`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "issueId",
+            "columnName": "issueId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id",
+            "issueId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"43a19049ff224e999ecb8793226df1d4\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"e03c56e1a236c3b7e3b9e90542e84ea0\")"
     ]
   }
 }

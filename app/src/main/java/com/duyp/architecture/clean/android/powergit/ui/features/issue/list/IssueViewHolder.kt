@@ -12,7 +12,6 @@ import com.duyp.architecture.clean.android.powergit.domain.entities.IssueEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.type.IssueState
 import com.duyp.architecture.clean.android.powergit.inflate
 import com.duyp.architecture.clean.android.powergit.ui.base.adapter.BaseViewHolder
-import com.duyp.architecture.clean.android.powergit.ui.helper.PullsIssuesParser
 import com.duyp.architecture.clean.android.powergit.ui.utils.AvatarLoader
 import com.duyp.architecture.clean.android.powergit.ui.utils.ParseDateFormat
 import com.duyp.architecture.clean.android.powergit.ui.utils.UiUtils
@@ -47,15 +46,13 @@ class IssueViewHolder private constructor(
         title.text = data.title
         if (data.state != null) {
             val builder = SpannableBuilder.builder()
-            if (showRepoName && data.htmlUrl != null) {
-                val parser = PullsIssuesParser.getForIssue(data.htmlUrl!!)
-                if (parser != null)
-                    builder.bold(parser.login)
-                            .append("/")
-                            .bold(parser.repoId)
-                            .bold("#")
-                            .bold(data.number.toString()).append(" ")
-                            .append(" ")
+            if (showRepoName && data.repoName != null && data.repoOwner != null) {
+                builder.bold(data.repoOwner)
+                        .append("/")
+                        .bold(data.repoName)
+                        .bold("#")
+                        .bold(data.number.toString()).append(" ")
+                        .append(" ")
             }
             if (!showRepoName) {
                 if (data.state == IssueState.CLOSED) {
@@ -106,24 +103,28 @@ class IssueViewHolder private constructor(
         }
 
         labelContainer.removeAllViews()
-        labelContainer.visibility = if (data.labels!!.isEmpty()) View.GONE else View.VISIBLE
-        val context = labelContainer.context
-        for ((_, _, name, color) in data.labels!!) {
-            val textView = TextView(context)
-            textView.text = name
-            textView.setTextColor(Color.WHITE)
-            textView.background = UiUtils.getTintedDrawableFromColor(
-                    context.resources.getDrawable(R.drawable.bg_label),
-                    Color.parseColor("#" + color!!)
-            )
-            textView.setPadding(labelMarginHorizontal, labelMarginVertical, labelMarginHorizontal, labelMarginVertical)
+        if (data.labels != null) {
+            labelContainer.visibility = if (data.labels!!.isEmpty()) View.GONE else View.VISIBLE
+            val context = labelContainer.context
+            for ((_, _, name, color) in data.labels!!) {
+                val textView = TextView(context)
+                textView.text = name
+                textView.setTextColor(Color.WHITE)
+                textView.background = UiUtils.getTintedDrawableFromColor(
+                        context.resources.getDrawable(R.drawable.bg_label),
+                        Color.parseColor("#" + color!!)
+                )
+                textView.setPadding(labelMarginHorizontal, labelMarginVertical, labelMarginHorizontal, labelMarginVertical)
 
-            val params = LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            params.marginEnd = labelSpacing
+                val params = LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+                params.marginEnd = labelSpacing
 
-            labelContainer.addView(textView, params)
+                labelContainer.addView(textView, params)
+            }
+        } else {
+            labelContainer.visibility = View.GONE
         }
     }
 

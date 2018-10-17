@@ -18,4 +18,8 @@ import javax.inject.Singleton
 
     @Provides @Singleton fun provideRecentRepoDao(appDatabase: AppDatabase) = appDatabase.recentRepoDao()
 
+    @Provides @Singleton fun provideIssueDao(appDatabase: AppDatabase) = appDatabase.issueDao()
+
+    @Provides @Singleton fun provideLabelDao(appDatabase: AppDatabase) = appDatabase.labelDao()
+
 }

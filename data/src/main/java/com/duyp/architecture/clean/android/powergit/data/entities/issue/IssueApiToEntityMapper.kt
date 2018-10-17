@@ -36,8 +36,6 @@ class IssueApiToEntityMapper: Mapper<IssueApiData, IssueEntity>() {
         entity.closedAt = e.closedAt
         entity.createdAt = e.createdAt
         entity.updatedAt = e.updatedAt
-        entity.repoName = e.repoName
-        entity.login = e.login
         entity.user = e.user?.let { mUserApiToEntityMapper.mapFrom(it) }
         entity.assignee = e.assignee?.let { mUserApiToEntityMapper.mapFrom(it) }
         entity.closedBy = e.closedBy?.let { mUserApiToEntityMapper.mapFrom(it) }

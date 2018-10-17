@@ -1,25 +1,28 @@
 package com.duyp.architecture.clean.android.powergit.domain.entities
 
-class QueryBuilder private constructor(
+class QueryEntity private constructor(
         var type: String,
         var repo: String? = null,
+        var repoOwner: String? = null,
         var author: String? = null,
         var assignee: String? = null,
         var mentions: String? = null,
         var reviewRequested: String? = null,
         var involves: String? = null,
         var state: String? = null,
-        init: QueryBuilder.() -> Unit
+        init: QueryEntity.() -> Unit
 ) {
 
     init {
         this.init()
     }
 
-    fun build(): String {
+    override fun toString(): String {
         val sb = StringBuilder()
         sb.append("+type:$type")
-        repo?.let { sb.append("+repo:$it") }
+        if (repo != null && repoOwner != null) {
+            sb.append("+repo:$repoOwner/$repo")
+        }
         author?.let { sb.append("+author:$it") }
         assignee?.let { sb.append("+assignee:$it") }
         mentions?.let { sb.append("+mentions:$it") }
@@ -30,7 +33,10 @@ class QueryBuilder private constructor(
     }
 
     companion object {
-        fun pullRequest(init: QueryBuilder.() -> Unit) = QueryBuilder(type = "pr", init = init).build()
-        fun issue(init: QueryBuilder.() -> Unit) = QueryBuilder(type = "issue", init = init).build()
+        const val TYPE_ISSUE = "issue"
+        const val TYPE_PULL_REQUEST = "pr"
+
+        fun getPullRequestQuery(init: QueryEntity.() -> Unit) = QueryEntity(type = TYPE_PULL_REQUEST, init = init)
+        fun getIssueQuery(init: QueryEntity.() -> Unit) = QueryEntity(type = TYPE_ISSUE, init = init)
     }
 }
