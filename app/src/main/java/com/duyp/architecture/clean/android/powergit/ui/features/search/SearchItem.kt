@@ -21,7 +21,7 @@ interface SearchItem {
             val repoCount: Int = 0,
             val issueCount: Int = 0,
             val userCount: Int = 0,
-            val currentTab: Int,
+            val currentTab: SearchTab,
             val currentSearchTerm: String
     ): SearchItem {
 
@@ -29,11 +29,11 @@ interface SearchItem {
     }
 
     data class ResultHeader(
-            val pageCount: Int,
-            val loadedCount: Int,
+            val totalCount: Long,
             val loading: Boolean,
             val currentSearchTerm: String,
-            val errorMessage: String? = null
+            val errorMessage: String? = null,
+            val currentTab: SearchTab
     ): SearchItem {
 
         override fun viewType() = SearchItem.TYPE_SECTION_SEARCH_RESULT
@@ -71,16 +71,22 @@ interface SearchItem {
     
     data class SearchResultRepo(val repo: RepoEntity): SearchItem {
 
-        override fun viewType() = SearchItem.TYPE_ITEM_SEARCH_RESULT
+        override fun viewType() = SearchItem.TYPE_ITEM_SEARCH_RESULT_REPO
+    }
+
+    data class SearchResultIssue(val issue: IssueEntity): SearchItem {
+
+        override fun viewType() = SearchItem.TYPE_ITEM_SEARCH_RESULT_ISSUE
     }
 
     companion object {
         const val TYPE_SECTION_RECENT = 0
         const val TYPE_SECTION_SEARCH_RESULT = 1
         const val TYPE_ITEM_RECENT_REPO = 2
-        const val TYPE_ITEM_RECENT_ISSUE = 4
-        const val TYPE_ITEM_RECENT_USER = 5
-        const val TYPE_ITEM_SEARCH_RESULT = 3
+        const val TYPE_ITEM_RECENT_ISSUE = 3
+        const val TYPE_ITEM_RECENT_USER = 4
+        const val TYPE_ITEM_SEARCH_RESULT_REPO = 5
+        const val TYPE_ITEM_SEARCH_RESULT_ISSUE = 6
     }
 }
 
@@ -121,6 +127,9 @@ internal object SearchDiffUtils {
         if (old is SearchItem.SearchResultRepo) {
             return old.repo.id == (new as SearchItem.SearchResultRepo).repo.id
         }
+        if (old is SearchItem.SearchResultIssue) {
+            return old.issue.id == (new as SearchItem.SearchResultIssue).issue.id
+        }
         return false
     }
 
@@ -134,15 +143,18 @@ internal object SearchDiffUtils {
                     && old.currentSearchTerm == new.currentSearchTerm
         }
         if (old is SearchItem.ResultHeader) {
-            return old.pageCount == (new as SearchItem.ResultHeader).pageCount
-                    && old.loadedCount == new.loadedCount && old.loading == new.loading
-                    && old.errorMessage == new.errorMessage
+            return old.totalCount == (new as SearchItem.ResultHeader).totalCount
+                    && old.loading == new.loading && old.errorMessage == new.errorMessage
+                    && old.currentTab == new.currentTab
         }
         if (old is SearchItem.RecentRepo) {
             return old.repoId == (new as SearchItem.RecentRepo).repoId
         }
         if (old is SearchItem.SearchResultRepo) {
             return old.repo == (new as SearchItem.SearchResultRepo).repo
+        }
+        if (old is SearchItem.SearchResultIssue) {
+            return old.issue == (new as SearchItem.SearchResultIssue).issue
         }
         return false
     }

@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.View
 import com.duyp.architecture.clean.android.powergit.R
 import com.duyp.architecture.clean.android.powergit.event
+import com.duyp.architecture.clean.android.powergit.getEnum
 import com.duyp.architecture.clean.android.powergit.showToastMessage
+import com.duyp.architecture.clean.android.powergit.ui.BundleConstants
 import com.duyp.architecture.clean.android.powergit.ui.base.ViewModelFragment
 import com.duyp.architecture.clean.android.powergit.ui.utils.AvatarLoader
 import com.duyp.architecture.clean.android.powergit.ui.widgets.recyclerview.scroll.InfiniteScroller
@@ -22,7 +24,9 @@ class SearchFragment: ViewModelFragment<SearchState, SearchIntent, SearchViewMod
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val tabListener: (Int) -> Unit = {
+        mViewModel.initCurrentTab(activity?.intent?.extras?.getEnum<SearchTab>(BundleConstants.EXTRA_DATA))
+
+        val tabListener: (SearchTab) -> Unit = {
             onIntent(SearchIntent.SelectTab(it))
         }
         val reloadResultAction = {

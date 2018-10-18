@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import com.duyp.architecture.clean.android.powergit.R
 import com.duyp.architecture.clean.android.powergit.addSimpleTextChangedListener
+import com.duyp.architecture.clean.android.powergit.putEnum
+import com.duyp.architecture.clean.android.powergit.ui.BundleConstants
 import com.duyp.architecture.clean.android.powergit.ui.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_search.*
 
@@ -31,8 +33,10 @@ class SearchActivity: BaseActivity() {
     }
 
     companion object {
-        fun start(context: Context) {
-            context.startActivity(Intent(context, SearchActivity::class.java))
+        fun start(context: Context, tab: SearchTab = SearchTab.REPO) {
+            val intent = Intent(context, SearchActivity::class.java)
+            intent.putEnum(BundleConstants.EXTRA_DATA, tab)
+            context.startActivity(intent)
         }
     }
 }

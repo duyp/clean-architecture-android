@@ -9,5 +9,5 @@ class GetRecentIssue @Inject constructor(
 ) {
 
     fun getRecentIssueIds(searchTerm: String): Single<List<Long>> =
-            mIssueRepository.searchLocalIssue(searchTerm)
+            mIssueRepository.searchLocalIssues(searchTerm)
 }

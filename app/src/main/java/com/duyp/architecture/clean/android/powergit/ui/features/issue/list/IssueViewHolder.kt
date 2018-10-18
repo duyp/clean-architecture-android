@@ -15,6 +15,7 @@ import com.duyp.architecture.clean.android.powergit.ui.base.adapter.BaseViewHold
 import com.duyp.architecture.clean.android.powergit.ui.utils.AvatarLoader
 import com.duyp.architecture.clean.android.powergit.ui.utils.ParseDateFormat
 import com.duyp.architecture.clean.android.powergit.ui.utils.UiUtils
+import com.duyp.architecture.clean.android.powergit.ui.widgets.AutoLinearLayout
 import com.duyp.architecture.clean.android.powergit.ui.widgets.SpannableBuilder
 
 /**
@@ -36,7 +37,7 @@ class IssueViewHolder private constructor(
     private var title: TextView = itemView.findViewById(R.id.title)
     private var details: TextView = itemView.findViewById(R.id.details)
     private var commentsNo: TextView = itemView.findViewById(R.id.commentsNo)
-    private var labelContainer: LinearLayout = itemView.findViewById(R.id.labelContainer)
+    private var labelContainer: AutoLinearLayout = itemView.findViewById(R.id.labelContainer)
 
     private var labelMarginVertical = itemView.context.resources.getDimensionPixelOffset(R.dimen.xxx_tiny)
     private var labelMarginHorizontal = itemView.context.resources.getDimensionPixelOffset(R.dimen.xx_tiny)
@@ -104,9 +105,10 @@ class IssueViewHolder private constructor(
 
         labelContainer.removeAllViews()
         if (data.labels != null) {
-            labelContainer.visibility = if (data.labels!!.isEmpty()) View.GONE else View.VISIBLE
+            val sortedLabels = data.labels!!.sortedByDescending { it.name?.length }
+            labelContainer.visibility = if (sortedLabels.isEmpty()) View.GONE else View.VISIBLE
             val context = labelContainer.context
-            for ((_, _, name, color) in data.labels!!) {
+            for ((_, _, name, color) in sortedLabels) {
                 val textView = TextView(context)
                 textView.text = name
                 textView.setTextColor(Color.WHITE)

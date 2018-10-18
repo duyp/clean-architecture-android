@@ -2,11 +2,13 @@ package com.duyp.architecture.clean.android.powergit.ui.features.search
 
 import android.support.annotation.MainThread
 import android.support.v7.util.DiffUtil
+import com.duyp.architecture.clean.android.powergit.domain.entities.IssueEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.repo.RepoEntity
 import com.duyp.architecture.clean.android.powergit.domain.usecases.GetUser
 import com.duyp.architecture.clean.android.powergit.domain.usecases.issue.GetIssue
 import com.duyp.architecture.clean.android.powergit.domain.usecases.issue.GetRecentIssue
+import com.duyp.architecture.clean.android.powergit.domain.usecases.issue.SearchIssue
 import com.duyp.architecture.clean.android.powergit.domain.usecases.repo.GetRecentRepos
 import com.duyp.architecture.clean.android.powergit.domain.usecases.repo.GetRepo
 import com.duyp.architecture.clean.android.powergit.domain.usecases.repo.SearchPublicRepo
@@ -18,6 +20,7 @@ import com.duyp.architecture.clean.android.powergit.ui.Event
 import com.duyp.architecture.clean.android.powergit.ui.base.BaseViewModel
 import com.duyp.architecture.clean.android.powergit.ui.base.adapter.AdapterData
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -31,7 +34,8 @@ class SearchViewModel @Inject constructor(
         private val mGetRecentRepos: GetRecentRepos,
         private val mGetRecentIssue: GetRecentIssue,
         private val mGetRecentUser: GetRecentUser,
-        private val mSearchPublicRepo: SearchPublicRepo
+        private val mSearchPublicRepo: SearchPublicRepo,
+        private val mSearchIssues: SearchIssue
 ): BaseViewModel<SearchState, SearchIntent>(), AdapterData<SearchItem> {
 
     companion object {
@@ -44,7 +48,7 @@ class SearchViewModel @Inject constructor(
 
     private var mSearchTerm: String = ""
 
-    private var mCurrentTab: Int = 0
+    private var mCurrentTab: SearchTab = SearchTab.REPO
 
     private var mRecentRepoIds: List<Long> = emptyList()
 
@@ -53,6 +57,8 @@ class SearchViewModel @Inject constructor(
     private var mRecentUserIds: List<Long> = emptyList()
 
     private var mRepoSearchResult: SearchResult<RepoEntity> = SearchResult()
+
+    private var mIssueSearchResult: SearchResult<IssueEntity> = SearchResult()
 
     private var mDataList: ListEntity<SearchItem> = ListEntity()
 
@@ -77,8 +83,15 @@ class SearchViewModel @Inject constructor(
         addDisposable {
             intentSubject.ofType(SearchIntent.SelectTab::class.java)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnNext { mCurrentTab = it.tab}
-                    .process()
+                    .doOnNext { mCurrentTab = it.tab }
+                    .processDataUpdate()
+                    .switchMap {
+                        val shouldRefresh = when (mCurrentTab) {
+                            SearchTab.REPO -> mRepoSearchResult.data.items.isEmpty()
+                            else -> mIssueSearchResult.data.items.isEmpty()
+                        }
+                        return@switchMap if (shouldRefresh) loadSearchResults(true) else Observable.empty()
+                    }
                     .subscribe()
         }
 
@@ -94,8 +107,8 @@ class SearchViewModel @Inject constructor(
                     .filter { !it.term.isEmpty() }
                     .switchMap {
                         return@switchMap when (mCurrentTab) {
-                            0 -> Observable.concatArray(loadRecentRepos(), loadRecentIssues(), loadRecentUsers())
-                            1 -> Observable.concatArray(loadRecentIssues(), loadRecentRepos(), loadRecentUsers())
+                            SearchTab.REPO -> Observable.concatArray(loadRecentRepos(), loadRecentIssues(), loadRecentUsers())
+                            SearchTab.ISSUE -> Observable.concatArray(loadRecentIssues(), loadRecentRepos(), loadRecentUsers())
                             else -> Observable.concatArray(loadRecentUsers(), loadRecentRepos(), loadRecentIssues())
                         }
                     }
@@ -117,7 +130,7 @@ class SearchViewModel @Inject constructor(
         // load more search result, only for public repos, not for recent repos
         addDisposable {
             intentSubject.ofType(SearchIntent.LoadMore::class.java)
-                    .filter { !mIsLoading && mRepoSearchResult.data.canLoadMore() }
+                    .filter { !mIsLoading && getCurrentResultList().data.canLoadMore() }
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext { setState { copy(loadingMore = Event.empty()) } }
                     .switchMap { loadSearchResults(false) }
@@ -133,6 +146,10 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    fun initCurrentTab(tab: SearchTab?) {
+        mCurrentTab = tab ?: SearchTab.REPO
+    }
+
     /**
      * Load recent properties which match current search term
      */
@@ -142,7 +159,7 @@ class SearchViewModel @Inject constructor(
                 .doOnSuccess { mRecentRepoIds = it }
                 .toObservable()
                 .onErrorReturnEmptyList()
-                .process()
+                .processDataUpdate()
     }
 
     /**
@@ -154,7 +171,7 @@ class SearchViewModel @Inject constructor(
                 .doOnSuccess { mRecentIssueIds = it }
                 .toObservable()
                 .onErrorReturnEmptyList()
-                .process()
+                .processDataUpdate()
     }
 
     /**
@@ -166,7 +183,7 @@ class SearchViewModel @Inject constructor(
                 .doOnSuccess { mRecentUserIds = it }
                 .toObservable()
                 .onErrorReturnEmptyList()
-                .process()
+                .processDataUpdate()
     }
 
     /**
@@ -174,20 +191,40 @@ class SearchViewModel @Inject constructor(
      */
     private fun loadSearchResults(refresh: Boolean): Observable<out Any> {
         val currentList = if (refresh) ListEntity() else mDataList
-        return mSearchPublicRepo.search(currentList.copyWith(mRepoSearchResult.data), mSearchTerm)
+
+        return when (mCurrentTab) {
+            SearchTab.REPO -> mSearchPublicRepo.search(currentList.copyWith(mRepoSearchResult.data), mSearchTerm)
+                    .processSearch(mRepoSearchResult)
+                    .doOnNext { mRepoSearchResult = it }
+                    .processDataUpdate()
+            else -> mSearchIssues.search(currentList.copyWith(mIssueSearchResult.data), mSearchTerm)
+                    .processSearch(mIssueSearchResult)
+                    .doOnNext { mIssueSearchResult = it }
+                    .processDataUpdate()
+        }
+    }
+
+    /**
+     * Process search for repos, issues, users... with following actions:
+     * - store current search disposable
+     * - show loading prior to executing search
+     * - emit search data
+     * - handle error
+     */
+    private fun <T> Single<ListEntity<T>>.processSearch(currentResultData: SearchResult<T>):
+            Observable<SearchResult<T>> {
+        return this
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe { mSearchDisposable = it }
-                .map { mRepoSearchResult.copy(data = it, isSearching = false, error = null) }
+                .map { currentResultData.copy(data = it, isSearching = false, error = null) }
                 .toObservable()
                 .startWith {
-                    it.onNext(mRepoSearchResult.copy(isSearching = true, error = null))
+                    it.onNext(currentResultData.copy(isSearching = true, error = null))
                     it.onComplete()
                 }
                 .onErrorResumeNext { throwable: Throwable ->
-                    Observable.fromCallable { mRepoSearchResult.copy(isSearching = false, error = throwable) }
+                    Observable.fromCallable { currentResultData.copy(isSearching = false, error = throwable) }
                 }
-                .doOnNext { mRepoSearchResult = it }
-                .process()
     }
 
     /**
@@ -195,7 +232,7 @@ class SearchViewModel @Inject constructor(
      * Result of both [loadRecentRepos] and [loadSearchResults] will be mixed and process to have adapter data to be
      * rendered, as well as calculating diff result and updating state accordingly as result of the loaders
      */
-    private fun Observable<out Any>.process(): Observable<out Any> {
+    private fun Observable<out Any>.processDataUpdate(): Observable<out Any> {
         return this.doOnSubscribe {
             mIsLoading = true
         }
@@ -233,11 +270,8 @@ class SearchViewModel @Inject constructor(
             mRecentIssueIds = emptyList()
             mRecentUserIds = emptyList()
         }
-        mRepoSearchResult = SearchResult(
-                data = ListEntity(),
-                isSearching = false,
-                error = null
-        )
+        mRepoSearchResult = SearchResult()
+        mIssueSearchResult = SearchResult()
         val newList = createAdapterData()
         setState { copy(dataUpdated = Event(SearchDiffUtils.calculateDiffResult(mDataList, newList))) }
         mSearchDisposable?.dispose()
@@ -253,43 +287,74 @@ class SearchViewModel @Inject constructor(
         }
 
         when (mCurrentTab) {
-            0 -> // recent repos
+            SearchTab.REPO -> // recent repos
                 if (!mRecentRepoIds.isEmpty()) {
                     list.addAll(mRecentRepoIds.map { SearchItem.RecentRepo(it, mGetRepo) })
                 }
-            1 -> // recent issues
+            SearchTab.ISSUE -> // recent issues
                 if (!mRecentIssueIds.isEmpty()) {
                     list.addAll(mRecentIssueIds.map { SearchItem.RecentIssue(it, mGetIssue) })
                 }
-            2 -> // recent users
+            SearchTab.USER -> // recent users
                 if (!mRecentUserIds.isEmpty()) {
                     list.addAll(mRecentUserIds.map { SearchItem.RecentUser(it, mGetUser) })
                 }
         }
 
-        // search result
-        val emptyResult = mRepoSearchResult.data.items.isEmpty()
-        if (mRepoSearchResult.isSearching || mRepoSearchResult.error != null || !emptyResult) {
-            list.add(
+        val result = getCurrentResultList()
+        if (addResultHeaderIfNeeded(list, result)) {
+            list.addAll(result.data.items.map {
+                if (it is RepoEntity) {
+                    return@map SearchItem.SearchResultRepo(it)
+                }
+                return@map SearchItem.SearchResultIssue(it as IssueEntity)
+            })
+        }
+
+        return result.data.copyWith(list)
+    }
+
+    /**
+     * Add search result header into adapter data if needed
+     *
+     * @return true if the header is added
+     */
+    private fun <T> addResultHeaderIfNeeded(currentAdapterData: MutableList<SearchItem>, result: SearchResult<T>):
+            Boolean {
+        val emptyResult = result.data.items.isEmpty()
+        if (result.isSearching || result.error != null || !emptyResult) {
+            currentAdapterData.add(
                     SearchItem.ResultHeader(
-                            pageCount = mRepoSearchResult.data.getPageCount(),
-                            loadedCount = mRepoSearchResult.data.items.size,
+                            totalCount = result.data.totalCount ?: 0,
                             currentSearchTerm = mSearchTerm,
-                            loading = mRepoSearchResult.isSearching,
-                            errorMessage = mRepoSearchResult.error?.message
+                            loading = result.isSearching,
+                            errorMessage = result.error?.message,
+                            currentTab = mCurrentTab
                     )
             )
         }
-        if (!emptyResult) {
-            list.addAll(mRepoSearchResult.data.items.map { SearchItem.SearchResultRepo(it) })
-        }
-        return mRepoSearchResult.data.copyWith(list)
+        return !emptyResult
+    }
+
+    private fun getCurrentResultList() = when (mCurrentTab) {
+        SearchTab.REPO -> mRepoSearchResult
+        else -> mIssueSearchResult
+    }
+}
+
+enum class SearchTab(val position: Int) {
+    REPO(0),
+    ISSUE(1),
+    USER(2);
+
+    companion object {
+        fun of(position: Int) = SearchTab.values()[position]
     }
 }
 
 interface SearchIntent {
     data class Search(val term: String): SearchIntent
-    data class SelectTab(val tab: Int): SearchIntent
+    data class SelectTab(val tab: SearchTab): SearchIntent
     object ReloadResult: SearchIntent
     object LoadMore: SearchIntent
 }

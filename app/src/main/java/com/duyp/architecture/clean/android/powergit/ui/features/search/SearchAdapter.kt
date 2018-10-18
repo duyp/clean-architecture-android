@@ -15,7 +15,7 @@ import com.duyp.architecture.clean.android.powergit.ui.utils.AvatarLoader
 class SearchAdapter(
         adapterData: AdapterData<SearchItem>,
         private val mAvatarLoader: AvatarLoader,
-        private val mRecentTabClickListener: (Int) -> Unit,
+        private val mRecentTabClickListener: (SearchTab) -> Unit,
         private val mReloadResultAction: () -> Unit
 ): BaseAdapter<SearchItem>(adapterData) {
 
@@ -25,7 +25,8 @@ class SearchAdapter(
                 LocalHeaderViewHolder(parent.inflate(R.layout.item_search_recent_header), mRecentTabClickListener)
             SearchItem.TYPE_SECTION_SEARCH_RESULT ->
                 ResultSectionHeader(parent.inflate(R.layout.item_search_result_header), mReloadResultAction)
-            SearchItem.TYPE_ITEM_RECENT_ISSUE -> IssueViewHolder.newInstance(parent, mAvatarLoader, true, true, true)
+            SearchItem.TYPE_ITEM_RECENT_ISSUE, SearchItem.TYPE_ITEM_SEARCH_RESULT_ISSUE ->
+                IssueViewHolder.newInstance(parent, mAvatarLoader, true, true, true)
             else -> RepoViewHolder.instanceWithAvatar(parent, mAvatarLoader)
         }
     }
@@ -52,9 +53,14 @@ class SearchAdapter(
                     }
                 }
             }
-            SearchItem.TYPE_ITEM_SEARCH_RESULT -> {
+            SearchItem.TYPE_ITEM_SEARCH_RESULT_REPO -> {
                 mData.getItemAtPosition(position)?.let {
                     (holder as RepoViewHolder).bindData((it as SearchItem.SearchResultRepo).repo)
+                }
+            }
+            SearchItem.TYPE_ITEM_SEARCH_RESULT_ISSUE -> {
+                mData.getItemAtPosition(position)?.let {
+                    (holder as IssueViewHolder).bindData((it as SearchItem.SearchResultIssue).issue)
                 }
             }
         }
@@ -76,7 +82,7 @@ class SearchAdapter(
 
     class LocalHeaderViewHolder(
             itemView: View,
-            private val mRecentTabClickListener: (Int) -> Unit
+            private val mRecentTabClickListener: (SearchTab) -> Unit
     ): RecyclerView.ViewHolder(itemView) {
 
         private val mTvNoData = itemView.findViewById<TextView>(R.id.tvNoData)!!
@@ -89,7 +95,7 @@ class SearchAdapter(
 
         init {
             tvs.forEachIndexed { index, textView ->
-                textView.setOnClickListener { mRecentTabClickListener(index) }
+                textView.setOnClickListener { mRecentTabClickListener(SearchTab.of(index)) }
             }
         }
 
@@ -97,47 +103,45 @@ class SearchAdapter(
             val newTab = newItem.currentTab
             val tabChanged = oldItem != null && oldItem.currentTab != newTab
             if (tabChanged) {
-                val oldTab = oldItem?.currentTab ?: 0
-                tvs[oldTab].text = getCountText(oldTab, newItem)
-                tvs[newTab].startExpandingAnimation(getTitle(newTab), 150)
+                val oldTab = oldItem!!.currentTab
+                tvs[oldTab.position].text = getCountText(oldTab, newItem)
+                tvs[newTab.position].startExpandingAnimation(getTitle(newTab), 150)
             } else {
                 // invalidate tabs
-                tvs.forEachIndexed { index, textView -> textView.text = getCountText(index, newItem) }
-                tvs[newTab].text = getTitle(newTab)
+                tvs.forEachIndexed { index, textView -> textView.text = getCountText(SearchTab.of(index), newItem) }
+                tvs[newTab.position].text = getTitle(newTab)
             }
 
             // invalidate no data text
             when (newTab) {
-                0 -> {
+                SearchTab.REPO -> {
                     mTvNoData.visibility = if (newItem.repoCount > 0) View.GONE else View.VISIBLE
                     setNoDataText("No recent repos", newItem.currentSearchTerm)
                 }
-                1 -> {
+                SearchTab.ISSUE -> {
                     mTvNoData.visibility = if (newItem.issueCount > 0) View.GONE else View.VISIBLE
                     setNoDataText("No recent issues", newItem.currentSearchTerm)
                 }
-                2 -> {
+                SearchTab.USER -> {
                     mTvNoData.visibility = if (newItem.userCount > 0) View.GONE else View.VISIBLE
                     setNoDataText("No recent users", newItem.currentSearchTerm)
                 }
             }
         }
 
-        private fun getCountText(tab: Int, item: SearchItem.RecentHeader): String {
+        private fun getCountText(tab: SearchTab, item: SearchItem.RecentHeader): String {
             val count = when (tab) {
-                0 -> item.repoCount
-                1 -> item.issueCount
-                2 -> item.userCount
-                else -> 0
+                SearchTab.REPO -> item.repoCount
+                SearchTab.ISSUE -> item.issueCount
+                SearchTab.USER -> item.userCount
             }
             return if (count > 0) "($count)" else ""
         }
 
-        private fun getTitle(tab: Int) = when(tab) {
-            0 -> "Recent repos"
-            1 -> "Recent issues"
-            2 -> "Recent users"
-            else -> ""
+        private fun getTitle(tab: SearchTab) = when(tab) {
+            SearchTab.REPO -> "Recent repos"
+            SearchTab.ISSUE -> "Recent issues"
+            SearchTab.USER -> "Recent users"
         }
 
         private fun setNoDataText(prefix: String, searchTerm: String) {
@@ -167,11 +171,16 @@ class SearchAdapter(
             }
             if (!item.loading && item.errorMessage.nullOrEmpty()) {
                 mTvTitle.setVisible(true)
-                mTvTitle.text = "Public repos match \"${item.currentSearchTerm}\"\n" +
-                        "(${item.pageCount} pages, ${item.loadedCount} shown)"
+                mTvTitle.text = "Public ${getTabText(item.currentTab)} match \"${item.currentSearchTerm}\" (${item.totalCount})"
             } else {
                 mTvTitle.setVisible(false)
             }
+        }
+
+        private fun getTabText(tab: SearchTab) = when (tab) {
+            SearchTab.REPO -> "repos"
+            SearchTab.ISSUE -> "issues"
+            SearchTab.USER -> "users"
         }
     }
 }

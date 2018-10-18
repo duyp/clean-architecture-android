@@ -1,10 +1,12 @@
 package com.duyp.architecture.clean.android.powergit.data.repositories
 
 import com.duyp.architecture.clean.android.powergit.data.api.IssueService
+import com.duyp.architecture.clean.android.powergit.data.api.SearchService
 import com.duyp.architecture.clean.android.powergit.data.database.IssueDao
 import com.duyp.architecture.clean.android.powergit.data.database.LabelDao
 import com.duyp.architecture.clean.android.powergit.data.entities.issue.IssueApiToLocalMapper
 import com.duyp.architecture.clean.android.powergit.data.entities.issue.IssueListApiToEntityMapper
+import com.duyp.architecture.clean.android.powergit.data.entities.issue.IssueListApiToIdMapper
 import com.duyp.architecture.clean.android.powergit.data.entities.issue.IssueLocalToEntityMapper
 import com.duyp.architecture.clean.android.powergit.data.entities.label.IssueLabelsLocalData
 import com.duyp.architecture.clean.android.powergit.data.entities.label.LabelApiToLocalMapper
@@ -19,9 +21,12 @@ import javax.inject.Inject
 
 class IssueRepositoryImpl @Inject constructor(
         private val mIssueService: IssueService,
+        private val mSearchService: SearchService,
         private val mIssueDao: IssueDao,
         private val mLabelDao: LabelDao
 ): IssueRepository {
+
+    private val mIssueListApiToIdMapper = IssueListApiToIdMapper()
 
     private val mIssueListApiToEntityMapper = IssueListApiToEntityMapper()
 
@@ -48,7 +53,7 @@ class IssueRepositoryImpl @Inject constructor(
                         }
                     }
                 }
-                .map { mIssueListApiToEntityMapper.mapFrom(it) }
+                .map { mIssueListApiToIdMapper.mapFrom(it) }
                 .onErrorResumeNext { throwable ->
                     if (page == ListEntity.STARTING_PAGE && query.type == QueryEntity.TYPE_ISSUE) {
                         var local: Single<List<Long>>? = null
@@ -71,7 +76,12 @@ class IssueRepositoryImpl @Inject constructor(
                 }
     }
 
-    override fun searchLocalIssue(searchTerm: String): Single<List<Long>> {
+    override fun searchIssues(searchTerm: String, page: Int): Single<ListEntity<IssueEntity>> {
+        return mSearchService.searchIssues(searchTerm, page)
+                .map { mIssueListApiToEntityMapper.mapFrom(it) }
+    }
+
+    override fun searchLocalIssues(searchTerm: String): Single<List<Long>> {
         return mIssueDao.searchByTitle("%$searchTerm%")
     }
 

@@ -16,6 +16,10 @@ data class ListEntity<T> (
 
         private val last: Int? = null,
 
+        var totalCount: Long? = null,
+
+        var incompleteResults: Boolean? = null,
+
         val items: List<T> = emptyList(),
 
         val isOfflineData: Boolean = false,

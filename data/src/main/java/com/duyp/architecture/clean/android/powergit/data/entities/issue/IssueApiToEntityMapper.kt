@@ -5,6 +5,7 @@ import com.duyp.architecture.clean.android.powergit.data.entities.milestone.Mile
 import com.duyp.architecture.clean.android.powergit.data.entities.pullrequest.PullRequestApiToEntityMapper
 import com.duyp.architecture.clean.android.powergit.data.entities.reaction.ReactionsApiToEntityMapper
 import com.duyp.architecture.clean.android.powergit.data.entities.user.UserApiToEntityMapper
+import com.duyp.architecture.clean.android.powergit.data.utils.PullsIssuesParser
 import com.duyp.architecture.clean.android.powergit.domain.entities.IssueEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.Mapper
 
@@ -45,6 +46,12 @@ class IssueApiToEntityMapper: Mapper<IssueApiData, IssueEntity>() {
         entity.repository = e.repository
         entity.pullRequest = e.pullRequest?.let { mPullRequestApiToEntityMapper.mapFrom(it) }
         entity.reactions = e.reactions?.let { mReactionsApiToEntityMapper.mapFrom(it) }
+        e.htmlUrl?.let { url ->
+            PullsIssuesParser.getForIssue(url)?.also {
+                entity.repoName = it.repoId
+                entity.repoOwner = it.login
+            }
+        }
         return entity
     }
 }
