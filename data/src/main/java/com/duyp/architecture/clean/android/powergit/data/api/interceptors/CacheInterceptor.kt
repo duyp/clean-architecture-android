@@ -17,10 +17,6 @@ import java.util.concurrent.TimeUnit
 class CacheInterceptor(private val mRequestAnnotations: RequestAnnotations) : Interceptor {
 
     companion object {
-        val DEFAULT_CACHE_CONTROL = CacheControl.Builder()
-                .maxAge(30, TimeUnit.SECONDS)
-                .build()
-                .toString()
         val NO_CACHE_CONTROL = CacheControl.FORCE_NETWORK.toString()
     }
 
@@ -31,7 +27,7 @@ class CacheInterceptor(private val mRequestAnnotations: RequestAnnotations) : In
 
         // force network request in case request is annotated with @NoCache
         val noCache = mRequestAnnotations.isNoCache(request)
-        val forceCache = mRequestAnnotations.isForceCache(request)
+        val cache = mRequestAnnotations.getCache(request)
 
         // request
         if (noCache) {
@@ -45,23 +41,29 @@ class CacheInterceptor(private val mRequestAnnotations: RequestAnnotations) : In
             return response.newBuilder()
                     .header(KEY_CACHE_CONTROL, NO_CACHE_CONTROL)
                     .build()
-        } else if (forceCache) {
-            // remove unnecessary headers
-            return response.newBuilder()
-                    .removeHeader("keep-alive")
-                    .removeHeader("connection")
-                    .removeHeader("rtss")
-                    .removeHeader("sess-id")
-                    .removeHeader("vary")
-                    .removeHeader("x-robots-tag")
-                    .removeHeader("Pragma")
-                    .removeHeader("ETag")
-                    .removeHeader("Expires")
-                    // rewrite cache control from network response (MUST ADD TO NETWORK INTERCEPTORS)
-                    .header(ApiConstants.Headers.KEY_CACHE_CONTROL, DEFAULT_CACHE_CONTROL)
-                    .build()
-        } else {
-            return response
+        } else if (cache != null) {
+            val responseCacheControl = response.header("Cache-Control")
+            if (responseCacheControl?.contains("no-cache") == true) {
+                val cacheControl = CacheControl.Builder()
+                        .maxAge(cache.maxAge, TimeUnit.SECONDS)
+                        .build()
+                        .toString()
+                // remove unnecessary headers to prevent conflicts with Cache-Control
+                return response.newBuilder()
+                        .removeHeader("keep-alive")
+                        .removeHeader("connection")
+                        .removeHeader("rtss")
+                        .removeHeader("sess-id")
+                        .removeHeader("vary")
+                        .removeHeader("x-robots-tag")
+                        .removeHeader("Pragma")
+                        .removeHeader("ETag")
+                        .removeHeader("Expires")
+                        // rewrite cache control from network response (MUST ADD TO NETWORK INTERCEPTORS)
+                        .header(ApiConstants.Headers.KEY_CACHE_CONTROL, cacheControl)
+                        .build()
+            }
         }
+        return response
     }
 }

@@ -16,4 +16,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  */
 @Target({METHOD})
 @Retention(RUNTIME)
-public @interface ForceCache {}
+public @interface Cache {
+
+    /**
+     * specify max-age value for the cache control header. This means the request will be cached for maximum 30
+     * seconds by default
+     */
+    int maxAge() default 30;
+}
