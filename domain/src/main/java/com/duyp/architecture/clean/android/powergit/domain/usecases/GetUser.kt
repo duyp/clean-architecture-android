@@ -3,16 +3,13 @@ package com.duyp.architecture.clean.android.powergit.domain.usecases
 import com.duyp.architecture.clean.android.powergit.domain.entities.Optional
 import com.duyp.architecture.clean.android.powergit.domain.entities.UserEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.exception.AuthenticationException
-import com.duyp.architecture.clean.android.powergit.domain.repositories.AuthenticationRepository
 import com.duyp.architecture.clean.android.powergit.domain.repositories.SettingRepository
 import com.duyp.architecture.clean.android.powergit.domain.repositories.UserRepository
-import com.duyp.architecture.clean.android.powergit.domain.utils.CommonUtil
 import io.reactivex.Flowable
 import io.reactivex.Single
 import javax.inject.Inject
 
 class GetUser @Inject constructor(
-        private val mAuthenticationRepository: AuthenticationRepository,
         private val mCheckUser: CheckUser,
         private val mSettingRepository: SettingRepository,
         private val mUserRepository: UserRepository
@@ -54,20 +51,12 @@ class GetUser @Inject constructor(
      */
     fun getLastLoggedInUsername() = mSettingRepository.getLastLoggedInUsername()
 
-    fun getUser(id: Long): Single<Optional<UserEntity>> = Single.just(Optional.empty())
-
     /**
-     * Get all users in account manager which have authentication saved. This is used for checking if we have some
-     * users saved in account managers but don't have any indicator in the app about their existing (in case of
-     * user cleared app data)
-     *
-     * @return all username
+     * Get an [Optional] of [UserEntity] by given user id
      */
-    fun getAuthenticatedUsersInAccountManager(): Single<List<String>> =
-            mAuthenticationRepository.getAllAccounts()
-                    .flattenAsObservable { it }
-                    // only get authenticated users (have token saved)
-                    .filter { !CommonUtil.isEmpty(it, mAuthenticationRepository.getAuthentication(it)) }
-                    .toList()
-                    .onErrorReturnItem(emptyList())
+    fun getUser(id: Long): Single<Optional<UserEntity>> =
+            mUserRepository.getUserById(id)
+                    .map { Optional.of(it) }
+                    .toSingle(Optional.empty())
+                    .onErrorReturnItem(Optional.empty())
 }

@@ -8,6 +8,7 @@ import com.duyp.architecture.clean.android.powergit.domain.entities.UserEntity
 import com.duyp.architecture.clean.android.powergit.domain.repositories.UserRepository
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Maybe
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -38,4 +39,8 @@ class UserRepositoryImpl @Inject constructor(
                 .map { mUserLocalToEntityMapper.mapFrom(it) }
     }
 
+    override fun getUserById(id: Long): Maybe<UserEntity> {
+        return mUserDao.getUserMaybe(id)
+                .map { mUserLocalToEntityMapper.mapFrom(it) }
+    }
 }

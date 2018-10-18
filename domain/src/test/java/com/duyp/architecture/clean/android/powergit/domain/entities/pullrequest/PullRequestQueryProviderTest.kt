@@ -14,36 +14,42 @@ class PullRequestQueryProviderTest {
     @Test
     fun getPullRequestQueryTest() {
         getPullRequestQuery("duyp", "clean-architecture", PullRequestState.CLOSED)
+                .toString()
                 .assertEquals("+type:pr+repo:duyp/clean-architecture+is:closed")
     }
 
     @Test
     fun getMyPullRequestQueryTest() {
         getMyPullRequestQuery("duyp", PullRequestState.OPEN)
+                .toString()
                 .assertEquals("+type:pr+author:duyp+is:open")
     }
 
     @Test
     fun getAssignedPullRequestQueryTest() {
         getAssignedPullRequestQuery("duyp", PullRequestState.ALL)
+                .toString()
                 .assertEquals("+type:pr+assignee:duyp+is:all")
     }
 
     @Test
     fun getMentionedPullRequestQueryTest() {
         getMentionedPullRequestQuery("duyp", PullRequestState.OPEN)
+                .toString()
                 .assertEquals("+type:pr+mentions:duyp+is:open")
     }
 
     @Test
     fun getReviewRequestsPullRequestQueryTest() {
         getReviewRequestedPullRequestQuery("duyp", PullRequestState.OPEN)
+                .toString()
                 .assertEquals("+type:pr+review-requested:duyp+is:open")
     }
 
     @Test
     fun getParticipatedPullRequestQueryTest() {
         getParticipatedPullRequestQuery("duyp", PullRequestState.ALL)
+                .toString()
                 .assertEquals("+type:pr+involves:duyp+is:all")
     }
 }

@@ -3,6 +3,7 @@ package com.duyp.architecture.clean.android.powergit.domain.repositories
 import com.duyp.architecture.clean.android.powergit.domain.entities.UserEntity
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Maybe
 import io.reactivex.Single
 
 interface UserRepository {
@@ -25,4 +26,11 @@ interface UserRepository {
      * @return Flowable emitting user entity whenever user's data changed
      */
     fun getUser(username: String) : Flowable<UserEntity>
+
+    /**
+     * Get [Maybe] of an user by given [id]
+     *
+     * @return complete if no user
+     */
+    fun getUserById(id: Long): Maybe<UserEntity>
 }
