@@ -31,7 +31,7 @@ class AuthorizationInterceptor(
         val header = request.header(KEY_AUTHORIZATION)
         if (TextUtils.isEmpty(header)) {
             authType?.let {
-                mTokenProducer.invoke(authType)?.let { requestBuilder.addHeader(KEY_AUTHORIZATION, it) }
+                mTokenProducer.invoke(authType)?.let { token -> requestBuilder.addHeader(KEY_AUTHORIZATION, token) }
             }
         }
 

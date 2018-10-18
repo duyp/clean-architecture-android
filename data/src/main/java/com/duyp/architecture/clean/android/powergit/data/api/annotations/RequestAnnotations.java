@@ -66,11 +66,11 @@ public class RequestAnnotations {
     // =================================================================================================================
 
     /**
-     * Mark a given request as no cache, see {@link ForceCache}
+     * Mark a given request as no cache, see {@link Cache}
      * @param request request
      */
-    void registerForceCache(final Request request) {
-        getRequestValues(request, true).put(KEY_FORCE_CACHE, Boolean.TRUE);
+    void registerCache(final Request request, final Cache cache) {
+        getRequestValues(request, true).put(KEY_FORCE_CACHE, cache);
     }
 
     /**
@@ -78,8 +78,13 @@ public class RequestAnnotations {
      * @param request request to be checked
      * @return true if is no cache request, otherwise fail
      */
-    public boolean isForceCache(final Request request) {
-        return getRequestValues(request, false).get(KEY_FORCE_CACHE) != null;
+    @Nullable
+    public Cache getCache(final Request request) {
+        Object obj = getRequestValues(request, false).get(KEY_FORCE_CACHE);
+        if (obj instanceof Cache) {
+            return (Cache) obj;
+        }
+        return null;
     }
 
     // =================================================================================================================

@@ -1,5 +1,7 @@
 package com.duyp.architecture.clean.android.powergit.data.api.annotations;
 
+import android.support.annotation.Nullable;
+
 import java.lang.annotation.Annotation;
 
 class AnnotationUtils {
@@ -35,16 +37,16 @@ class AnnotationUtils {
         return false;
     }
 
-    static boolean isForceCache(final Annotation[] annotations) {
+    @Nullable static Cache getCache(final Annotation[] annotations) {
         if(annotations == null)
-            return false;
+            return null;
 
         for(final Annotation annotation : annotations) {
-            if(annotation.annotationType().equals(ForceCache.class))
-                return true;
+            if(annotation.annotationType().equals(Cache.class))
+                return (Cache) annotation;
         }
 
-        return false;
+        return null;
     }
 
     static boolean isPlainRequest(final Annotation[] annotations) {
