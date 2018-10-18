@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.duyp.architecture.clean.android.powergit.R
 import com.duyp.architecture.clean.android.powergit.event
+import com.duyp.architecture.clean.android.powergit.setDefaultElevation
 import com.duyp.architecture.clean.android.powergit.showToastMessage
 import com.duyp.architecture.clean.android.powergit.ui.base.adapter.AdapterData
 import com.duyp.architecture.clean.android.powergit.ui.base.adapter.BaseAdapter
@@ -98,12 +99,30 @@ abstract class ListFragment<
         }
     }
 
-    protected fun showErrorMessage(message: String) {
+    open protected fun showErrorMessage(message: String) {
         showToastMessage(message)
     }
 
-    protected fun onLoadingMore() {
+    open protected fun onLoadingMore() {
         mInfiniteScroller.setLoading()
+    }
+
+    open protected fun updateOfflineNotice(showIt: Boolean) {
+        tvOfflineNotice.visibility = if (showIt) View.VISIBLE else View.GONE
+        tvOfflineNotice.setDefaultElevation(showIt)
+    }
+
+    open protected fun updateEmptyView(showIt: Boolean) {
+        if (recyclerView == null || stateLayout == null)
+            return
+
+        if (showIt) {
+            recyclerView.visibility = View.GONE
+            stateLayout.visibility = View.VISIBLE
+        } else {
+            recyclerView.visibility = View.VISIBLE
+            stateLayout.visibility = View.GONE
+        }
     }
 
     private fun refresh() {
@@ -122,23 +141,6 @@ abstract class ListFragment<
     private fun setUiRefreshing(refreshing: Boolean) {
         refreshLayout?.post {
             refreshLayout?.isRefreshing = refreshing
-        }
-    }
-
-    protected fun updateOfflineNotice(showIt: Boolean) {
-        tvOfflineNotice.visibility = if (showIt) View.VISIBLE else View.GONE
-    }
-
-    protected fun updateEmptyView(showIt: Boolean) {
-        if (recyclerView == null || stateLayout == null)
-            return
-
-        if (showIt) {
-            recyclerView.visibility = View.GONE
-            stateLayout.visibility = View.VISIBLE
-        } else {
-            recyclerView.visibility = View.VISIBLE
-            stateLayout.visibility = View.GONE
         }
     }
 }

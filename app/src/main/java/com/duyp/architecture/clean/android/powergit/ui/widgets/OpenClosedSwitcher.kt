@@ -55,6 +55,8 @@ class OpenClosedSwitcher : LinearLayout {
         val new = if (mIsOpen) mTvOpen else mTvClosed
         val old = if (!mIsOpen) mTvOpen else mTvClosed
         new.setTypeface(new.typeface, Typeface.BOLD)
+        new.setTextColor(resources.getColor(R.color.anthracite))
         old.setTypeface(old.typeface, Typeface.NORMAL)
+        old.setTextColor(resources.getColor(R.color.grey))
     }
 }

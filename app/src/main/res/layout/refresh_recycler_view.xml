@@ -13,9 +13,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/tvOfflineNotice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bright_red"
+            android:layout_alignParentTop="true"
+            android:padding="@dimen/xxx_tiny"
+            android:text="@string/offline_data"
+            android:textSize="@dimen/text_small"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
         <com.duyp.architecture.clean.android.powergit.ui.widgets.recyclerview.DynamicRecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@id/tvOfflineNotice"
             app:layoutManager="@string/linear_layout_manager"
             android:id="@+id/recyclerView"/>
 
@@ -34,18 +49,6 @@
             android:layout_alignBottom="@+id/recyclerView"
             android:layout_alignParentEnd="true"
             android:layout_alignTop="@+id/recyclerView"/>
-
-        <TextView
-            android:id="@+id/tvOfflineNotice"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/regular"
-            android:background="@color/bright_red_80"
-            android:text="@string/offline_data"
-            android:textSize="@dimen/text_small"
-            android:textColor="@color/white"
-            android:gravity="center"
-            android:visibility="gone"
-            android:layout_alignParentTop="true"/>
     </RelativeLayout>
 
 </android.support.v4.widget.SwipeRefreshLayout>

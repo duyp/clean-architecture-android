@@ -46,16 +46,18 @@ class IssueListFragment: ListFragment<IssueEntity, Long, IssueAdapter, IssueList
         super.onViewCreated(view, savedInstanceState)
         header.setDefaultElevation(true)
 
-        // spinner
-        ArrayAdapter(
-                context,
-                R.layout.item_my_issue_spinner,
-                MyIssueType.listStringIds().map { context!!.getString(it) }
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            typeSpinner.adapter = adapter
-            typeSpinner.addSimpleOnItemSelectedListener { _, _, position, _ ->
-                onIntent(IssueListIntent.MyIssueTypeSelected(MyIssueType.of(position)))
+        if (mViewModel.listType == IssueListType.USER_ISSUES) {
+            // spinner
+            ArrayAdapter(
+                    context,
+                    R.layout.item_my_issue_spinner,
+                    MyIssueType.listStringIds().map { context!!.getString(it) }
+            ).also { adapter ->
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                typeSpinner.adapter = adapter
+                typeSpinner.addSimpleOnItemSelectedListener { _, _, position, _ ->
+                    onIntent(IssueListIntent.MyIssueTypeSelected(MyIssueType.of(position)))
+                }
             }
         }
 
@@ -70,4 +72,9 @@ class IssueListFragment: ListFragment<IssueEntity, Long, IssueAdapter, IssueList
     }
 
     override fun getLayoutResource() = R.layout.fragment_user_issue_list
+
+    override fun updateOfflineNotice(showIt: Boolean) {
+        super.updateOfflineNotice(showIt)
+        header.setDefaultElevation(!showIt)
+    }
 }
