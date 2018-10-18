@@ -1,11 +1,13 @@
 package com.duyp.architecture.clean.android.powergit.ui.features.issue.list
 
 import android.graphics.Color
+import android.support.v4.graphics.ColorUtils
 import android.support.v7.widget.AppCompatImageView
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import com.duyp.architecture.clean.android.powergit.R
 import com.duyp.architecture.clean.android.powergit.domain.entities.IssueEntity
@@ -39,7 +41,7 @@ class IssueViewHolder private constructor(
     private var commentsNo: TextView = itemView.findViewById(R.id.commentsNo)
     private var labelContainer: AutoLinearLayout = itemView.findViewById(R.id.labelContainer)
 
-    private var labelMarginVertical = itemView.context.resources.getDimensionPixelOffset(R.dimen.xxx_tiny)
+    private var labelMarginVertical = itemView.context.resources.getDimensionPixelOffset(R.dimen.one)
     private var labelMarginHorizontal = itemView.context.resources.getDimensionPixelOffset(R.dimen.xx_tiny)
     private var labelSpacing = itemView.context.resources.getDimensionPixelOffset(R.dimen.xxx_tiny)
 
@@ -110,18 +112,21 @@ class IssueViewHolder private constructor(
             val context = labelContainer.context
             for ((_, _, name, color) in sortedLabels) {
                 val textView = TextView(context)
+                val bgColor = Color.parseColor("#" + color!!)
+                val textColor = if (ColorUtils.calculateLuminance(bgColor) < 0.5) Color.WHITE else Color.BLACK
                 textView.text = name
-                textView.setTextColor(Color.WHITE)
+                textView.setTextColor(textColor)
                 textView.background = UiUtils.getTintedDrawableFromColor(
                         context.resources.getDrawable(R.drawable.bg_label),
-                        Color.parseColor("#" + color!!)
+                        bgColor
                 )
-                textView.setPadding(labelMarginHorizontal, labelMarginVertical, labelMarginHorizontal, labelMarginVertical)
+                textView.gravity = Gravity.CENTER
+                textView.setPadding(labelMarginHorizontal, 0, labelMarginHorizontal, labelMarginVertical)
 
-                val params = LinearLayout.LayoutParams(
+                val params = FrameLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
                 )
-                params.marginEnd = labelSpacing
+                params.setMargins(0, labelSpacing, labelSpacing, 0)
 
                 labelContainer.addView(textView, params)
             }

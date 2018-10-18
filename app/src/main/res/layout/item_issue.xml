@@ -6,19 +6,19 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingBottom="@dimen/small"
-        android:paddingEnd="@dimen/regular"
+        android:paddingEnd="@dimen/small"
+        android:paddingStart="@dimen/small"
         android:paddingTop="@dimen/small"
         android:foreground="?android:selectableItemBackground">
 
     <FrameLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/small">
 
         <com.mikhaellopez.circularimageview.CircularImageView
             style="@style/avatar_circle"
             android:id="@+id/avatarLayout"
-            android:layout_marginEnd="@dimen/regular"
-            android:layout_marginStart="@dimen/regular"
             android:visibility="gone"
             tools:visibility="visible"/>
 
@@ -27,7 +27,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            android:layout_marginEnd="@dimen/tiny"
             android:visibility="gone"
             tools:visibility="visible"
             tools:src="@drawable/ic_issue_closed_small"/>
@@ -62,7 +61,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:layout_marginTop="@dimen/xx_tiny"
-                tools:text="1000"/>
+                tools:text="This is issue detail"/>
 
             <TextView
                 android:id="@+id/commentsNo"
