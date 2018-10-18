@@ -40,6 +40,7 @@ class IssueViewHolder private constructor(
     private var details: TextView = itemView.findViewById(R.id.details)
     private var commentsNo: TextView = itemView.findViewById(R.id.commentsNo)
     private var labelContainer: AutoLinearLayout = itemView.findViewById(R.id.labelContainer)
+    private var tvProgress: TextView = itemView.findViewById(R.id.tvProgress)
 
     private var labelMarginVertical = itemView.context.resources.getDimensionPixelOffset(R.dimen.one)
     private var labelMarginHorizontal = itemView.context.resources.getDimensionPixelOffset(R.dimen.xx_tiny)
@@ -132,6 +133,15 @@ class IssueViewHolder private constructor(
             }
         } else {
             labelContainer.visibility = View.GONE
+        }
+
+        data.checkListInfo?.let {
+            if (it.total > 0) {
+                tvProgress.visibility = View.VISIBLE
+                tvProgress.text = "${it.done} / ${it.total}"
+            } else {
+                tvProgress.visibility = View.GONE
+            }
         }
     }
 

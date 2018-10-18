@@ -1,5 +1,6 @@
 package com.duyp.architecture.clean.android.powergit.domain.entities
 
+import com.duyp.architecture.clean.android.powergit.domain.entities.issue.IssueCheckListInfo
 import com.duyp.architecture.clean.android.powergit.domain.entities.repo.RepoEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.type.IssueState
 import java.util.*
@@ -55,5 +56,7 @@ data class IssueEntity(
 
         var pullRequest: PullRequestEntity? = null,
 
-        var reactions: ReactionsEntity? = null
+        var reactions: ReactionsEntity? = null,
+
+        var checkListInfo: IssueCheckListInfo? = null
 )
