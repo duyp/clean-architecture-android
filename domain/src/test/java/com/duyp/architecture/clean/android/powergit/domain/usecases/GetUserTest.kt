@@ -2,7 +2,6 @@ package com.duyp.architecture.clean.android.powergit.domain.usecases
 
 import com.duyp.architecture.clean.android.powergit.domain.entities.UserEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.exception.AuthenticationException
-import com.duyp.architecture.clean.android.powergit.domain.repositories.AuthenticationRepository
 import com.duyp.architecture.clean.android.powergit.domain.repositories.SettingRepository
 import com.duyp.architecture.clean.android.powergit.domain.repositories.UserRepository
 import com.nhaarman.mockitokotlin2.any
@@ -10,13 +9,12 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Flowable
+import io.reactivex.Maybe
 import io.reactivex.Single
 import org.junit.Test
 import org.mockito.Mock
 
 class GetUserTest: UseCaseTest<GetUser>() {
-
-    @Mock private lateinit var mAuthenticationRepository: AuthenticationRepository
 
     @Mock private lateinit var mCheckUser: CheckUser
 
@@ -25,7 +23,7 @@ class GetUserTest: UseCaseTest<GetUser>() {
     @Mock private lateinit var mUserRepository: UserRepository
 
     override fun createUseCase(): GetUser {
-        return GetUser(mAuthenticationRepository, mCheckUser, mSettingRepository, mUserRepository)
+        return GetUser(mCheckUser, mSettingRepository, mUserRepository)
     }
 
     @Test fun getCurrentLoggedInUsername_hasCurrentUser_isLoggedIn() {
@@ -83,6 +81,33 @@ class GetUserTest: UseCaseTest<GetUser>() {
                 .test()
                 .assertError(AuthenticationException::class.java)
         verifyZeroInteractions(mUserRepository)
+    }
+
+    @Test fun getUserById_noUser_shouldReturnEmpty() {
+        whenever(mUserRepository.getUserById(any())).thenReturn(Maybe.empty())
+
+        mUsecase.getUser(1)
+                .test()
+                .assertValue { !it.isPresent }
+                .assertNoErrors()
+    }
+
+    @Test fun getUserById_error_shouldReturnEmpty() {
+        whenever(mUserRepository.getUserById(any())).thenReturn(Maybe.error(Exception()))
+
+        mUsecase.getUser(1)
+                .test()
+                .assertValue { !it.isPresent }
+                .assertNoErrors()
+    }
+
+    @Test fun getUserById_hasUser() {
+        whenever(mUserRepository.getUserById(any())).thenReturn(Maybe.just(UserEntity(id = 1, login = "duyp")))
+
+        mUsecase.getUser(1)
+                .test()
+                .assertValue { it.isPresent && it.get().id == 1L && it.get().login!!.equals("duyp") }
+                .assertNoErrors()
     }
 
 }
