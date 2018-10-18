@@ -10,6 +10,7 @@ class QueryEntity private constructor(
         var reviewRequested: String? = null,
         var involves: String? = null,
         var state: String? = null,
+        var searchTerm: String? = null,
         init: QueryEntity.() -> Unit
 ) {
 
@@ -28,7 +29,8 @@ class QueryEntity private constructor(
         mentions?.let { sb.append("+mentions:$it") }
         reviewRequested?.let { sb.append("+review-requested:$it") }
         involves?.let { sb.append("+involves:$it") }
-        state.let { sb.append("+is:$it") }
+        state?.let { sb.append("+is:$it") }
+        searchTerm?.let { sb.append("+$it") }
         return sb.toString()
     }
 

@@ -16,9 +16,9 @@ interface IssueRepository {
     fun getIssueList(query: QueryEntity, page: Int): Single<ListEntity<Long>>
 
     /**
-     * Search public issues on github with given [searchTerm] and [page]
+     * Search public issues on github with given [query] and [page]
      */
-    fun searchIssues(searchTerm: String, page: Int): Single<ListEntity<IssueEntity>>
+    fun searchIssues(query: QueryEntity, page: Int): Single<ListEntity<IssueEntity>>
 
     /**
      * Search issue stored locally in database

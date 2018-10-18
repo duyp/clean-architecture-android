@@ -76,8 +76,8 @@ class IssueRepositoryImpl @Inject constructor(
                 }
     }
 
-    override fun searchIssues(searchTerm: String, page: Int): Single<ListEntity<IssueEntity>> {
-        return mSearchService.searchIssues(searchTerm, page)
+    override fun searchIssues(query: QueryEntity, page: Int): Single<ListEntity<IssueEntity>> {
+        return mSearchService.searchIssues(query.toString(), page)
                 .map { mIssueListApiToEntityMapper.mapFrom(it) }
     }
 
