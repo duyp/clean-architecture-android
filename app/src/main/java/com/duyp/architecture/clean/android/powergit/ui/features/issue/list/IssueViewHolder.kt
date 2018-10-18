@@ -50,7 +50,7 @@ class IssueViewHolder private constructor(
         if (data.state != null) {
             val builder = SpannableBuilder.builder()
             if (showRepoName && data.repoName != null && data.repoOwner != null) {
-                builder.bold(data.repoOwner)
+                builder.append(data.repoOwner)
                         .append("/")
                         .bold(data.repoName)
                         .bold("#")

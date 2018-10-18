@@ -1,87 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
- <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/small"
-        android:paddingEnd="@dimen/small"
-        android:paddingStart="@dimen/small"
-        android:paddingTop="@dimen/small"
-        android:foreground="?android:selectableItemBackground">
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/small"
+    android:paddingEnd="@dimen/small"
+    android:paddingStart="@dimen/small"
+    android:paddingTop="@dimen/small"
+    android:foreground="?android:selectableItemBackground">
 
-    <FrameLayout
+    <com.mikhaellopez.circularimageview.CircularImageView
+        style="@style/avatar_circle"
+        android:id="@+id/avatarLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/issue_state"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/small">
+        app:layout_constraintBottom_toBottomOf="@id/avatarLayout"
+        app:layout_constraintEnd_toEndOf="@id/avatarLayout"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:src="@drawable/ic_issue_closed_small"/>
 
-        <com.mikhaellopez.circularimageview.CircularImageView
-            style="@style/avatar_circle"
-            android:id="@+id/avatarLayout"
-            android:visibility="gone"
-            tools:visibility="visible"/>
-
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/issue_state"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:visibility="gone"
-            tools:visibility="visible"
-            tools:src="@drawable/ic_issue_closed_small"/>
-    </FrameLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/title"
+        style="@style/TextAppearanceSubtitle"
+        android:textStyle="bold"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginStart="@dimen/small"
+        app:layout_constraintStart_toEndOf="@id/avatarLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="?android:textColorPrimary"
+        tools:text="When one acquires music and afterlife, one is able to capture heaven."/>
 
-        <TextView
-            android:id="@+id/title"
-            style="@style/TextAppearanceSubtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:textColor="?android:textColorPrimary"
-            android:textStyle="bold"
-            tools:text="When one acquires music and afterlife, one is able to capture heaven."/>
+    <TextView
+        android:id="@+id/commentsNo"
+        style="@style/TextAppearanceBody"
+        android:textSize="@dimen/text_small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        android:layout_marginTop="@dimen/xx_tiny"
+        android:drawablePadding="@dimen/x_tiny"
+        android:drawableStart="@drawable/ic_comment_small"
+        tools:text="1000"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+    <TextView
+        android:id="@+id/details"
+        style="@style/TextAppearanceBody"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginEnd="@dimen/tiny"
+        android:layout_marginTop="@dimen/xx_tiny"
+        android:textSize="@dimen/text_small"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintEnd_toStartOf="@+id/commentsNo"
+        app:layout_constraintStart_toStartOf="@id/title"
+        tools:text="This is issue detail"/>
 
-            <TextView
-                android:id="@+id/details"
-                style="@style/TextAppearanceBody"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:layout_marginTop="@dimen/xx_tiny"
-                tools:text="This is issue detail"/>
+    <com.duyp.architecture.clean.android.powergit.ui.widgets.AutoLinearLayout
+        android:id="@+id/labelContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/xx_tiny"
+        app:layout_constraintTop_toBottomOf="@id/details"
+        app:layout_constraintStart_toStartOf="@id/title"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-            <TextView
-                android:id="@+id/commentsNo"
-                style="@style/TextAppearanceBody"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="@dimen/tiny"
-                android:drawablePadding="@dimen/small"
-                android:layout_marginTop="@dimen/xx_tiny"
-                android:drawableStart="@drawable/ic_comment_small"
-                android:gravity="center|start"
-                tools:text="1000"/>
-        </LinearLayout>
-
-        <com.duyp.architecture.clean.android.powergit.ui.widgets.AutoLinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/tiny"
-            android:orientation="horizontal"
-            android:id="@+id/labelContainer"/>
-    </LinearLayout>
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

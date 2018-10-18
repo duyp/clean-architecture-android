@@ -30,7 +30,7 @@ class MainPagerAdapter @Inject constructor(@ActivityFragmentManager fm: Fragment
     }
 
     override fun getCount(): Int {
-        return 3
+        return 4
     }
 
 }
