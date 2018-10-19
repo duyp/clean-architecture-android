@@ -1,90 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
-    android:paddingBottom="@dimen/small"
-    android:paddingEnd="@dimen/small"
-    android:paddingStart="@dimen/small"
-    android:paddingTop="@dimen/small"
-    android:foreground="?android:selectableItemBackground">
+    android:padding="@dimen/small"
+    android:background="?android:selectableItemBackground">
 
     <TextView
         android:id="@+id/title"
         style="@style/TextAppearanceSubtitle"
         android:textStyle="bold"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/small"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:ellipsize="end"
         android:maxLines="2"
         android:textColor="?android:textColorPrimary"
         tools:text="When one acquires music and afterlife, one is able to capture heaven."/>
 
-    <TextView
-        android:id="@+id/commentsNo"
-        style="@style/TextAppearanceBody"
-        android:textSize="@dimen/text_small"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/lnDescription"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title"
+        android:orientation="horizontal"
         android:layout_marginTop="@dimen/xx_tiny"
-        android:drawablePadding="@dimen/x_tiny"
-        android:drawableStart="@drawable/ic_comment_small"
-        tools:text="1000"/>
+        android:layout_below="@id/title"
+        android:gravity="center">
 
-    <TextView
-        android:id="@+id/details"
-        style="@style/TextAppearanceBody"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginEnd="@dimen/tiny"
-        android:layout_marginTop="@dimen/xx_tiny"
-        android:textSize="@dimen/text_small"
-        app:layout_constraintTop_toBottomOf="@id/title"
-        app:layout_constraintEnd_toStartOf="@+id/commentsNo"
-        app:layout_constraintStart_toStartOf="@id/title"
-        tools:text="This is issue detail"/>
+        <TextView
+            android:id="@+id/details"
+            style="@style/TextAppearanceBody"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/tiny"
+            android:textSize="@dimen/text_small"
+            tools:text="This is issue detail"/>
 
-    <TextView
-        android:id="@+id/tvChecklistStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/tiny"
-        app:layout_constraintTop_toBottomOf="@id/details"
-        app:layout_constraintStart_toStartOf="@id/title"
-        android:drawableStart="@drawable/ic_checklist"
-        android:drawablePadding="@dimen/tiny"
-        tools:text="3 of 5"/>
+        <TextView
+            android:id="@+id/commentsNo"
+            style="@style/TextAppearanceBody"
+            android:textSize="@dimen/text_small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/x_tiny"
+            android:drawableStart="@drawable/ic_comment_small"
+            tools:text="1000"/>
+    </LinearLayout>
 
-    <ProgressBar
-        android:id="@+id/progressChecklist"
-        style="@style/HorizontalProgressBar"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/x_tiny"
-        android:layout_marginStart="@dimen/tiny"
-        app:layout_constraintBottom_toBottomOf="@+id/tvChecklistStatus"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tvChecklistStatus"
-        app:layout_constraintTop_toTopOf="@+id/tvChecklistStatus"
-        tools:progress="50"/>
-
-    <com.duyp.architecture.clean.android.powergit.ui.widgets.AutoLinearLayout
-        android:id="@+id/labelContainer"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/lnChecklist"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/tiny"
-        app:layout_constraintTop_toBottomOf="@id/tvChecklistStatus"
-        app:layout_constraintStart_toStartOf="@id/title"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:layout_below="@id/lnDescription"
+        android:gravity="center"
+        tools:visibility="visible">
 
+        <TextView
+            android:id="@+id/tvChecklistStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_checklist"
+            android:drawablePadding="@dimen/tiny"
+            tools:text="3 of 5"/>
 
-</android.support.constraint.ConstraintLayout>
+        <ProgressBar
+            android:id="@+id/progressChecklist"
+            style="@style/HorizontalProgressBar"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/x_tiny"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/tiny"
+            tools:progress="50"/>
+    </LinearLayout>
+
+    <com.duyp.architecture.clean.android.powergit.ui.widgets.AutoLinearLayout
+        android:id="@+id/labelContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/tiny"
+        android:layout_below="@id/lnChecklist"/>
+
+</RelativeLayout>

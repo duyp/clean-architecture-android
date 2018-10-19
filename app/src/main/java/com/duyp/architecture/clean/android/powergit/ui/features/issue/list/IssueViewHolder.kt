@@ -44,6 +44,7 @@ class IssueViewHolder private constructor(
     private var labelContainer: AutoLinearLayout = itemView.findViewById(R.id.labelContainer)
     private var tvChecklist: TextView = itemView.findViewById(R.id.tvChecklistStatus)
     private var pbChecklist: ProgressBar = itemView.findViewById(R.id.progressChecklist)
+    private var checklistContainer: View = itemView.findViewById(R.id.lnChecklist)
 
     private var labelMarginVertical = itemView.context.resources.getDimensionPixelOffset(R.dimen.one)
     private var labelMarginHorizontal = itemView.context.resources.getDimensionPixelOffset(R.dimen.xx_tiny)
@@ -154,8 +155,7 @@ class IssueViewHolder private constructor(
     }
 
     private fun setChecklistVisibility(visible: Boolean) {
-        tvChecklist.setVisible(visible)
-        pbChecklist.setVisible(visible)
+        checklistContainer.setVisible(visible)
     }
 
     companion object {
