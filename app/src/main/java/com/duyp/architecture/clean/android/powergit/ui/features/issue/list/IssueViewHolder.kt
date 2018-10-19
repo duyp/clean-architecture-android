@@ -14,6 +14,7 @@ import com.duyp.architecture.clean.android.powergit.R
 import com.duyp.architecture.clean.android.powergit.domain.entities.IssueEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.type.IssueState
 import com.duyp.architecture.clean.android.powergit.inflate
+import com.duyp.architecture.clean.android.powergit.setVisible
 import com.duyp.architecture.clean.android.powergit.ui.base.adapter.BaseViewHolder
 import com.duyp.architecture.clean.android.powergit.ui.utils.AvatarLoader
 import com.duyp.architecture.clean.android.powergit.ui.utils.ParseDateFormat
@@ -137,17 +138,24 @@ class IssueViewHolder private constructor(
             labelContainer.visibility = View.GONE
         }
 
-        data.checkListInfo?.let {
-            if (it.total > 0) {
-                tvChecklist.visibility = View.VISIBLE
-                pbChecklist.visibility = View.VISIBLE
-                tvChecklist.text = "${it.done} of ${it.total}"
-                pbChecklist.progress = ((it.done.toFloat() / it.total) * 100).toInt()
-            } else {
-                tvChecklist.visibility = View.GONE
-                pbChecklist.visibility = View.GONE
+        if (data.checkListInfo != null) {
+            data.checkListInfo!!.let {
+                if (it.total > 0) {
+                    setChecklistVisibility(true)
+                    tvChecklist.text = "${it.done} of ${it.total}"
+                    pbChecklist.progress = ((it.done.toFloat() / it.total) * 100).toInt()
+                } else {
+                    setChecklistVisibility(false)
+                }
             }
+        } else {
+            setChecklistVisibility(false)
         }
+    }
+
+    private fun setChecklistVisibility(visible: Boolean) {
+        tvChecklist.setVisible(visible)
+        pbChecklist.setVisible(visible)
     }
 
     companion object {
