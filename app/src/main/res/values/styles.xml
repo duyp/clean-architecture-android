@@ -56,5 +56,8 @@
         <item name="android:paddingRight">@dimen/x_tiny</item>
     </style>
 
-
+    <style name="HorizontalProgressBar" parent="android:Widget.ProgressBar.Horizontal">
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:progressDrawable">@drawable/checklist_progress_bar_horizontal</item>
+    </style>
 </resources>

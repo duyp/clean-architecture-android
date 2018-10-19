@@ -19,6 +19,7 @@
     <color name="dark_grey">#8A000000</color>
     <color name="grey">#61000000</color>
     <color name="light_grey">#FFDDDDDD</color>
+    <color name="super_light_grey">#FFEEEEEE</color>
     <color name="silver">#FFF4F4F4</color>
     <color name="green">#FF27AE60</color>
     <color name="yellow">#FFF39C12</color>
