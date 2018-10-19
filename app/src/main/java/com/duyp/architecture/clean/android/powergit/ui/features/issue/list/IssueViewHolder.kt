@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import com.duyp.architecture.clean.android.powergit.R
 import com.duyp.architecture.clean.android.powergit.domain.entities.IssueEntity
@@ -40,6 +41,8 @@ class IssueViewHolder private constructor(
     private var details: TextView = itemView.findViewById(R.id.details)
     private var commentsNo: TextView = itemView.findViewById(R.id.commentsNo)
     private var labelContainer: AutoLinearLayout = itemView.findViewById(R.id.labelContainer)
+    private var tvChecklist: TextView = itemView.findViewById(R.id.tvChecklistStatus)
+    private var pbChecklist: ProgressBar = itemView.findViewById(R.id.progressChecklist)
 
     private var labelMarginVertical = itemView.context.resources.getDimensionPixelOffset(R.dimen.one)
     private var labelMarginHorizontal = itemView.context.resources.getDimensionPixelOffset(R.dimen.xx_tiny)
@@ -132,6 +135,18 @@ class IssueViewHolder private constructor(
             }
         } else {
             labelContainer.visibility = View.GONE
+        }
+
+        data.checkListInfo?.let {
+            if (it.total > 0) {
+                tvChecklist.visibility = View.VISIBLE
+                pbChecklist.visibility = View.VISIBLE
+                tvChecklist.text = "${it.done} of ${it.total}"
+                pbChecklist.progress = ((it.done.toFloat() / it.total) * 100).toInt()
+            } else {
+                tvChecklist.visibility = View.GONE
+                pbChecklist.visibility = View.GONE
+            }
         }
     }
 

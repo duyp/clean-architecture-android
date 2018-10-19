@@ -7,7 +7,8 @@ import io.reactivex.Single
 import javax.inject.Inject
 
 class GetIssue @Inject constructor(
-        private val mIssueRepository: IssueRepository
+        private val mIssueRepository: IssueRepository,
+        private val mGetIssueCheckList: GetIssueCheckList
 ) {
 
     /**
@@ -15,6 +16,10 @@ class GetIssue @Inject constructor(
      */
     fun get(id: Long): Single<Optional<IssueEntity>> =
             mIssueRepository.getById(id)
+                    .map { issue ->
+                        issue.checkListInfo = mGetIssueCheckList.get(issue)
+                        return@map issue
+                    }
                     .map { Optional.of(it) }
                     .toSingle(Optional.empty())
                     .onErrorReturnItem(Optional.empty())
