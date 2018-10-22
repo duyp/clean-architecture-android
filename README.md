@@ -14,7 +14,7 @@ First you need to understand the architecture principle. If you haven't read or 
 Read the [contribution instructions][contribution-instructure] for more info and requirements
 
 ## Credits to FastHub
-This project focuses on android application architecture, so, to faster my work, I used some resources and helper classes of [Fasthub][fasthub] open source project. Thank [k0shk0sh][6] so much for his amazing app!
+This project focuses on android application architecture, so, to faster my work, I used some resources and helper classes of [Fasthub][fasthub] open source project. Thank [k0shk0sh][k0shk0sh] so much for his amazing app!
 
 [domain-centric]: https://crosp.net/blog/software-architecture/clean-architecture-part-1-databse-vs-domain/
 [contribution-instructure]: https://github.com/duyp/clean-architecture-android
@@ -22,6 +22,7 @@ This project focuses on android application architecture, so, to faster my work,
 [book]: https://www.amazon.com/Clean-Architecture-Craftsmans-Software-Structure/dp/0134494164
 [fasthub]: https://github.com/k0shk0sh/FastHub
 [powergit-store]: https://play.google.com/store/apps/details?id=com.duyp.architecture.mvvm
+[k0shk0sh]: https://github.com/k0shk0sh
 
 
 License
