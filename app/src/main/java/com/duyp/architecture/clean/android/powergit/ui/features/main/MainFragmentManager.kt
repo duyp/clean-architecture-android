@@ -2,6 +2,8 @@ package com.duyp.architecture.clean.android.powergit.ui.features.main
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentTransaction
+import com.duyp.architecture.clean.android.powergit.R
 import com.duyp.architecture.clean.android.powergit.di.qualifier.ActivityFragmentManager
 import com.duyp.architecture.clean.android.powergit.inTransaction
 import com.duyp.architecture.clean.android.powergit.putEnum
@@ -19,31 +21,30 @@ internal class MainFragmentManager constructor(
 ) {
 
     internal fun setPosition(position: Int) {
-        var fragment: Fragment? = mFragmentManager.findFragmentByTag(position.toString())
+        val tag = getFragmentTag(position)
+        var fragment: Fragment? = mFragmentManager.findFragmentByTag(tag)
         if (fragment == null) {
             fragment = getFragmentAtPosition(position)
-            hideAllFragments(alsoAdd = fragment, addToPosition = position)
+            hideAllFragmentsAnd { add(containerId, fragment, tag) }
         } else {
             if (fragment.isHidden) {
-                hideAllFragments()
-                mFragmentManager.inTransaction { show(fragment) }
+                hideAllFragmentsAnd { show(fragment) }
             }
         }
     }
 
-    // hide all mFragments
-    private fun hideAllFragments(alsoAdd: Fragment? = null, addToPosition: Int = 0) {
+    // hide all fragments and also apply more transactions
+    private fun hideAllFragmentsAnd(alsoFunc: (FragmentTransaction.() -> FragmentTransaction)) {
         mFragmentManager.inTransaction {
+            setCustomAnimations(R.anim.fade_in_short, R.anim.fade_out_short)
             for (fragment in mFragmentManager.fragments) {
                 hide(fragment)
             }
-            alsoAdd?.let {
-                add(containerId, it, addToPosition.toString())
-                show(it)
-            }
-            return@inTransaction this
+            return@inTransaction alsoFunc()
         }
     }
+
+    private fun getFragmentTag(position: Int) = position.toString()
 
     private fun getFragmentAtPosition(position: Int): Fragment? {
         return when (position) {
