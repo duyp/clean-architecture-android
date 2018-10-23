@@ -6,9 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import com.duyp.architecture.clean.android.powergit.R
-import com.duyp.architecture.clean.android.powergit.addOnPageSelectedListener
 import com.duyp.architecture.clean.android.powergit.setOnItemClickListener
-import com.duyp.architecture.clean.android.powergit.showToastMessage
 import com.duyp.architecture.clean.android.powergit.ui.base.ViewModelActivity
 import com.duyp.architecture.clean.android.powergit.ui.features.drawer.DrawerHolder
 import com.duyp.architecture.clean.android.powergit.ui.features.search.SearchActivity
@@ -21,21 +19,15 @@ class MainActivity : ViewModelActivity<MainViewState, MainIntent, MainViewModel>
 
     @Inject lateinit var mDrawerHolder: DrawerHolder
 
-    @Inject lateinit var mPagerAdapter: MainPagerAdapter
+    private lateinit var mMainFragmentManager: MainFragmentManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setToolbarShadow(true)
         setToolbarIcon(R.drawable.ic_menu)
-        pager.adapter = mPagerAdapter
-        pager.addOnPageSelectedListener {
-            onIntent(MainIntent.OnPageSelected(it))
-        }
+        mMainFragmentManager = MainFragmentManager(supportFragmentManager, R.id.container)
+
         bottomNavigation.setOnItemClickListener { _, position, fromUser ->
-            if (position > 3) {
-                showToastMessage("Coming soon...")
-                bottomNavigation.post { bottomNavigation.setSelectedIndex(pager.currentItem, true) }
-            }
             if (fromUser) {
                 onIntent(MainIntent.OnPageSelected(position))
             }
@@ -81,9 +73,7 @@ class MainActivity : ViewModelActivity<MainViewState, MainIntent, MainViewModel>
 
     private fun setCurrentPage(position: Int) {
         setToolbarShadow(position < 2)
-        if (position != pager.currentItem) {
-            pager.currentItem = position
-        }
+        mMainFragmentManager.setPosition(position)
         bottomNavigation.setSelectedIndex(position, true)
     }
 

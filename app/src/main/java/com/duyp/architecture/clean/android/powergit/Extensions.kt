@@ -220,6 +220,11 @@ inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> Fragmen
     beginTransaction().func().commit()
 }
 
+inline fun android.support.v4.app.FragmentManager.inTransaction(func: android.support.v4.app.FragmentTransaction.()
+        -> android.support.v4.app.FragmentTransaction) {
+    beginTransaction().func().commit()
+}
+
 /**
  * Create a [Fragment] instance with bundle consumer
  */
