@@ -7,7 +7,7 @@ package com.duyp.architecture.clean.android.powergit.ui.base
  * So basically, the view state is enforced to [ListState] and the view intent is enforced to [ListIntent], other
  * things remain the same in [ListViewModel].
  */
-abstract class BasicListViewModel<EntityType, ListType>: ListViewModel<ListState, ListIntent, EntityType, ListType>() {
+abstract class BasicListViewModel<EntityType>: ListViewModel<ListState, ListIntent, EntityType>() {
 
     override fun initState() = ListState()
 

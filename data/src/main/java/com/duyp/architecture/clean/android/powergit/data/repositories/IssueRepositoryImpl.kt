@@ -6,7 +6,7 @@ import com.duyp.architecture.clean.android.powergit.data.database.IssueDao
 import com.duyp.architecture.clean.android.powergit.data.database.LabelDao
 import com.duyp.architecture.clean.android.powergit.data.entities.issue.IssueApiToLocalMapper
 import com.duyp.architecture.clean.android.powergit.data.entities.issue.IssueListApiToEntityMapper
-import com.duyp.architecture.clean.android.powergit.data.entities.issue.IssueListApiToIdMapper
+import com.duyp.architecture.clean.android.powergit.data.entities.issue.IssueLocalData
 import com.duyp.architecture.clean.android.powergit.data.entities.issue.IssueLocalToEntityMapper
 import com.duyp.architecture.clean.android.powergit.data.entities.label.IssueLabelsLocalData
 import com.duyp.architecture.clean.android.powergit.data.entities.label.LabelApiToLocalMapper
@@ -26,8 +26,6 @@ class IssueRepositoryImpl @Inject constructor(
         private val mLabelDao: LabelDao
 ): IssueRepository {
 
-    private val mIssueListApiToIdMapper = IssueListApiToIdMapper()
-
     private val mIssueListApiToEntityMapper = IssueListApiToEntityMapper()
 
     private val mIssueApiToLocalMapper = IssueApiToLocalMapper()
@@ -38,7 +36,7 @@ class IssueRepositoryImpl @Inject constructor(
 
     private val mLabelLocalToEntityMapper = LabelLocalToEntityMapper()
 
-    override fun getIssueList(query: QueryEntity, page: Int): Single<ListEntity<Long>> {
+    override fun getIssueList(query: QueryEntity, page: Int): Single<ListEntity<IssueEntity>> {
         return mIssueService.getIssues(query.toString(), page)
                 .doOnSuccess {
                     mIssueDao.insertList(mIssueApiToLocalMapper.mapFrom(it.items))
@@ -53,10 +51,10 @@ class IssueRepositoryImpl @Inject constructor(
                         }
                     }
                 }
-                .map { mIssueListApiToIdMapper.mapFrom(it) }
+                .map { mIssueListApiToEntityMapper.mapFrom(it) }
                 .onErrorResumeNext { throwable ->
                     if (page == ListEntity.STARTING_PAGE && query.type == QueryEntity.TYPE_ISSUE) {
-                        var local: Single<List<Long>>? = null
+                        var local: Single<List<IssueLocalData>>? = null
                         if (query.repo != null && query.repoOwner != null) {
                             local = mIssueDao.getByRepo(query.repoOwner!!, query.repo!!, query.state)
 
@@ -65,11 +63,13 @@ class IssueRepositoryImpl @Inject constructor(
                         } else if (query.assignee != null) {
                             local = mIssueDao.getByAssignee(query.assignee!!, query.state)
                         }
-                        // no offline supports for involves
+                        // no offline supports for involved issues
                         if (local != null) {
-                            return@onErrorResumeNext local.map {
-                                ListEntity(items = it, isOfflineData = true, apiError = throwable)
-                            }
+                            return@onErrorResumeNext local
+                                    .map { mIssueLocalToEntityMapper.mapFrom(it) }
+                                    .map {
+                                        ListEntity(items = it, isOfflineData = true, apiError = throwable)
+                                    }
                         }
                     }
                     return@onErrorResumeNext Single.error(throwable)

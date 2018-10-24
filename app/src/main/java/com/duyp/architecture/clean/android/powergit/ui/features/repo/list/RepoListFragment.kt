@@ -8,7 +8,7 @@ import com.duyp.architecture.clean.android.powergit.ui.base.adapter.AdapterData
 import com.duyp.architecture.clean.android.powergit.ui.utils.AvatarLoader
 import javax.inject.Inject
 
-class RepoListFragment: BasicListFragment<RepoEntity, Long, RepoListAdapter, RepoListViewModel>() {
+class RepoListFragment: BasicListFragment<RepoEntity, RepoListAdapter, RepoListViewModel>() {
 
     @Inject lateinit var mAvatarLoader: AvatarLoader
 

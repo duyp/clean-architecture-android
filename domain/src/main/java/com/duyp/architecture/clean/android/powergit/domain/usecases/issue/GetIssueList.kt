@@ -1,5 +1,6 @@
 package com.duyp.architecture.clean.android.powergit.domain.usecases.issue
 
+import com.duyp.architecture.clean.android.powergit.domain.entities.IssueEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.issue.IssueQueryProvider.getIssuesQuery
 import com.duyp.architecture.clean.android.powergit.domain.entities.issue.IssueQueryProvider.getMyIssueQuery
@@ -24,7 +25,7 @@ class GetIssueList @Inject constructor(
      *
      * @return new [ListEntity] which contains all data of [currentList] and new list
      */
-    fun getUserIssues(currentList: ListEntity<Long>, username: String?,
+    fun getUserIssues(currentList: ListEntity<IssueEntity>, username: String?,
                       type: MyIssueTypeEntity, @IssueState state: String) =
             Maybe.fromCallable { username }
                     .switchIfEmpty(mGetUser.getCurrentLoggedInUsername())
@@ -40,7 +41,7 @@ class GetIssueList @Inject constructor(
      *
      * @return new [ListEntity] which contains all data of [currentList] and new list
      */
-    fun getRepoIssues(currentList: ListEntity<Long>, owner: String, repo: String, @IssueState state: String) =
+    fun getRepoIssues(currentList: ListEntity<IssueEntity>, owner: String, repo: String, @IssueState state: String) =
             mIssueRepository.getIssueList(getIssuesQuery(owner, repo, state), currentList.getNextPage())
                     .mergeWithPreviousPage(currentList)
 }

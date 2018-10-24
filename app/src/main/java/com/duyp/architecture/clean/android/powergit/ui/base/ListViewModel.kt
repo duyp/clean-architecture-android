@@ -30,11 +30,6 @@ import io.reactivex.schedulers.Schedulers
  *
  * @param [EntityType] type of data to be shown in adapter
  *
- * @param [ListType] type of data in the list. In common case (see [BasicListViewModel]), [EntityType] is the same
- * with [ListType] when we store data in memory. But in some other cases, we only save id of items on memory and do
- * lazy load when the item is being bound in adapter, this case the [ListType] is [Int] (id). Therefore the child
- * classes must implement [getItem] which returns [EntityType] based on [ListType]
- *
  * See some examples:
  *  - Basic [com.duyp.architecture.clean.android.powergit.ui.features.event.EventViewModel]
  *  - Extended [com.duyp.architecture.clean.android.powergit.ui.features.repo.list.RepoListViewModel]
@@ -42,9 +37,9 @@ import io.reactivex.schedulers.Schedulers
  * @param [S] View State
  * @param [I] View Intent, must extends [ListIntent]
  */
-abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewModel<S, I>(), AdapterData<EntityType> {
+abstract class ListViewModel<S, I: ListIntent, EntityType>: BaseViewModel<S, I>(), AdapterData<EntityType> {
 
-    private var mListEntity: ListEntity<ListType> = ListEntity()
+    private var mListEntity: ListEntity<EntityType> = ListEntity()
 
     private var mIsLoading: Boolean = false
 
@@ -96,12 +91,10 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
     override fun getItemAtPosition(position: Int): EntityType? {
         if (mListEntity.items.isEmpty() || position < 0 || position >= getTotalCount())
             return null
-        return getItem(mListEntity.items[position])
+        return mListEntity.items[position]
     }
 
-    protected abstract fun getItem(listItem: ListType): EntityType
-
-    open protected fun getItemType(listItem: ListType): Int = 0
+    open protected fun getItemType(listItem: EntityType): Int = 0
 
     protected abstract fun refreshAtStartup(): Boolean
 
@@ -121,7 +114,7 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
     /**
      * Implement this to load specific page
      */
-    protected abstract fun loadList(currentList: ListEntity<ListType>): Observable<ListEntity<ListType>>
+    protected abstract fun loadList(currentList: ListEntity<EntityType>): Observable<ListEntity<EntityType>>
 
     /**
      * Compares two items for diff utils, see [calculateDiffResult]
@@ -129,7 +122,7 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
      * @return true if they are equal. By default we use [equals] and either the [ListType] should override equals()
      * method or the child view model should override this method to compare 2 items
      */
-    protected abstract fun areItemEquals(old: ListType, new: ListType): Boolean
+    protected abstract fun areItemsTheSame(old: EntityType, new: EntityType): Boolean
 
     /**
      * In some cases the final view model might have more intents than basic [ListIntent], so it has to specific
@@ -156,7 +149,7 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
      *
      * @return [DiffUtil.DiffResult] reflect the changes
      */
-    open protected fun calculateDiffResult(newList: ListEntity<ListType>): DiffUtil.DiffResult {
+    open protected fun calculateDiffResult(newList: ListEntity<EntityType>): DiffUtil.DiffResult {
         return DiffUtil.calculateDiff(object : DiffUtil.Callback() {
 
             override fun getOldListSize() = mListEntity.items.size
@@ -164,11 +157,11 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
             override fun getNewListSize() = newList.items.size
 
             override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return areItemEquals(mListEntity.items[oldItemPosition], newList.items[newItemPosition])
+                return areItemsTheSame(mListEntity.items[oldItemPosition], newList.items[newItemPosition])
             }
 
             override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return areContentsEquals(mListEntity.items[oldItemPosition], newList.items[newItemPosition])
+                return areItemContentsTheSame(mListEntity.items[oldItemPosition], newList.items[newItemPosition])
             }
 
             override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
@@ -184,7 +177,7 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
      * method or the child view model should override this method to compare 2 items. If our entity is data class,
      * there is no need to override equals() since it already done by Kotlin
      */
-    open protected fun areContentsEquals(old: ListType, new: ListType): Boolean {
+    open protected fun areItemContentsTheSame(old: EntityType, new: EntityType): Boolean {
         return old?.equals(new) ?: false
     }
 
@@ -192,7 +185,7 @@ abstract class ListViewModel<S, I: ListIntent, EntityType, ListType>: BaseViewMo
      * get change payload of the old and the new item, used for partial updating item in recycler view
      * see [DiffUtil.Callback.getChangePayload]
      */
-    open protected fun getChangePayload(old: ListType, new: ListType): Any? {
+    open protected fun getChangePayload(old: EntityType, new: EntityType): Any? {
         return null
     }
 

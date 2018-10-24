@@ -14,10 +14,9 @@ import com.duyp.architecture.clean.android.powergit.ui.base.adapter.BaseAdapter
  */
 abstract class BasicListFragment<
         EntityType,
-        ListType,
         A: BaseAdapter<EntityType>,
-        VM: BasicListViewModel<EntityType, ListType>>
-    : ListFragment<EntityType, ListType, A, ListIntent, ListState, VM>() {
+        VM: BasicListViewModel<EntityType>>
+    : ListFragment<EntityType, A, ListIntent, ListState, VM>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

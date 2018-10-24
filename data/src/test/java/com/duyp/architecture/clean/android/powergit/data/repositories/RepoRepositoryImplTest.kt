@@ -32,7 +32,7 @@ class RepoRepositoryImplTest {
     fun getUserRepoList_errorFirstPage_shouldReturnLocalData() {
         whenever(mUserService.getRepos(any(), any(), any()))
                 .thenReturn(Single.error(Exception()))
-        whenever(mRepoDao.getUserRepoIds(any())).thenReturn(Single.just(listOf(1L, 2L, 3L)))
+        whenever(mRepoDao.getUserRepos(any())).thenReturn(Single.just(listOf(1L, 2L, 3L)))
 
         mRepoRepository.getUserRepoList("duyp", FilterOptions(), ListEntity.STARTING_PAGE)
                 .test()
@@ -40,7 +40,7 @@ class RepoRepositoryImplTest {
                     it.items.size == 3 && it.isOfflineData && it.apiError is Exception
                 }
         verify(mUserService).getRepos(eq("duyp"), any(), eq(ListEntity.STARTING_PAGE))
-        verify(mRepoDao).getUserRepoIds("duyp")
+        verify(mRepoDao).getUserRepos("duyp")
     }
 
     @Test
@@ -80,7 +80,7 @@ class RepoRepositoryImplTest {
     fun getMyUserRepoList_errorFirstPage_shouldReturnLocalData() {
         whenever(mUserService.getMyRepos(any(), any()))
                 .thenReturn(Single.error(Exception()))
-        whenever(mRepoDao.getUserRepoIds(any())).thenReturn(Single.just(listOf(1L, 2L, 3L)))
+        whenever(mRepoDao.getUserRepos(any())).thenReturn(Single.just(listOf(1L, 2L, 3L)))
 
         mRepoRepository.getMyUserRepoList("duyp", FilterOptions(), ListEntity.STARTING_PAGE)
                 .test()
@@ -88,7 +88,7 @@ class RepoRepositoryImplTest {
                     it.items.size == 3 && it.isOfflineData && it.apiError is Exception
                 }
         verify(mUserService).getMyRepos(any(), eq(ListEntity.STARTING_PAGE))
-        verify(mRepoDao).getUserRepoIds("duyp")
+        verify(mRepoDao).getUserRepos("duyp")
     }
 
     @Test

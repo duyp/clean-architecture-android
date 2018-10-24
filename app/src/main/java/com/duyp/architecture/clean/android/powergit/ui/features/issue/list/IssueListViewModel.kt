@@ -5,7 +5,6 @@ import com.duyp.architecture.clean.android.powergit.domain.entities.IssueEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.issue.MyIssueTypeEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.type.IssueState
-import com.duyp.architecture.clean.android.powergit.domain.usecases.issue.GetIssue
 import com.duyp.architecture.clean.android.powergit.domain.usecases.issue.GetIssueList
 import com.duyp.architecture.clean.android.powergit.ui.base.ListIntent
 import com.duyp.architecture.clean.android.powergit.ui.base.ListState
@@ -16,9 +15,8 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class IssueListViewModel @Inject constructor(
-        private val mGetIssueList: GetIssueList,
-        private val mGetIssue: GetIssue
-): ListViewModel<IssueListState, IssueListIntent, IssueEntity, Long>() {
+        private val mGetIssueList: GetIssueList
+): ListViewModel<IssueListState, IssueListIntent, IssueEntity>() {
 
     internal lateinit var listType: IssueListType
 
@@ -29,11 +27,6 @@ class IssueListViewModel @Inject constructor(
 
     // for user's issue list
     private var mUserName: String? = null
-
-    override fun getItem(listItem: Long) = mGetIssue.get(listItem)
-            .subscribeOn(Schedulers.io())
-            .blockingGet()
-            .orElse(null)!!
 
     override fun refreshAtStartup() = true
 
@@ -77,7 +70,7 @@ class IssueListViewModel @Inject constructor(
         }
     }
 
-    override fun loadList(currentList: ListEntity<Long>): Observable<ListEntity<Long>> {
+    override fun loadList(currentList: ListEntity<IssueEntity>): Observable<ListEntity<IssueEntity>> {
         return withState {
             val issueState = if (isOpenIssue) IssueState.OPEN else IssueState.CLOSED
             return@withState if (listType == IssueListType.USER_ISSUES)
@@ -91,7 +84,7 @@ class IssueListViewModel @Inject constructor(
         }
     }
 
-    override fun areItemEquals(old: Long, new: Long) = old == new
+    override fun areItemsTheSame(old: IssueEntity, new: IssueEntity) = old == new
 
     override fun getRefreshIntent() = IssueListIntent.Refresh
 

@@ -29,7 +29,6 @@ import kotlinx.android.synthetic.main.refresh_recycler_view.*
  * is sent to view model and how the view model manage view state of a list
  *
  * @param EntityType type of entity which will be shown in recycler view, is adapter data
- * @param ListType type of data in the [com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity]
  * @param A adapter
  * @param I intent
  * @param S state
@@ -37,11 +36,10 @@ import kotlinx.android.synthetic.main.refresh_recycler_view.*
  */
 abstract class ListFragment<
         EntityType,
-        ListType,
         A: BaseAdapter<EntityType>,
         I: ListIntent,
         S,
-        VM : ListViewModel<S, I, EntityType, ListType>>
+        VM : ListViewModel<S, I, EntityType>>
     : ViewModelFragment<S, I, VM>() {
 
     private lateinit var mAdapter: A

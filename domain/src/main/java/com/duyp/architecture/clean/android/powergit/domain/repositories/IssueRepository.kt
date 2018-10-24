@@ -13,7 +13,7 @@ interface IssueRepository {
      *
      * See [com.duyp.architecture.clean.android.powergit.domain.entities.issue.IssueQueryProvider]
      */
-    fun getIssueList(query: QueryEntity, page: Int): Single<ListEntity<Long>>
+    fun getIssueList(query: QueryEntity, page: Int): Single<ListEntity<IssueEntity>>
 
     /**
      * Search public issues on github with given [query] and [page]
