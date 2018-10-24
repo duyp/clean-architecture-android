@@ -2,6 +2,7 @@ package com.duyp.architecture.clean.android.powergit.data.di
 
 import android.content.Context
 import com.duyp.architecture.clean.android.powergit.data.BuildConfig
+import com.duyp.architecture.clean.android.powergit.data.api.ApiCache
 import com.duyp.architecture.clean.android.powergit.data.api.ApiConstants.TIME_OUT_API
 import com.duyp.architecture.clean.android.powergit.data.api.IssueService
 import com.duyp.architecture.clean.android.powergit.data.api.SearchService
@@ -33,12 +34,23 @@ class NetworkModule {
 
     @Provides
     @Singleton
+    internal fun provideApiCache(@ApplicationContext context: Context): ApiCache {
+        return try {
+            val httpCacheDirectory = File(context.cacheDir, "httpCache")
+            ApiCache(cache = Cache(httpCacheDirectory, (10 * 1024 * 1024).toLong())) // 10 MB
+        } catch (e: Exception) {
+            ApiCache(null)
+        }
+    }
+
+    @Provides
+    @Singleton
     internal fun provideRequestAnnotations() = RequestAnnotations()
 
     @Provides
     @Singleton
-    internal fun provideOkHttpClient(@ApplicationContext context: Context, requestAnnotations: RequestAnnotations,
-                            getAuthentication: GetAuthentication): OkHttpClient {
+    internal fun provideOkHttpClient(cache: ApiCache, requestAnnotations: RequestAnnotations,
+                                     getAuthentication: GetAuthentication): OkHttpClient {
         // okHttp client
         val clientBuilder = OkHttpClient.Builder()
                 .connectTimeout(TIME_OUT_API.toLong(), TimeUnit.SECONDS)
@@ -68,16 +80,9 @@ class NetworkModule {
         }
 
         // cache
-        var cache: Cache? = null
-        try {
-            val httpCacheDirectory = File(context.cacheDir, "httpCache")
-            cache = Cache(httpCacheDirectory, (10 * 1024 * 1024).toLong()) // 10 MB
-        } catch (e: Exception) {
-        }
-
-        if (cache != null) {
+        cache.get()?.let {
             clientBuilder
-                    .cache(cache)
+                    .cache(it)
                     .addNetworkInterceptor(CacheInterceptor(requestAnnotations))
         }
 
