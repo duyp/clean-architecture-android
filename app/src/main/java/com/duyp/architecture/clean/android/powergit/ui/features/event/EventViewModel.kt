@@ -9,15 +9,13 @@ import javax.inject.Inject
 
 class EventViewModel @Inject constructor(
         private val mGetUserEventList: GetUserEventList
-): BasicListViewModel<EventEntity, EventEntity>() {
+): BasicListViewModel<EventEntity>() {
 
     var username: String? = null
 
     var type: EventType? = EventType.SELF
 
     override fun refreshAtStartup() = true
-
-    override fun getItem(listItem: EventEntity) = listItem
 
     override fun loadList(currentList: ListEntity<EventEntity>): Observable<ListEntity<EventEntity>> {
         val isReceivedEvents = type == EventType.RECEIVED
@@ -28,7 +26,7 @@ class EventViewModel @Inject constructor(
         }
     }
 
-    override fun areItemEquals(old: EventEntity, new: EventEntity): Boolean {
+    override fun areItemsTheSame(old: EventEntity, new: EventEntity): Boolean {
         return old.id == new.id
     }
 }

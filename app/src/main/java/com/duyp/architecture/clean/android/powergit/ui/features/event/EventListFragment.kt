@@ -9,7 +9,7 @@ import com.duyp.architecture.clean.android.powergit.ui.base.adapter.AdapterData
 import com.duyp.architecture.clean.android.powergit.ui.utils.AvatarLoader
 import javax.inject.Inject
 
-class EventListFragment: BasicListFragment<EventEntity, EventEntity, EventListAdapter, EventViewModel>() {
+class EventListFragment: BasicListFragment<EventEntity, EventListAdapter, EventViewModel>() {
 
     @Inject lateinit var avatarLoader: AvatarLoader
 

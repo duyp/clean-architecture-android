@@ -17,7 +17,7 @@ interface RepoRepository {
      * @param page page number to load
      */
     fun getUserRepoList(username: String, filterOptions: FilterOptions, page: Int):
-            Single<ListEntity<Long>>
+            Single<ListEntity<RepoEntity>>
 
     /**
      * Get repo list (ids) of current user (both public and private since we have credentials) with given filter option
@@ -28,7 +28,7 @@ interface RepoRepository {
      * @param filterOptions option for filtering and sorting
      * @param page page number to load
      */
-    fun getMyUserRepoList(username: String, filterOptions: FilterOptions, page: Int): Single<ListEntity<Long>>
+    fun getMyUserRepoList(username: String, filterOptions: FilterOptions, page: Int): Single<ListEntity<RepoEntity>>
 
     /**
      * Get a repo by given id
