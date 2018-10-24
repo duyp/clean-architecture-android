@@ -3,6 +3,7 @@ package com.duyp.architecture.clean.android.powergit.domain.usecases.repo
 import com.duyp.architecture.clean.android.powergit.domain.entities.FilterOptions
 import com.duyp.architecture.clean.android.powergit.domain.entities.ListEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.exception.AuthenticationException
+import com.duyp.architecture.clean.android.powergit.domain.entities.repo.RepoEntity
 import com.duyp.architecture.clean.android.powergit.domain.repositories.RepoRepository
 import com.duyp.architecture.clean.android.powergit.domain.usecases.GetUser
 import com.duyp.architecture.clean.android.powergit.domain.usecases.UseCaseTest
@@ -49,9 +50,13 @@ class GetUserRepoListTest: UseCaseTest<GetUserRepoList>(){
     @Test
     fun getRepoList_mergeWithPrevious() {
         whenever(mRepoRepository.getUserRepoList(any(), any(), any()))
-                .thenReturn(Single.just(ListEntity(next = 4, last = 5, items = listOf(2L, 3L))))
+                .thenReturn(Single.just(ListEntity(next = 4, last = 5, items = listOf(
+                        RepoEntity(2L), RepoEntity(3L)
+                ))))
 
-        mUsecase.getRepoList(ListEntity(next = 3, last = 5, items = listOf(0L, 1L)), "duyp", FilterOptions())
+        mUsecase.getRepoList(ListEntity(next = 3, last = 5, items = listOf(
+                RepoEntity(0L), RepoEntity(1L)
+        )), "duyp", FilterOptions())
                 .test()
                 .assertNoErrors()
                 .assertValue { it.getNextPage() == 4 && it.items.size == 4 }

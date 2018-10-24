@@ -3,7 +3,9 @@ package com.duyp.architecture.clean.android.powergit.domain.entities
 import com.duyp.architecture.clean.android.powergit.domain.entities.issue.IssueCheckListInfo
 import com.duyp.architecture.clean.android.powergit.domain.entities.repo.RepoEntity
 import com.duyp.architecture.clean.android.powergit.domain.entities.type.IssueState
+import com.duyp.architecture.clean.android.powergit.domain.utils.totalMatches
 import java.util.*
+import java.util.regex.Pattern
 
 data class IssueEntity(
 
@@ -11,7 +13,7 @@ data class IssueEntity(
 
         var url: String? = null,
 
-        var body: String? = null,
+        private var body: String? = null,
 
         var title: String? = null,
 
@@ -58,5 +60,32 @@ data class IssueEntity(
 
         var reactions: ReactionsEntity? = null,
 
-        var checkListInfo: IssueCheckListInfo? = null
-)
+        private var checkListInfo: IssueCheckListInfo? = null
+) {
+
+    companion object {
+        private const val PATTERN_UNCHECK = "\\[ ]"
+        private const val PATTERN_CHECKED = "\\[x|X]"
+    }
+
+    /**
+     * Set issue body as well as extracting [IssueCheckListInfo] from it
+     */
+    fun setBody(body: String?) {
+        this.body = body
+        this.checkListInfo = if (!this.body.isNullOrEmpty()) {
+            val unchecked = Pattern.compile(PATTERN_UNCHECK).matcher(this.body).totalMatches()
+            val checked = Pattern.compile(PATTERN_CHECKED).matcher(this.body).totalMatches()
+            IssueCheckListInfo(
+                    total = checked + unchecked,
+                    done = checked
+            )
+        } else {
+            IssueCheckListInfo(0, 0)
+        }
+    }
+
+    fun getBody() = body
+
+    fun getChecklistInfo() = checkListInfo
+}

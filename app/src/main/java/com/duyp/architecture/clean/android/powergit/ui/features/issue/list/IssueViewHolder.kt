@@ -1,6 +1,7 @@
 package com.duyp.architecture.clean.android.powergit.ui.features.issue.list
 
 import android.graphics.Color
+import android.os.Build
 import android.support.v4.graphics.ColorUtils
 import android.support.v7.widget.AppCompatImageView
 import android.view.Gravity
@@ -139,12 +140,16 @@ class IssueViewHolder private constructor(
             labelContainer.visibility = View.GONE
         }
 
-        if (data.checkListInfo != null) {
-            data.checkListInfo!!.let {
+        if (data.getChecklistInfo() != null) {
+            data.getChecklistInfo()!!.let {
                 if (it.total > 0) {
                     setChecklistVisibility(true)
                     tvChecklist.text = "${it.done} of ${it.total}"
-                    pbChecklist.progress = ((it.done.toFloat() / it.total) * 100).toInt()
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        pbChecklist.setProgress(((it.done.toFloat() / it.total) * 100).toInt(), true)
+                    } else {
+                        pbChecklist.progress = ((it.done.toFloat() / it.total) * 100).toInt()
+                    }
                 } else {
                     setChecklistVisibility(false)
                 }

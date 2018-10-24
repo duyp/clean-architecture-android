@@ -25,7 +25,7 @@ class IssueApiToEntityMapper: Mapper<IssueApiData, IssueEntity>() {
         val entity = IssueEntity()
         entity.id = e.id
         entity.url = e.url
-        entity.body = e.body
+        entity.setBody(e.body)
         entity.title = e.title
         entity.comments = e.comments
         entity.number = e.number
