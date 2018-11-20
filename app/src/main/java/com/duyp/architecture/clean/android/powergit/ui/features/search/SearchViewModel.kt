@@ -85,13 +85,13 @@ class SearchViewModel @Inject constructor(
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext { mCurrentTab = it.tab }
                     .processDataUpdate()
-                    .switchMap {
-                        val shouldRefresh = when (mCurrentTab) {
+                    .filter {
+                        mSearchTerm.length >= MIN_SEARCH_TERM_LENGTH && when (mCurrentTab) {
                             SearchTab.REPO -> mRepoSearchResult.data.items.isEmpty()
                             else -> mIssueSearchResult.data.items.isEmpty()
                         }
-                        return@switchMap if (shouldRefresh) loadSearchResults(true) else Observable.empty()
                     }
+                    .switchMap { loadSearchResults(true) }
                     .subscribe()
         }
 
