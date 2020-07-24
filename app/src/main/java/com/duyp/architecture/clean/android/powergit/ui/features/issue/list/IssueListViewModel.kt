@@ -146,32 +146,18 @@ enum class MyIssueType(val stringId: Int) {
         }
     }
 
-    fun getPosition(): Int {
-        return when (this) {
-            CREATED -> 0
-            ASSIGNED -> 1
-            MENTIONED -> 2
-            PARTICIPATED -> 3
-        }
-    }
+    fun getPosition() = values().indexOf(this)
 
     companion object {
 
         /**
-         * Get list string resoure ids
+         * Get list string resource ids
          */
         fun listStringIds() = MyIssueType.values().map { it.stringId }
 
         /**
          * Get from position (spinner)
          */
-        fun of(position: Int): MyIssueType {
-            return when (position) {
-                0 -> CREATED
-                1 -> ASSIGNED
-                2 -> MENTIONED
-                else -> PARTICIPATED
-            }
-        }
+        fun of(position: Int) = values()[position]
     }
 }

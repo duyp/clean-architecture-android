@@ -13,6 +13,7 @@ import com.duyp.architecture.clean.android.powergit.domain.entities.repo.RepoEnt
 import com.duyp.architecture.clean.android.powergit.inflate
 import com.duyp.architecture.clean.android.powergit.or
 import com.duyp.architecture.clean.android.powergit.ui.base.adapter.BaseViewHolder
+import com.duyp.architecture.clean.android.powergit.ui.provider.color.ColorGenerator
 import com.duyp.architecture.clean.android.powergit.ui.provider.color.ColorsProvider
 import com.duyp.architecture.clean.android.powergit.ui.utils.ParseDateFormat
 import com.duyp.architecture.clean.android.powergit.ui.widgets.LabelSpan
@@ -69,7 +70,7 @@ class RepoViewHolder private constructor(
         date.text = ParseDateFormat.getTimeAgo(data.updatedAt)
         if (!TextUtils.isEmpty(data.language)) {
             language.text = data.language
-            language.setTextColor(ColorsProvider.getColorAsColor(data.language!!, language.context))
+            language.setTextColor(ColorGenerator.getColor(itemView.context, data.language))
             language.visibility = View.VISIBLE
         } else {
             language.text = ""
